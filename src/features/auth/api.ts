@@ -1,11 +1,12 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import {AuthResponse, LoginUserRequest, RegisterUserRequest} from "@features/auth/types.ts";
+import {LoginRequest, LoginResponse, RegisterRequest, UserResponse} from "@features/auth/types";
+import storage from "@utils/storage.ts";
 
 export const authApi = createApi({
         reducerPath: "auth",
-        baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3000/auth'}),
+        baseQuery: fetchBaseQuery({baseUrl: 'http://localhost/user'}),
         endpoints: (builder) => ({
-            login: builder.mutation<AuthResponse, LoginUserRequest>({
+            login: builder.mutation<LoginResponse, LoginRequest>({
                 query: (body) => ({
                     url: '/login',
                     method: "POST",
@@ -14,38 +15,33 @@ export const authApi = createApi({
                 async onQueryStarted(_, {queryFulfilled}) {
                     try {
                         const result = await queryFulfilled;
+                        storage.setLoginResponse(result.data)
 
-                        localStorage.setItem(
-                            "auth",
-                            JSON.stringify({
-                                token: result.data.jwt,
-                                user: result.data.user
-                            })
-                        );
+                        console.log(result.data)
 
                     } catch (err) {
                         console.log(err)
                     }
                 },
             }),
-            register: builder.mutation<AuthResponse, RegisterUserRequest>({
-                query: (body) => ({
-                    url: '/register',
-                    method: "POST",
-                    body: body
-                }),
+            register: builder.mutation<UserResponse, RegisterRequest & {file?: File}>({
+                query: ({file, ...content}) => {
+
+                    const formData = new FormData();
+                    formData.append("content", JSON.stringify(content))
+                    formData.append("file", file ? file : '');
+
+                    return ({
+                        url: '/register',
+                        method: "POST",
+                        body: formData
+                    })
+                },
                 async onQueryStarted(_, {queryFulfilled}) {
                     try {
                         const result = await queryFulfilled;
 
-                        localStorage.setItem(
-                            "auth",
-                            JSON.stringify({
-                                token: result.data.jwt,
-                                user: result.data.user
-                            })
-                        );
-
+                        console.log(result)
                     } catch (err) {
                         console.log(err)
                     }

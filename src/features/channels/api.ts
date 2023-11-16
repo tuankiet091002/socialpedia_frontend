@@ -4,44 +4,65 @@ import {
     ChannelQueryRequest,
     ChannelResponse,
     ChannelUpdateRequest,
-} from "@features/channels/types.ts";
+} from "@features/channels/types";
+import {Page} from "../../types.ts";
+import {unionArray} from "@utils/unionArray.ts";
 
 export const channelApi = createApi({
-    reducerPath: "group",
-    tagTypes: ["Group"],
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3000/group'}),
+    reducerPath: "channel",
+    tagTypes: ["Channel"],
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost/channel'}),
     endpoints: (builder) => ({
-        getGroups: builder.query<ChannelResponse[], ChannelQueryRequest>({
+        getChannels: builder.query<Page<ChannelResponse>, ChannelQueryRequest>({
             query: (query) => ({
-                url: "/",
+                url: "",
                 method: "GET",
                 params: query
             }),
-            providesTags: (result) => !result ? [{type: 'Group', id: "LIST"}] :
-                [...result.map(({id}) => ({type: 'Group' as const, id})), {type: 'Group', id: "LIST"}]
+            providesTags: (result) => !result ? [{type: 'Channel', id: "DUMMY"}] :
+                [...result.content.map(({id}) => ({type: 'Channel' as const, id})), {type: 'Channel', id: "DUMMY"}],
+            serializeQueryArgs: ({endpointName, queryArgs}) => ({endpointName, name: queryArgs.name}),
+            merge: (currentCache, newItems) => {
+                if (newItems.content.length > 0) {
+                    currentCache.content.push(...newItems.content)
+                    currentCache.number = newItems.number
+                    currentCache.first = newItems.first
+                    currentCache.last = newItems.last
+                }
+            },
+            forceRefetch({currentArg, previousArg}) {
+                return currentArg !== previousArg
+            },
         }),
-        createGroup: builder.mutation<ChannelResponse, ChannelCreateRequest>({
+        getOneChannel: builder.query<ChannelResponse, number>({
+            query: (id) => ({
+                url: `/${id}`,
+                method: "GET",
+            }),
+            providesTags: (result) => [{type: 'Channel', id: result ? result.id : "DUMMY"}]
+        }),
+        createChannel: builder.mutation<ChannelResponse, ChannelCreateRequest>({
             query: (body) => ({
                 url: "/",
                 method: "GET",
                 body
             }),
-            invalidatesTags: [{type: "Group", id: 'LIST'}]
+            invalidatesTags: [{type: "Channel", id: 'DUMMY'}]
         }),
-        updateGroup: builder.mutation<ChannelResponse, ChannelUpdateRequest>({
+        updateChannel: builder.mutation<ChannelResponse, ChannelUpdateRequest>({
             query: (body) => ({
                 url: "/",
                 method: "PUT",
                 body
             }),
-            invalidatesTags: (result) => result ? [{type: "Group", id: result.id}] : [{type: "Group", id: "LIST"}]
+            invalidatesTags: (result) => result ? [{type: "Channel", id: result.id}] : [{type: "Channel", id: "DUMMY"}]
         }),
-        deleteGroup: builder.mutation<void, string>({
+        deleteChannel: builder.mutation<void, string>({
             query: (query) => ({
                 url: `/${query}`,
                 method: "DELETE",
             }),
-            invalidatesTags: [{type: "Group", id: "LIST"}]
+            invalidatesTags: [{type: "Channel", id: "DUMMY"}]
         }),
 
     }),
@@ -50,9 +71,10 @@ export const channelApi = createApi({
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const {
-    useGetGroupsQuery,
-    useCreateGroupMutation,
-    useUpdateGroupMutation,
-    useDeleteGroupMutation
+    useGetChannelsQuery,
+    useGetOneChannelQuery,
+    useCreateChannelMutation,
+    useUpdateChannelMutation,
+    useDeleteChannelMutation
 } = channelApi
 

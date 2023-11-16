@@ -16,7 +16,7 @@ type ModalProps = {
 };
 
 export const Modal = ({title, id, children, variant}: ModalProps) => {
-    console.log("Child rendered")
+
     return (<div className={clsx("modal fade", variant)} id={id} tabIndex={-1}>
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">

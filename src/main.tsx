@@ -23,7 +23,8 @@ const store = configureStore({
         [channelApi.reducerPath]: channelApi.reducer
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(authApi.middleware, messageApi.middleware, channelApi.middleware)
+        getDefaultMiddleware().concat(authApi.middleware, messageApi.middleware, channelApi.middleware),
+    devTools: true
 })
 setupListeners(store.dispatch)
 

@@ -21,7 +21,7 @@ export const FieldWrapper = (props: FieldWrapperProps) => {
                 {label}
             </label>
             {error?.message && (
-                <p className="text-left ">
+                <p className="text-left">
                     <small className="form-text text-danger ">
                         {error.message}
                     </small>

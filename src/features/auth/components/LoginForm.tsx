@@ -2,25 +2,24 @@ import {z} from "zod";
 import {Form, InputField} from "@components/Form";
 import {Link} from "react-router-dom";
 import {Button} from "@components/Elements";
+import {LoginRequest, useLoginMutation} from "@features/auth";
 
 const schema = z.object({
     email: z.string().min(1, 'Email is required.').email('Wrong email format.'),
-    password: z.string().min(6, 'Password must at least 6 character.')
+    password: z.string().min(1, 'Password must at least 6 character.')
 })
-
-type LoginValues = {
-    email: string,
-    password: string
-}
 
 type LoginFormProps = {
     onSuccess: () => void;
 };
 
 export const LoginForm = ({onSuccess}: LoginFormProps) => {
+    const [login] = useLoginMutation();
+
     return (<div>
-        <Form<LoginValues, typeof schema>
-            onSubmit={async () => {
+        <Form<LoginRequest, typeof schema>
+            onSubmit={async (values: LoginRequest) => {
+                login(values);
                 onSuccess();
             }}
             schema={schema}

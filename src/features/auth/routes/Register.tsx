@@ -3,6 +3,6 @@ import {RegisterForm} from "@features/auth/components/RegisterForm.tsx";
 
 export const Register = () => (
     <AuthLayout title="Register Form">
-        <RegisterForm/>
+        <RegisterForm onSuccess={() => console.log("Success")}/>
     </AuthLayout>
 )

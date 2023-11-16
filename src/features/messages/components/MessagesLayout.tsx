@@ -1,6 +1,6 @@
 import {ContentLayout} from "@components/Layout";
 import {Outlet} from "react-router-dom";
-import {ChannelColumn} from "@features/channels/components/ChannelColumn.tsx";
+import {ChannelColumn} from "@features/channels/components";
 
 type MessagesLayoutProps = {
     title: string;

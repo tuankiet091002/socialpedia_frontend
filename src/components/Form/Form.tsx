@@ -10,6 +10,7 @@ type FormProps<TFormValues extends Record<string, unknown>, Schema> = {
     options?: UseFormProps<TFormValues>;
     id?: string;
     schema?: Schema;
+    enctype?: string;
 };
 
 export const Form = <
@@ -22,6 +23,7 @@ export const Form = <
       options,
       id,
       schema,
+      enctype
   }: FormProps<TFormValues, Schema>) => {
     const methods = useForm<TFormValues>({...options, resolver: schema && zodResolver(schema)});
     return (
@@ -29,6 +31,7 @@ export const Form = <
             className={className}
             onSubmit={methods.handleSubmit(onSubmit)}
             id={id}
+            encType={enctype}
         >
             {children(methods)}
         </form>

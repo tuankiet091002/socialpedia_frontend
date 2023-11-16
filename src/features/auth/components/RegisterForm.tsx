@@ -2,27 +2,40 @@ import {z} from "zod";
 import {Form, InputField} from "@components/Form";
 import {Button} from "@components/Elements";
 import {Link} from "react-router-dom";
+import {RegisterRequest, ROLES, useRegisterMutation} from "@features/auth";
+import {SelectField} from "@components/Form/SelectField.tsx";
+import {ChangeEvent, useState} from "react";
 
 const schema = z.object({
     email: z.string().min(1, 'Email is required.').email('Wrong email format.'),
     name: z.string().min(1, 'Name is required'),
-    password: z.string().min(6, 'Password must at least 6 character.'),
+    password: z.string().min(1, 'Password is required.'),
+    phone: z.string().regex(new RegExp("^0\\d{9}$"), "Phone must start with 0 and have 10 characters."),
+    dob: z.preprocess((value) => new Date(value ? z.string().parse(value) : 0).toLocaleDateString('en-GB'), z.string().min(1, 'Date is required.')),
+    role: z.string(),
+    gender: z.preprocess((value) => z.string().parse(value) == "true", z.boolean()),
 })
-
-type RegisterValues = {
-    email: string,
-    name: string,
-    password: string
-}
 
 type RegisterFormProp = {
     onSuccess: () => void;
 };
 
 export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
+    const [register] = useRegisterMutation();
+
+    const [file, setFile] = useState<File>();
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+
     return (<div>
-        <Form<RegisterValues, typeof schema>
-            onSubmit={async () => {
+        <Form<RegisterRequest, typeof schema>
+            onSubmit={async (value: RegisterRequest) => {
+                register({...value, file});
                 onSuccess();
             }}
             schema={schema}
@@ -50,8 +63,51 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                         error={formState.errors['password']}
                         registration={register('password')}
                     />
+                    <InputField
+                        id="registerPhone"
+                        type="text"
+                        label="Phone Number"
+                        error={formState.errors['phone']}
+                        registration={register('phone')}
+                    />
+                    <InputField
+                        id="registerDob"
+                        type="date"
+                        label="Date of Birth"
+                        error={formState.errors['dob']}
+                        registration={register('dob')}
+                    />
+                    <SelectField
+                        id="registerRole"
+                        label="Role"
+                        error={formState.errors['role']}
+                        registration={register('role')}
+                        options={Object.keys(ROLES).map(
+                            role => ({
+                                label: role.toString(),
+                                value: ROLES[role as keyof typeof ROLES]
+                            })
+                        )
+                        }
+                    />
+                    <SelectField
+                        id="regiserGender"
+                        label="Gender"
+                        error={formState.errors['gender']}
+                        registration={register('gender')}
+                        options={[
+                            {label: "Male", value: "true"},
+                            {label: "Female", value: "false"}
+                        ]}
+                    />
+                    <input
+                        id="registerAvatar"
+                        type="file"
+                        className="form-control"
+                        onChange={handleFileChange}
+                    />
                     <div className="p-3 d-flex align-items-center justify-content-center">
-                        <Button type="submit" className="w-full">
+                        <Button type="submit">
                             Register
                         </Button>
                     </div>
