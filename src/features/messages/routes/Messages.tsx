@@ -8,7 +8,7 @@ export const Messages = () => {
             <div className="card-header d-flex justify-content-between align-items-center p-3" style={{height: '80px'}}>
                 <ChatTitle/>
             </div>
-            <div className="card-body p-2 overflow-scroll" style={{height: "calc(100vh - 217px)"}}>
+            <div className="card-body p-2" style={{height: "calc(100vh - 217px)"}}>
                 <MessageList/>
             </div>
             <div

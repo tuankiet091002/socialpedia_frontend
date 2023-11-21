@@ -6,9 +6,7 @@ import {
     MessageUpdateRequest
 } from "@features/messages/types";
 import {Page} from "../../types.ts";
-import {unionArray} from "@utils/unionArray.ts";
-import {ChannelResponse} from "@features/channels";
-
+import {sendToChannel} from "@utils/socketMessage.ts";
 
 export const messageApi = createApi({
     reducerPath: "message",
@@ -23,24 +21,6 @@ export const messageApi = createApi({
             }),
             providesTags: (result) => !result ? [{type: 'Message', id: "DUMMY"}] :
                 [...result.content.map(({id}) => ({type: 'Message' as const, id})), {type: 'Message', id: "DUMMY"}],
-            serializeQueryArgs: ({endpointName, queryArgs}) => ({
-                endpointName,
-                channel: queryArgs.channel,
-                content: queryArgs.content
-            }),
-            merge: (currentCache, newItems) => {
-                if (newItems.content.length > 0) {
-                    currentCache.content = unionArray<MessageResponse>(currentCache.content, newItems.content,
-                        (a, b) => a.id === b.id);
-                    currentCache.number = newItems.number
-                    currentCache.first = newItems.first
-                    currentCache.last = newItems.last
-                }
-            },
-            forceRefetch({currentArg, previousArg}) {
-                // compare two object content wise
-                return JSON.stringify(currentArg) !== JSON.stringify(previousArg)
-            },
         }),
         createMessage: builder.mutation<MessageResponse, MessageCreateRequest>({
             query: (body) => ({
@@ -48,7 +28,15 @@ export const messageApi = createApi({
                 method: "POST",
                 body
             }),
-            invalidatesTags: [{type: "Message", id: 'DUMMY'}]
+            async onQueryStarted(arg, {queryFulfilled}) {
+                try {
+                    await queryFulfilled;
+                    sendToChannel(arg.channelId)
+
+                } catch (err) {
+                    console.log(err)
+                }
+            },
         }),
         updateMessage: builder.mutation<MessageResponse, MessageUpdateRequest>({
             query: (body) => ({

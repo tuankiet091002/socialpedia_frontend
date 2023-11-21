@@ -5,13 +5,7 @@ export type Page<T> = {
     "totalPages": number,
     "size": number,
     "number": number,
-    "sort": {
-        "empty": boolean,
-        "sorted": boolean,
-        "unsorted": boolean
-    },
     "first": boolean,
-    "numberOfElements": number,
     "empty": boolean
 }
 
@@ -19,4 +13,14 @@ export type ResourceEntity = {
     id: number,
     filename: string,
     url: string
+}
+
+export type SocketMessage = {
+    type: SocketType,
+    content: string,
+    sender: string,
+}
+
+export enum SocketType {
+    CHAT, JOIN, LEAVE
 }

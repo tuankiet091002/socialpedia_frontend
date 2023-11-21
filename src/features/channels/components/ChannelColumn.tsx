@@ -4,10 +4,11 @@ import {ChannelAdd} from "@features/channels/components/ChannelAdd.tsx";
 import {ChannelQueryRequest, useGetChannelsQuery} from "@features/channels";
 import {useEffect, useRef, useState} from "react";
 
+const INITIAL_PAGE = 3
 export const ChannelColumn = () => {
     //// SETTING VARIABLE
     // default query state without name field
-    const initialState = {pageNo: 0, pageSize: 3, orderBy: "id" as const, orderDirection: "ASC"}
+    const initialState = {pageNo: 0, pageSize: INITIAL_PAGE, orderBy: "id" as const, orderDirection: "ASC"}
     const [query, setQuery] = useState<ChannelQueryRequest>(initialState)
     // variable use for search
     const [name, setName] = useState<string | undefined>(undefined)
@@ -36,7 +37,7 @@ export const ChannelColumn = () => {
                 const isNearBottom = scrollTop + clientHeight >= scrollHeight;
 
                 if (data && isNearBottom && !data.last) {
-                    setQuery(query => ({...query, pageNo: query.pageNo + 1}))
+                    setQuery(query => ({...query, pageSize: query.pageSize + INITIAL_PAGE}))
                 }
             }
             listScrollElement.addEventListener("scroll", onScroll);
