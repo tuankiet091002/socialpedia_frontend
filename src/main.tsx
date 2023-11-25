@@ -11,6 +11,7 @@ import {Provider} from 'react-redux'
 import {authApi} from "@features/auth";
 import {messageApi} from "@features/messages";
 import {channelApi} from "@features/channels";
+import {userApi} from "@features/users";
 import {setupListeners} from "@reduxjs/toolkit/query";
 
 export * from './routes';
@@ -20,10 +21,15 @@ const store = configureStore({
     reducer: {
         [authApi.reducerPath]: authApi.reducer,
         [messageApi.reducerPath]: messageApi.reducer,
-        [channelApi.reducerPath]: channelApi.reducer
+        [channelApi.reducerPath]: channelApi.reducer,
+        [userApi.reducerPath]: userApi.reducer
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(authApi.middleware, messageApi.middleware, channelApi.middleware),
+        getDefaultMiddleware().concat(
+            authApi.middleware,
+            messageApi.middleware,
+            channelApi.middleware,
+            userApi.middleware),
     devTools: true
 })
 setupListeners(store.dispatch)

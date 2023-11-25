@@ -1,4 +1,4 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import {createApi} from '@reduxjs/toolkit/query/react'
 import {
     MessageCreateRequest,
     MessageQueryRequest,
@@ -7,15 +7,16 @@ import {
 } from "@features/messages/types";
 import {Page} from "../../types.ts";
 import {sendToChannel} from "@utils/socketMessage.ts";
+import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 
 export const messageApi = createApi({
     reducerPath: "message",
     tagTypes: ["Message"],
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost/message'}),
+    baseQuery: baseQueryWithReAuth,
     endpoints: (builder) => ({
         getMessages: builder.query<Page<MessageResponse>, MessageQueryRequest>({
             query: (query) => ({
-                url: "",
+                url: "/message",
                 method: "GET",
                 params: query
             }),
@@ -24,7 +25,7 @@ export const messageApi = createApi({
         }),
         createMessage: builder.mutation<MessageResponse, MessageCreateRequest>({
             query: (body) => ({
-                url: "",
+                url: "/message",
                 method: "POST",
                 body
             }),
@@ -40,7 +41,7 @@ export const messageApi = createApi({
         }),
         updateMessage: builder.mutation<MessageResponse, MessageUpdateRequest>({
             query: (body) => ({
-                url: "/",
+                url: "/message",
                 method: "PUT",
                 body
             }),
@@ -48,7 +49,7 @@ export const messageApi = createApi({
         }),
         deleteMessage: builder.mutation<void, string>({
             query: (query) => ({
-                url: `/${query}`,
+                url: `/message/${query}`,
                 method: "DELETE",
             }),
             invalidatesTags: [{type: "Message", id: "DUMMY"}]

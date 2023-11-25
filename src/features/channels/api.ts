@@ -1,25 +1,21 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import {
-    ChannelCreateRequest,
-    ChannelQueryRequest,
-    ChannelResponse,
-    ChannelUpdateRequest,
-} from "@features/channels/types";
+import {createApi} from '@reduxjs/toolkit/query/react'
+import {ChannelQueryRequest, ChannelResponse,} from "@features/channels/types";
 import {Page} from "../../types.ts";
 import {difference} from "@utils/arrayUtil.ts";
 import {subscribeToChannel} from "@utils/socketMessage.ts";
 import {messageApi} from "@features/messages";
+import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 
 const channelSet = new Set<ChannelResponse>();
 
 export const channelApi = createApi({
         reducerPath: "channel",
         tagTypes: ["Channel"],
-        baseQuery: fetchBaseQuery({baseUrl: 'http://localhost/channel'}),
+        baseQuery: baseQueryWithReAuth,
         endpoints: (builder) => ({
             getChannels: builder.query<Page<ChannelResponse>, ChannelQueryRequest>({
                 query: (query) => ({
-                    url: "",
+                    url: "/channel",
                     method: "GET",
                     params: query
                 }),
@@ -64,41 +60,11 @@ export const channelApi = createApi({
             }),
             getOneChannel: builder.query<ChannelResponse, number>({
                 query: (id) => ({
-                    url: `/${id}`,
+                    url: `/channel/${id}`,
                     method: "GET",
                 }),
                 providesTags: (result) => [{type: 'Channel', id: result ? result.id : "DUMMY"}]
             }),
-            createChannel:
-                builder.mutation<ChannelResponse, ChannelCreateRequest>({
-                    query: (body) => ({
-                        url: "/",
-                        method: "GET",
-                        body
-                    }),
-                    invalidatesTags: [{type: "Channel", id: 'DUMMY'}]
-                }),
-            updateChannel:
-                builder.mutation<ChannelResponse, ChannelUpdateRequest>({
-                    query: (body) => ({
-                        url: "/",
-                        method: "PUT",
-                        body
-                    }),
-                    invalidatesTags: (result) => result ? [{type: "Channel", id: result.id}] : [{
-                        type: "Channel",
-                        id: "DUMMY"
-                    }]
-                }),
-            deleteChannel:
-                builder.mutation<void, string>({
-                    query: (query) => ({
-                        url: `/${query}`,
-                        method: "DELETE",
-                    }),
-                    invalidatesTags: [{type: "Channel", id: "DUMMY"}]
-                }),
-
         }),
     }
 )
@@ -108,8 +74,5 @@ export const channelApi = createApi({
 export const {
     useGetChannelsQuery,
     useGetOneChannelQuery,
-    useCreateChannelMutation,
-    useUpdateChannelMutation,
-    useDeleteChannelMutation
 } = channelApi
 

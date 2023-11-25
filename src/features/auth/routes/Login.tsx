@@ -1,10 +1,15 @@
-import {AuthLayout} from "@features/auth/components/AuthLayout.tsx";
 import {LoginForm} from "@features/auth/components/LoginForm.tsx";
+import {useNavigate} from "react-router-dom";
+import {Head} from "@components/Elements/Head.tsx";
 
 export const Login = () => {
-    return (<AuthLayout title="Login Form">
+    const navigate = useNavigate();
+
+    return (<>
+        <Head title="Login"/>
+        <h3>Login</h3>
         <LoginForm onSuccess={() => {
-            console.log("Success")
+            navigate('/messages')
         }}/>
-    </AuthLayout>);
+    </>);
 }

@@ -21,7 +21,7 @@ type RegisterFormProp = {
 };
 
 export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
-    const [register] = useRegisterMutation();
+    const [register, result] = useRegisterMutation();
 
     const [file, setFile] = useState<File>();
 
@@ -106,8 +106,9 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                         className="form-control"
                         onChange={handleFileChange}
                     />
+                    {result.isError && result.error.data?.message}
                     <div className="p-3 d-flex align-items-center justify-content-center">
-                        <Button type="submit">
+                        <Button type="submit" isLoading={result.isLoading}>
                             Register
                         </Button>
                     </div>

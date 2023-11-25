@@ -1,4 +1,4 @@
-import {Modal} from "@components/Modal";
+import {Modal} from "@components/Elements";
 
 export const ChannelAdd = () => {
     return (<div style={{backgroundColor: "orange"}}>

@@ -14,13 +14,14 @@ type LoginFormProps = {
 };
 
 export const LoginForm = ({onSuccess}: LoginFormProps) => {
-    const [login] = useLoginMutation();
+    const [login, result] = useLoginMutation();
 
     return (<div>
         <Form<LoginRequest, typeof schema>
             onSubmit={async (values: LoginRequest) => {
                 login(values);
-                onSuccess();
+                if (result.isSuccess)
+                    onSuccess()
             }}
             schema={schema}
         >
@@ -40,8 +41,9 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
                         error={formState.errors['password']}
                         registration={register('password')}
                     />
+                    {result.isError && result.error.data?.message}
                     <div className="p-3 d-flex align-items-center justify-content-center">
-                        <Button type="submit" className="w-full">
+                        <Button type="submit" className="w-full" isLoading={result.isLoading}>
                             Log in
                         </Button>
                     </div>

@@ -1,6 +1,8 @@
 import {MainLayout} from '@components/Layout';
-import {MessagesRoutes} from "@features/messages/routes";
+import {namedImport} from "@utils/namedImport.ts";
 
+const {MessagesRoutes} = namedImport(() => import("@features/messages"), "MessagesRoutes");
+const {UsersRoutes} = namedImport(() => import("@features/users"), "UsersRoutes");
 
 export const protectedRoutes = [
     {
@@ -8,6 +10,7 @@ export const protectedRoutes = [
         element: <MainLayout/>,
         children: [
             {path: 'messages/*', element: <MessagesRoutes/>},
+            {path: 'users/*', element: <UsersRoutes/>},
         ],
     },
 ];

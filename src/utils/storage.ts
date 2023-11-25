@@ -13,13 +13,16 @@ const storage = {
         return JSON.parse(window.localStorage.getItem(`${STORAGE_PREFIX}user`) as string);
     },
     clearAll: () => {
-        window.localStorage.clear();
+        // window.localStorage.clear();
     },
     setLoginResponse: (value: LoginResponse) => {
         window.localStorage.clear();
         window.localStorage.setItem(`${STORAGE_PREFIX}token`, JSON.stringify(value.token));
         window.localStorage.setItem(`${STORAGE_PREFIX}refreshtoken`, JSON.stringify(value.refreshToken));
         window.localStorage.setItem(`${STORAGE_PREFIX}user`, JSON.stringify(value.user));
+    },
+    setToken: (value: string) => {
+        window.localStorage.setItem(`${STORAGE_PREFIX}token`, JSON.stringify(value));
     },
 };
 

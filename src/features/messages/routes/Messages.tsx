@@ -1,6 +1,4 @@
-import {ChatTitle} from "@features/messages/components/ChatTitle.tsx";
-import {MessageList} from "@features/messages/components/MessageList.tsx";
-import {MessageInput} from "@features/messages/components/MessageInput.tsx";
+import {ChatTitle, MessageInput, MessageList} from "@features/messages/components";
 
 export const Messages = () => {
     return (
