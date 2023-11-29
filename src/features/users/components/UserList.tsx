@@ -1,4 +1,4 @@
-import {UserResponse} from "@features/users";
+import {UserResponse} from "@features/users/types";
 import {Table} from "@components/Elements/Table.tsx";
 import {Link} from "react-router-dom";
 import moment from "moment";
@@ -46,7 +46,7 @@ export const UserList = ({data}: UserListProps) => {
                     title: 'Role',
                     field: 'role',
                     Cell({entry: {role}}) {
-                        return <div className="text-capitalize">{role?.role}</div>
+                        return <div className="text-capitalize">{role?.role as string}</div>
                     }
                 },
             ]}

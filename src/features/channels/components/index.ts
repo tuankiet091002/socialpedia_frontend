@@ -1,5 +1,0 @@
-export * from "./ChannelItem.tsx"
-export * from "./ChannelAdd.tsx"
-export * from "./ChannelColumn.tsx"
-export * from "./ChannelList.tsx"
-export * from "./ChannelColumnHeader.tsx"

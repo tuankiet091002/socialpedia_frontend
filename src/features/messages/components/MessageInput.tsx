@@ -1,6 +1,6 @@
 import {FormEvent} from "react";
 import {useParams} from "react-router-dom";
-import {useCreateMessageMutation} from "@features/messages";
+import {useCreateMessageMutation} from "@features/messages/api.ts";
 
 export const MessageInput = () => {
     const {channelId} = useParams();

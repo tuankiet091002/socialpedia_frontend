@@ -1,6 +1,9 @@
 import {useRoutes} from "react-router-dom";
-import {Messages} from "@features/messages/routes/Messages.tsx";
-import {MessagesLayout} from "@features/messages/components";
+
+import {MessagesLayout} from "@features/messages/components/MessagesLayout.tsx";
+import {namedImport} from "@utils/namedImport.ts";
+
+const {Messages} = namedImport(() => import("./Messages.tsx"), "Messages");
 
 export const MessagesRoutes = () => {
 

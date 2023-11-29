@@ -2,18 +2,19 @@ import {
     useAddFriendMutation,
     useDeleteFriendMutation,
     useGetOneUserQuery,
-    UserProfileUpdateRequest,
-    UserResponse,
     useUpdateUserMutation
-} from "@features/users";
+} from "@features/users/api";
 import {useParams} from "react-router-dom";
-import {Avatar, Button} from "@components/Elements";
 import {z} from "zod";
-import {Form, InputField} from "@components/Form";
 import {SelectField} from "@components/Form/SelectField.tsx";
 import {useState} from "react";
 import {useAuth} from "@utils/useAuth.tsx";
 import {ErrorResponse} from "@src/types.ts";
+import {UserProfileUpdateRequest, UserResponse} from "@features/users/types";
+import {Avatar} from "@components/Elements/Avatar.tsx";
+import {Form} from "@components/Form/Form.tsx";
+import {InputField} from "@components/Form/InputField.tsx";
+import {Button} from "@components/Elements/Button.tsx";
 
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),

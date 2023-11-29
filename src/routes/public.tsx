@@ -1,7 +1,7 @@
 import {namedImport} from '@utils/namedImport.ts';
 import {AuthLayout} from "@features/auth/components/AuthLayout.tsx";
 
-const {AuthRoutes} = namedImport(() => import('@features/auth'), 'AuthRoutes');
+const {AuthRoutes} = namedImport(() => import('@features/auth/routes'), 'AuthRoutes');
 
 
 export const publicRoutes = [

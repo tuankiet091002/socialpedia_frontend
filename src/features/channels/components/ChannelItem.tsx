@@ -1,6 +1,7 @@
 import {ReactNode} from "react";
-import {ChannelResponse} from "@features/channels";
+
 import {Link} from "react-router-dom";
+import {ChannelResponse} from "@features/channels/types";
 
 type ChannelItemProps = {
     children?: ReactNode

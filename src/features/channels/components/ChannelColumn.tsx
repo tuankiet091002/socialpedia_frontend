@@ -1,8 +1,10 @@
 import {ChannelColumnHeader} from "@features/channels/components/ChannelColumnHeader.tsx";
 import {ChannelList} from "@features/channels/components/ChannelList.tsx";
 import {ChannelAdd} from "@features/channels/components/ChannelAdd.tsx";
-import {ChannelQueryRequest, useGetChannelsQuery} from "@features/channels";
+
 import {useEffect, useRef, useState} from "react";
+import {useGetChannelsQuery} from "@features/channels/api.ts";
+import {ChannelQueryRequest} from "@features/channels/types";
 
 const INITIAL_PAGE = 3
 export const ChannelColumn = () => {

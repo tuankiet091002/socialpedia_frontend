@@ -1,7 +1,8 @@
 import {useRoutes} from "react-router-dom";
+import {namedImport} from "@utils/namedImport.ts";
 
-import {Login} from './Login';
-import {Register} from './Register';
+const {Login} = namedImport(() => import("./Login.tsx"), "Login");
+const {Register} = namedImport(() => import("./Register.tsx"), "Register");
 
 export const AuthRoutes = () => {
     return useRoutes([

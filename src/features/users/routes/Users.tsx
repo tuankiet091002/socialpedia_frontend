@@ -1,6 +1,9 @@
-import {useGetUsersQuery, UserQueryRequest} from "@features/users";
+
 import {useState} from "react";
-import {UserList, UserPaging} from "@features/users/components";
+import {UserQueryRequest} from "@features/users/types";
+import {useGetUsersQuery} from "@features/users/api.ts";
+import {UserList} from "@features/users/components/UserList.tsx";
+import {UserPaging} from "@features/users/components/UserPaging.tsx";
 
 const INITIAL_PAGE = 5
 export const Users = () => {

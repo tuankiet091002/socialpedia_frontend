@@ -8,13 +8,11 @@ import './index.css'
 
 import {configureStore} from '@reduxjs/toolkit'
 import {Provider} from 'react-redux'
-import {authApi} from "@features/auth";
-import {messageApi} from "@features/messages";
-import {channelApi} from "@features/channels";
-import {userApi} from "@features/users";
+import {authApi} from "@features/auth/api.ts";
+import {channelApi} from "@features/channels/api.ts";
+import {userApi} from "@features/users/api.ts";
 import {setupListeners} from "@reduxjs/toolkit/query";
-
-export * from './routes';
+import {messageApi} from "@features/messages/api.ts";
 
 // reducer store config
 const store = configureStore({
@@ -42,6 +40,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <App/>
             </Provider>
         </HelmetProvider>
-
     </React.StrictMode>,
 )

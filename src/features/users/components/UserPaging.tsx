@@ -1,7 +1,8 @@
-import {Page} from "../../../types.ts";
-import {UserQueryRequest, UserResponse} from "@features/users";
+import {Page} from "@src/types.ts";
+
 import React from "react";
 import clsx from "clsx";
+import {UserQueryRequest, UserResponse} from "@features/users/types";
 
 type UserPagingProps = {
     data: Page<UserResponse>,

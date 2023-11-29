@@ -1,5 +1,0 @@
-export * from "./Message.tsx"
-export * from "./MessageInput.tsx"
-export * from "./ChatTitle.tsx"
-export * from "./MessagesLayout.tsx"
-export * from "./MessageList.tsx"

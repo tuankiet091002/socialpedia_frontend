@@ -3,7 +3,7 @@ import {ChannelQueryRequest, ChannelResponse,} from "@features/channels/types";
 import {Page} from "@src/types.ts";
 import {difference} from "@utils/arrayUtil.ts";
 import {subscribeToChannel} from "@utils/socketMessage.ts";
-import {messageApi} from "@features/messages";
+import {messageApi} from "@features/messages/api.ts";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 
 const channelSet = new Set<ChannelResponse>();

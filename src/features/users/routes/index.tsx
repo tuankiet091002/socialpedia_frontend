@@ -1,7 +1,10 @@
 import {useRoutes} from "react-router-dom";
-import {UserProfile} from "@features/users/routes/UserProfile.tsx";
-import {UsersLayout} from "@features/users/components";
-import {Users} from "@features/users/routes/Users.tsx";
+import {UsersLayout} from "@features/users/components/UsersLayout.tsx";
+import {namedImport} from "@utils/namedImport.ts";
+
+const {Users} = namedImport(() => import("./Users.tsx"), "Users");
+const {UserProfile} = namedImport(() => import("./UserProfile.tsx"), "UserProfile");
+
 
 export const UsersRoutes = () => {
     return useRoutes([{

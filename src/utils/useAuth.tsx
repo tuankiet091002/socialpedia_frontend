@@ -1,4 +1,4 @@
-import {useLazyGetOwnerQuery} from "@features/auth";
+import {useLazyGetOwnerQuery} from "@features/auth/api.ts";
 import {useCallback, useEffect} from "react";
 
 export const useAuth = () => {

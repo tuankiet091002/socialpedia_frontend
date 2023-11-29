@@ -11,7 +11,7 @@ export const ContentLayout = ({title, children, navbar}: ContentLayoutProps) => 
     return (
         <>
             <Head title={title}/>
-            <div className="container-fluid row g-0 w-100 h-100" style={{paddingLeft: '4.5rem'}}>
+            <div className="row g-0">
                 <div className="col-3" style={{backgroundColor: 'red'}}>
                     {navbar}
                 </div>

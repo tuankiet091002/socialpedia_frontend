@@ -1,8 +1,9 @@
-import {MainLayout} from '@components/Layout';
-import {namedImport} from "@utils/namedImport.ts";
 
-const {MessagesRoutes} = namedImport(() => import("@features/messages"), "MessagesRoutes");
-const {UsersRoutes} = namedImport(() => import("@features/users"), "UsersRoutes");
+import {namedImport} from "@utils/namedImport.ts";
+import {MainLayout} from "@components/Layout/MainLayout";
+
+const {MessagesRoutes} = namedImport(() => import("@features/messages/routes"), "MessagesRoutes");
+const {UsersRoutes} = namedImport(() => import("@features/users/routes"), "UsersRoutes");
 
 
 export const protectedRoutes = [

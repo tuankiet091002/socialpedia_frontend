@@ -1,9 +1,13 @@
 import {z} from "zod";
-import {Form, InputField} from "@components/Form";
+
 import {Link} from "react-router-dom";
-import {Button} from "@components/Elements";
-import {LoginRequest, useLoginMutation} from "@features/auth";
+
 import {ErrorResponse} from "@src/types.ts";
+import {useLoginMutation} from "@features/auth/api.ts";
+import {LoginRequest} from "@features/auth/types";
+import {Form} from "@components/Form/Form.tsx";
+import {InputField} from "@components/Form/InputField.tsx";
+import {Button} from "@components/Elements/Button.tsx";
 
 const schema = z.object({
     email: z.string().min(1, 'Email is required.').email('Wrong email format.'),

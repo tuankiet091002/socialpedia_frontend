@@ -1,7 +1,8 @@
 import {createApi} from '@reduxjs/toolkit/query/react'
-import {LoginRequest, LoginResponse, RegisterRequest, UserResponse} from "@features/auth/types";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import storage from "@utils/storage.ts";
+import {LoginRequest, LoginResponse, RegisterRequest} from "@features/auth/types";
+import {UserResponse} from "@features/users/types";
 
 type RefreshTokenResponse = {
     accessToken: string,

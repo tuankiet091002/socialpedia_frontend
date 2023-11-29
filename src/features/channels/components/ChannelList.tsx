@@ -1,6 +1,6 @@
-import {ChannelResponse} from "@features/channels";
 import {ChannelItem} from "@features/channels/components/ChannelItem.tsx";
 import {Page} from "@src/types.ts";
+import {ChannelResponse} from "@features/channels/types";
 
 
 type ChannelListProps = {

@@ -1,7 +1,8 @@
-import {MessageQueryRequest, useGetMessagesQuery} from "@features/messages";
+import {useGetMessagesQuery} from "@features/messages/api.ts";
 import {useParams} from "react-router-dom";
 import {Message} from "@features/messages/components/Message.tsx";
 import {useEffect, useRef, useState} from "react";
+import {MessageQueryRequest} from "@features/messages/types";
 
 const INITIAL_PAGE = 3
 

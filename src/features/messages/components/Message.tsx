@@ -1,4 +1,4 @@
-import {MessageResponse} from "@features/messages";
+import {MessageResponse} from "@features/messages/types";
 import moment from "moment";
 
 type MessageProps = {

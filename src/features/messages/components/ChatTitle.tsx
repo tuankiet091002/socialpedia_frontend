@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {useGetOneChannelQuery} from "@features/channels";
+import {useGetOneChannelQuery} from "@features/channels/api.ts";
 
 export const ChatTitle = () => {
     const {channelId} = useParams();
