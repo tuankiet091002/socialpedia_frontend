@@ -21,7 +21,7 @@ export const MessageList = () => {
         // get value in map, or else fetch first page
         const pageSize = map.current.get(channelNum) || INITIAL_PAGE;
         setQuery(query => ({...query, channel: channelNum, pageSize: pageSize}))
-    }, [channelId]);
+    }, [channelNum]);
 
     const {data} = useGetMessagesQuery(query)
 

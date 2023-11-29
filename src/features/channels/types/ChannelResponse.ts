@@ -1,4 +1,4 @@
-import {ResourceEntity} from "../../../types.ts";
+import {ResourceEntity} from "@src/types.ts";
 import {MessageResponse} from "@features/messages";
 
 export type ChannelResponse = {

@@ -15,7 +15,7 @@ export const authApi = createApi({
         endpoints: (builder) => ({
             login: builder.mutation<LoginResponse, LoginRequest>({
                 query: (body) => ({
-                    url: '/user/login',
+                    url: '/auth/login',
                     method: "POST",
                     body
                 }),
@@ -38,7 +38,7 @@ export const authApi = createApi({
                     formData.append("file", file ? file : '');
 
                     return ({
-                        url: '/user/register',
+                        url: '/auth/register',
                         method: "POST",
                         body: formData
                     })
@@ -46,7 +46,7 @@ export const authApi = createApi({
             }),
             refreshToken: builder.mutation<RefreshTokenResponse, string>({
                 query: (body) => ({
-                    url: '/user/refresh-token',
+                    url: '/auth/refresh-token',
                     method: "POST",
                     body: {refreshToken: body}
                 }),
@@ -61,10 +61,24 @@ export const authApi = createApi({
                     }
                 },
             }),
+            getOwner: builder.query<UserResponse, null>({
+                query: () => ({
+                    url: `/user/${storage.getUser().email}`,
+                    method: "GET",
+                }),
+                async onQueryStarted(_, {queryFulfilled}) {
+                    try {
+                        const result = await queryFulfilled
+                        storage.setUser(result.data)
+                    } catch (err) {
+                        console.log(err)
+                    }
+                }
+            }),
         }),
     }
 )
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const {useLoginMutation, useRegisterMutation} = authApi
+export const {useLoginMutation, useRegisterMutation, useLazyGetOwnerQuery} = authApi

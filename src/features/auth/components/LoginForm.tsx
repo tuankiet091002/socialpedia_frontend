@@ -3,6 +3,7 @@ import {Form, InputField} from "@components/Form";
 import {Link} from "react-router-dom";
 import {Button} from "@components/Elements";
 import {LoginRequest, useLoginMutation} from "@features/auth";
+import {ErrorResponse} from "@src/types.ts";
 
 const schema = z.object({
     email: z.string().min(1, 'Email is required.').email('Wrong email format.'),
@@ -16,12 +17,12 @@ type LoginFormProps = {
 export const LoginForm = ({onSuccess}: LoginFormProps) => {
     const [login, result] = useLoginMutation();
 
+    if (result.isSuccess) onSuccess();
+
     return (<div>
         <Form<LoginRequest, typeof schema>
             onSubmit={async (values: LoginRequest) => {
-                login(values);
-                if (result.isSuccess)
-                    onSuccess()
+                login(values)
             }}
             schema={schema}
         >
@@ -41,7 +42,7 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
                         error={formState.errors['password']}
                         registration={register('password')}
                     />
-                    {result.isError && result.error.data?.message}
+                    {result.isError && (result.error as { data: ErrorResponse }).data.message}
                     <div className="p-3 d-flex align-items-center justify-content-center">
                         <Button type="submit" className="w-full" isLoading={result.isLoading}>
                             Log in

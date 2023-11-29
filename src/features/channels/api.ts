@@ -1,6 +1,6 @@
 import {createApi} from '@reduxjs/toolkit/query/react'
 import {ChannelQueryRequest, ChannelResponse,} from "@features/channels/types";
-import {Page} from "../../types.ts";
+import {Page} from "@src/types.ts";
 import {difference} from "@utils/arrayUtil.ts";
 import {subscribeToChannel} from "@utils/socketMessage.ts";
 import {messageApi} from "@features/messages";

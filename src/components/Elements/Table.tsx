@@ -15,16 +15,14 @@ export const Table = <Entry extends { id: number }>({data, columns}: TableProps<
     if (!data?.length) {
         return (
             <div className="d-flex justify-content-center align-items-center">
-                {/*<ArchiveIcon className="w-16 h-16" />*/}
                 <h4>No Entries Found</h4>
             </div>
         );
     }
     return (
-        <table className="table table-striped">
+        <table className="table table-striped table-bordered">
             <thead className="bg-gray-50">
             <tr>
-                <th scope="col">#</th>
                 {columns.map((column, index) => (
                     <th key={column.title + index} scope="col">
                         {column.title}
@@ -33,11 +31,10 @@ export const Table = <Entry extends { id: number }>({data, columns}: TableProps<
             </tr>
             </thead>
             <tbody>
-            {data.map((entry, entryIndex) => (
-                <tr key={entry?.id || entryIndex}>
-                    <th scope="row">{entryIndex}</th>
+            {data.map((entry) => (
+                <tr key={entry?.id}>
                     {columns.map(({Cell, field, title}, columnIndex) => (
-                        <td key={title + columnIndex}>
+                        <td key={title + (entry?.id || columnIndex)}>
                             {Cell ? <Cell entry={entry}/> : entry[field] as string}
                         </td>
                     ))}

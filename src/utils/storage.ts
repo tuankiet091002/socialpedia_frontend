@@ -1,4 +1,4 @@
-import {LoginResponse} from "@features/auth";
+import {LoginResponse, UserResponse} from "@features/auth";
 
 const STORAGE_PREFIX = 'socialpedia_';
 
@@ -23,6 +23,9 @@ const storage = {
     },
     setToken: (value: string) => {
         window.localStorage.setItem(`${STORAGE_PREFIX}token`, JSON.stringify(value));
+    },
+    setUser: (value: UserResponse | undefined) => {
+        window.localStorage.setItem(`${STORAGE_PREFIX}user`, JSON.stringify(value));
     },
 };
 

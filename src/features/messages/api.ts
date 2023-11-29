@@ -5,7 +5,7 @@ import {
     MessageResponse,
     MessageUpdateRequest
 } from "@features/messages/types";
-import {Page} from "../../types.ts";
+import {Page} from "@src/types.ts";
 import {sendToChannel} from "@utils/socketMessage.ts";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 

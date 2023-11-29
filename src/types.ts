@@ -15,6 +15,13 @@ export type ResourceEntity = {
     url: string
 }
 
+export type ErrorResponse = {
+    timestamp: string;
+    status: number;
+    error: string;
+    message: string[]
+}
+
 export type SocketMessage = {
     type: SocketType,
     content: string,

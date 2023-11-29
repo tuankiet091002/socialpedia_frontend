@@ -1,8 +1,7 @@
 import {createApi} from "@reduxjs/toolkit/dist/query/react";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
-import {Page} from "../../types.ts";
-import {ChannelResponse} from "@features/channels";
-import {UserQueryRequest, UserResponse} from "@features/users/types";
+import {Page} from "@src/types.ts";
+import {UserProfileUpdateRequest, UserQueryRequest, UserResponse} from "@features/users/types";
 
 
 export const userApi = createApi({
@@ -19,13 +18,35 @@ export const userApi = createApi({
                 providesTags: (result) => !result ? [{type: 'User', id: "DUMMY"}] :
                     [...result.content.map(({id}) => ({type: 'User' as const, id})), {type: 'User', id: "DUMMY"}],
             }),
-            getOneUser: builder.query<ChannelResponse, number>({
-                query: (id) => ({
-                    url: `/user/${id}`,
+            getOneUser: builder.query<UserResponse, string>({
+                query: (email) => ({
+                    url: `/user/${email}`,
                     method: "GET",
                 }),
-                providesTags: (result) => [{type: 'User', id: result ? result.id : "DUMMY"}]
+                providesTags: (result) => [{type: 'User', id: result ? result.id : "DUMMY"}],
             }),
+            updateUser: builder.mutation<UserResponse, UserProfileUpdateRequest & { id: number }>({
+                query: (body) => ({
+                    url: `/user`,
+                    method: "PUT",
+                    body: body
+                }),
+                invalidatesTags: (_, __, {id}: { id: number }) => [{type: 'User', id: id}],
+            }),
+            addFriend: builder.mutation<null, number>({
+                query: (id) => ({
+                    url: `/user/${id}/friend`,
+                    method: "POST",
+                }),
+                invalidatesTags: (_, __, id) => [{type: 'User', id: id}],
+            }),
+            deleteFriend: builder.mutation<null, number>({
+                query: (id) => ({
+                    url: `/user/${id}/friend`,
+                    method: "DELETE",
+                }),
+                invalidatesTags: (_, __, id) => [{type: 'User', id: id}],
+            })
         }),
     }
 )
@@ -35,4 +56,7 @@ export const userApi = createApi({
 export const {
     useGetUsersQuery,
     useGetOneUserQuery,
+    useUpdateUserMutation,
+    useAddFriendMutation,
+    useDeleteFriendMutation
 } = userApi

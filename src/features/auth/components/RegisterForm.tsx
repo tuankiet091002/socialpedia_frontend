@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 import {RegisterRequest, ROLES, useRegisterMutation} from "@features/auth";
 import {SelectField} from "@components/Form/SelectField.tsx";
 import {ChangeEvent, useState} from "react";
+import {ErrorResponse} from "@src/types.ts";
 
 const schema = z.object({
     email: z.string().min(1, 'Email is required.').email('Wrong email format.'),
@@ -22,21 +23,19 @@ type RegisterFormProp = {
 
 export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
     const [register, result] = useRegisterMutation();
-
     const [file, setFile] = useState<File>();
+
+    if (result.isSuccess) onSuccess();
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setFile(e.target.files[0]);
         }
     };
-
-
     return (<div>
         <Form<RegisterRequest, typeof schema>
             onSubmit={async (value: RegisterRequest) => {
                 register({...value, file});
-                onSuccess();
             }}
             schema={schema}
         >
@@ -91,7 +90,7 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                         }
                     />
                     <SelectField
-                        id="regiserGender"
+                        id="registerGender"
                         label="Gender"
                         error={formState.errors['gender']}
                         registration={register('gender')}
@@ -106,7 +105,7 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                         className="form-control"
                         onChange={handleFileChange}
                     />
-                    {result.isError && result.error.data?.message}
+                    {result.isError && (result.error as { data: ErrorResponse }).data.message}
                     <div className="p-3 d-flex align-items-center justify-content-center">
                         <Button type="submit" isLoading={result.isLoading}>
                             Register

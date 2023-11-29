@@ -11,6 +11,5 @@ export const MessagesLayout = ({title}: MessagesLayoutProps) => {
         <ContentLayout title={title} navbar={<ChannelColumn/>}>
             <Outlet/>
         </ContentLayout>
-
     )
 }
