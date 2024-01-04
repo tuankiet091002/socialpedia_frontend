@@ -10,9 +10,10 @@ export type Page<T> = {
 }
 
 export type ResourceEntity = {
-    id: number,
-    filename: string,
-    url: string
+    id: number;
+    filename: string;
+    fileType: string;
+    url: string;
 }
 
 export type ErrorResponse = {
@@ -30,4 +31,19 @@ export type SocketMessage = {
 
 export enum SocketType {
     CHAT, JOIN, LEAVE
+}
+
+export enum PermissionAccessType {
+    NO_ACCESS = 1,
+    SELF = 2,
+    VIEW = 3,
+    CREATE = 4,
+    MODIFY = 5
+}
+
+export enum MessageStatusType {
+    ACTIVE = "active",
+    MODIFIED = "modified",
+    INACTIVE = "inactive",
+    PINNED = "pinned"
 }

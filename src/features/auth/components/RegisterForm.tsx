@@ -1,14 +1,14 @@
 import {z} from "zod";
 
-import {SelectField} from "@components/Form/SelectField.tsx";
+import {SelectField} from "@components/form/SelectField.tsx";
 import {ChangeEvent, useState} from "react";
 import {ErrorResponse} from "@src/types.ts";
 import {useRegisterMutation} from "@features/auth/api.ts";
-import {RegisterRequest, ROLES} from "@features/auth/types";
-import {Form} from "@components/Form/Form.tsx";
-import {InputField} from "@components/Form/InputField.tsx";
-import {Button} from "@components/Elements/Button.tsx";
+import {Form} from "@components/form/Form.tsx";
+import {InputField} from "@components/form/InputField.tsx";
+import {Button} from "@components/elements/Button.tsx";
 import {Link} from "react-router-dom";
+import {RegisterRequest} from "@features/auth/types/RegisterRequest.ts";
 
 const schema = z.object({
     email: z.string().min(1, 'Email is required.').email('Wrong email format.'),
@@ -16,8 +16,7 @@ const schema = z.object({
     password: z.string().min(1, 'Password is required.'),
     phone: z.string().regex(new RegExp("^0\\d{9}$"), "Phone must start with 0 and have 10 characters."),
     dob: z.preprocess((value) => new Date(value ? z.string().parse(value) : 0).toLocaleDateString('en-GB'), z.string().min(1, 'Date is required.')),
-    role: z.string(),
-    gender: z.preprocess((value) => z.string().parse(value) == "true", z.boolean()),
+    gender: z.enum(['true', 'false']),
 })
 
 type RegisterFormProp = {
@@ -78,19 +77,6 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                         label="Date of Birth"
                         error={formState.errors['dob']}
                         registration={register('dob')}
-                    />
-                    <SelectField
-                        id="registerRole"
-                        label="Role"
-                        error={formState.errors['role']}
-                        registration={register('role')}
-                        options={Object.keys(ROLES).map(
-                            role => ({
-                                label: role.toString(),
-                                value: ROLES[role as keyof typeof ROLES]
-                            })
-                        )
-                        }
                     />
                     <SelectField
                         id="registerGender"

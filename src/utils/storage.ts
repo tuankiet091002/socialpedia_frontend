@@ -1,5 +1,5 @@
 import {LoginResponse} from "@features/auth/types";
-import {UserResponse} from "@features/users/types";
+import {UserResponse} from "src/features/user/types";
 
 const STORAGE_PREFIX = 'socialpedia_';
 

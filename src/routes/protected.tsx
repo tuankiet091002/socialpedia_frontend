@@ -1,18 +1,19 @@
-
 import {namedImport} from "@utils/namedImport.ts";
-import {MainLayout} from "@components/Layout/MainLayout";
+import {MainLayout} from "src/components/layout/MainLayout";
 
-const {MessagesRoutes} = namedImport(() => import("@features/messages/routes"), "MessagesRoutes");
-const {UsersRoutes} = namedImport(() => import("@features/users/routes"), "UsersRoutes");
+const {UserRoutes} = namedImport(() => import("src/features/user/routes"), "UserRoutes");
+const {InboxRoutes} = namedImport(() => import("src/features/inbox/routes"), "InboxRoutes");
+const {ChannelRoutes} = namedImport(() => import("src/features/channel/routes"), "ChannelRoutes");
 
 
 export const protectedRoutes = [
     {
-        path: '/*',
+        path: '*',
         element: <MainLayout/>,
         children: [
-            {path: 'messages/*', element: <MessagesRoutes/>},
-            {path: 'users/*', element: <UsersRoutes/>},
+            {path: 'user/*', element: <UserRoutes/>},
+            {path: 'inbox/*', element: <InboxRoutes/>},
+            {path: 'channel/*', element: <ChannelRoutes/>}
         ],
     },
 ];

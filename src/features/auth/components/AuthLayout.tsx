@@ -1,5 +1,5 @@
 import {Outlet} from "react-router-dom";
-import {SuspenseLayout} from "@components/Layout/SuspenseLayout.tsx";
+import {SuspenseLayout} from "@components/layout/SuspenseLayout.tsx";
 
 export const AuthLayout = () => {
 

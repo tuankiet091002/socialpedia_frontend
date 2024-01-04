@@ -9,10 +9,12 @@ import './index.css'
 import {configureStore} from '@reduxjs/toolkit'
 import {Provider} from 'react-redux'
 import {authApi} from "@features/auth/api.ts";
-import {channelApi} from "@features/channels/api.ts";
-import {userApi} from "@features/users/api.ts";
+import {channelApi} from "@features/channel/api.ts";
+import {inboxApi} from "@features/inbox/api.ts";
+import {userApi} from "@features/user/api.ts";
+import {notificationApi} from "@features/notification/api.ts";
 import {setupListeners} from "@reduxjs/toolkit/query";
-import {messageApi} from "@features/messages/api.ts";
+import {messageApi} from "@features/message/api.ts";
 
 // reducer store config
 const store = configureStore({
@@ -20,14 +22,18 @@ const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [messageApi.reducerPath]: messageApi.reducer,
         [channelApi.reducerPath]: channelApi.reducer,
-        [userApi.reducerPath]: userApi.reducer
+        [inboxApi.reducerPath]: inboxApi.reducer,
+        [userApi.reducerPath]: userApi.reducer,
+        [notificationApi.reducerPath]: notificationApi.reducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             authApi.middleware,
             messageApi.middleware,
             channelApi.middleware,
-            userApi.middleware),
+            inboxApi.middleware,
+            userApi.middleware,
+            notificationApi.middleware),
     devTools: true
 })
 setupListeners(store.dispatch)

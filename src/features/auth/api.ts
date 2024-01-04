@@ -1,17 +1,17 @@
 import {createApi} from '@reduxjs/toolkit/query/react'
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import storage from "@utils/storage.ts";
-import {LoginRequest, LoginResponse, RegisterRequest} from "@features/auth/types";
-import {UserResponse} from "@features/users/types";
 
-type RefreshTokenResponse = {
-    accessToken: string,
-    type: string
-}
-
+import {UserPasswordRequest} from "@features/auth/types/UserPasswordRequest.ts";
+import {LoginResponse} from "@features/auth/types/LoginResponse.ts";
+import {LoginRequest} from "@features/auth/types/LoginRequest.ts";
+import {RegisterRequest} from "@features/auth/types/RegisterRequest.ts";
+import {UserProfileRequest} from "@features/auth/types/UserProfileRequest.ts";
+import {UserResponse} from "src/features/user/types";
 
 export const authApi = createApi({
         reducerPath: 'auth',
+        tagTypes: ['Auth'],
         baseQuery: baseQueryWithReAuth,
         endpoints: (builder) => ({
             login: builder.mutation<LoginResponse, LoginRequest>({
@@ -30,8 +30,9 @@ export const authApi = createApi({
                         console.log(err)
                     }
                 },
+                invalidatesTags: ['Auth']
             }),
-            register: builder.mutation<UserResponse, RegisterRequest & { file?: File }>({
+            register: builder.mutation<void, RegisterRequest & { file?: File }>({
                 query: ({file, ...content}) => {
 
                     const formData = new FormData();
@@ -45,9 +46,9 @@ export const authApi = createApi({
                     })
                 },
             }),
-            refreshToken: builder.mutation<RefreshTokenResponse, string>({
+            refreshToken: builder.mutation<{ accessToken: string }, string>({
                 query: (body) => ({
-                    url: '/auth/refresh-token',
+                    url: '/auth/refreshToken',
                     method: "POST",
                     body: {refreshToken: body}
                 }),
@@ -62,6 +63,34 @@ export const authApi = createApi({
                     }
                 },
             }),
+            updateProfile: builder.mutation<void, UserProfileRequest>({
+                query: (body) => ({
+                    url: `/auth/profile`,
+                    method: "PUT",
+                    body
+                }),
+                invalidatesTags: ['Auth']
+            }),
+            updatePassword: builder.mutation<void, UserPasswordRequest>({
+                query: (body) => ({
+                    url: `/auth/password`,
+                    method: "PUT",
+                    body
+                }),
+            }),
+            updateAvatar: builder.mutation<void, File>({
+                query: (file) => {
+                    const formData = new FormData();
+                    formData.append("file", file);
+
+                    return ({
+                        url: `/auth/avatar`,
+                        method: "PUT",
+                        body: formData
+                    })
+                },
+                invalidatesTags: ['Auth']
+            }),
             getOwner: builder.query<UserResponse, null>({
                 query: () => ({
                     url: `/user/${storage.getUser().email}`,
@@ -74,7 +103,8 @@ export const authApi = createApi({
                     } catch (err) {
                         console.log(err)
                     }
-                }
+                },
+                providesTags: ['Auth'],
             }),
         }),
     }
@@ -82,4 +112,12 @@ export const authApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const {useLoginMutation, useRegisterMutation, useLazyGetOwnerQuery} = authApi
+export const {
+    useLoginMutation,
+    useRegisterMutation,
+    useUpdateProfileMutation,
+    useUpdateAvatarMutation,
+    useUpdatePasswordMutation,
+    useGetOwnerQuery,
+    useLazyGetOwnerQuery
+} = authApi
