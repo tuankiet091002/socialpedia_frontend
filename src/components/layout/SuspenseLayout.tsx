@@ -6,10 +6,11 @@ type SuspenseLayoutProps = {
 }
 
 export const SuspenseLayout = ({children}: SuspenseLayoutProps) => {
+    
     return (
         <Suspense
-            fallback={<div className="h-100 w-100 d-flex justify-content-center align-items-center">
-                <Spinner/>
+            fallback={<div className="flex h-full w-full items-center justify-center">
+                <Spinner size="xl"/>
             </div>
             }
         >

@@ -4,23 +4,22 @@ import {UseFormRegisterReturn} from 'react-hook-form';
 import {FieldWrapper, FieldWrapperPassThroughProps} from './FieldWrapper';
 
 type InputFieldProps = FieldWrapperPassThroughProps & {
-    type?: 'text' | 'email' | 'password' | 'date' | 'file';
+    type?: 'text' | 'email' | 'password' | 'date';
     className?: string;
     registration: Partial<UseFormRegisterReturn>;
 };
 
 export const InputField = (props: InputFieldProps) => {
-    const {type = 'text', id, label, className, registration, error} = props;
+    const {type = 'text', label, className, registration, error} = props;
     return (
-        <FieldWrapper label={label} error={error} id={id}>
+        <FieldWrapper label={label} error={error}>
             <input
-                id={id}
                 type={type}
                 className={clsx(
-                    'form-control',
+                    'appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none placeholder-gray-400 focus:border-blue-500',
+                    error && 'border-red-500',
                     className
                 )}
-                placeholder={label}
                 {...registration}
             />
         </FieldWrapper>

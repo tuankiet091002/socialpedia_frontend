@@ -31,34 +31,32 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
             {({register, formState}) => (
                 <>
                     <InputField
-                        id="loginEmail"
                         type="text"
                         label="Email Address"
                         error={formState.errors['email']}
                         registration={register('email')}
                     />
                     <InputField
-                        id="loginPassword"
                         type="password"
                         label="Password"
                         error={formState.errors['password']}
                         registration={register('password')}
                     />
                     {result.isError && (result.error as { data: ErrorResponse }).data.message}
-                    <div className="p-3 d-flex align-items-center justify-content-center">
-                        <Button type="submit" className="w-full" isLoading={result.isLoading}>
+                    <div className="flex justify-center">
+                        <Button type="submit" size="md" isLoading={result.isLoading} className="mt-3">
                             Log in
                         </Button>
                     </div>
                 </>
             )}
         </Form>
-        <div className="mt-2 flex items-center justify-end">
-            <div className="text-sm">
-                <Link to="../register" className="font-medium text-blue-600 hover:text-blue-500">
-                    Don't have account yet? Register
-                </Link>
-            </div>
-        </div>
+
+        <p className="text-end text-sm">
+            Don't have account yet?&nbsp;
+            <Link to="../register" className="font-medium text-blue-600 hover:text-blue-500">
+                Register
+            </Link>
+        </p>
     </div>)
 };

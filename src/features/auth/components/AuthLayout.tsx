@@ -1,26 +1,25 @@
 import {Outlet} from "react-router-dom";
 import {SuspenseLayout} from "@components/layout/SuspenseLayout.tsx";
+import img from "src/assets/small-team-discussing-ideas-2194220-0.svg"
 
 export const AuthLayout = () => {
 
     return (
-        <div className="container-fluid vh-100" style={{backgroundColor: 'red'}}>
-            <div className="row d-flex justify-content-center align-items-center h-100">
-                {/*<div className="col-4">*/}
-                {/*    <img className="img-fluid" src={logo} alt="logo"/>*/}
-                {/*</div>*/}
-                <div className="col-12 col-md-4">
-                    <div className="card">
-                        <div className="card-body p-5 text-center">
-                            <SuspenseLayout>
-                                <Outlet/>
-                            </SuspenseLayout>
-                        </div>
+        <div className="flex min-h-screen items-center justify-center bg-white">
+            <div className="h-5/6 w-10/12 rounded-md">
+                <div className="grid h-full grid-cols-12">
+                    <div
+                        className="col-span-12 h-full w-full rounded-2xl border border-gray-300 p-8 shadow-lg lg:col-span-5">
+                        <SuspenseLayout>
+                            <Outlet/>
+                        </SuspenseLayout>
                     </div>
+                    <img className="col-span-7 hidden h-full w-full object-fill lg:block" src={img}
+                         alt="Demonstration Image"/>
                 </div>
+
             </div>
         </div>
-
-    );
+    )
 };
 

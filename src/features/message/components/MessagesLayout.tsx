@@ -1,5 +1,5 @@
 import {Outlet} from "react-router-dom";
-import {ContentLayout} from "@components/layout/ContentLayout.tsx";
+import {TwoSectionLayout} from "@components/layout/TwoSectionLayout.tsx";
 import {ReactNode} from "react";
 
 type MessagesLayoutProps = {
@@ -9,8 +9,8 @@ type MessagesLayoutProps = {
 
 export const MessagesLayout = ({title, column}: MessagesLayoutProps) => {
     return (
-        <ContentLayout title={title} navbar={column}>
+        <TwoSectionLayout title={title} navbar={column}>
             <Outlet/>
-        </ContentLayout>
+        </TwoSectionLayout>
     )
 }

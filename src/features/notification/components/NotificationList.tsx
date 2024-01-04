@@ -2,8 +2,6 @@ import {useEffect, useRef, useState} from "react";
 import {NotificationQueryRequest} from "@features/notification/types/NotificationQueryRequest.ts";
 import {useGetNotificationListQuery} from "@features/notification/api.ts";
 import {NotificationItem} from "@features/notification/components/NotificationItem.tsx";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBell} from "@fortawesome/free-solid-svg-icons";
 
 const INITIAL_PAGE = 3
 
@@ -47,7 +45,7 @@ export const NotificationList = () => {
         <div className="dropdown">
             <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                <FontAwesomeIcon icon={faBell}/>
+                <div>dasd</div>
             </button>
             <ul className="dropdown-menu" ref={listScrollRef}>
                 {data?.content.map(item => <NotificationItem key={item.id} data={item}/>)}
