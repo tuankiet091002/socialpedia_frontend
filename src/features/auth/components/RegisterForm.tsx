@@ -100,7 +100,7 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                                 </svg>}
                             <label htmlFor="registerFile"
                                    className="flex justify-center items-center border border-gray-300 rounded-md 
-                                   shadow-sm font-medium focus:outline-none hover:opacity-80 bg-gray-300 px-3">
+                                   shadow-sm font-medium focus:outline-none hover:opacity-80 bg-gray-300 px-3 cursor-pointer">
                                 Select Image
                             </label>
                             {file && file.name}

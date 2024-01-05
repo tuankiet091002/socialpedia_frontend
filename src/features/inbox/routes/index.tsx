@@ -1,6 +1,6 @@
 import {useRoutes} from "react-router-dom";
-import {MessagesLayout} from "@features/message/components/MessagesLayout.tsx";
 import {namedImport} from "@utils/namedImport.ts";
+import {TwoSectionLayout} from "@components/layout/TwoSectionLayout.tsx";
 
 const {InboxColumn} = namedImport(() => import("../components/InboxColumn.tsx"), "InboxColumn");
 const {InboxChatPage} = namedImport(() => import("./InboxChatPage.tsx"), "InboxChatPage");
@@ -11,7 +11,7 @@ export const InboxRoutes = () => {
     return useRoutes([
             {
                 path: '*',
-                element: <MessagesLayout title={"Messages"} column={<InboxColumn/>}/>,
+                element: <TwoSectionLayout navbar={<InboxColumn/>}/>,
                 children: [
                     {path: ':locationId/profile', element: <InboxProfilePage/>},
                     {path: ':locationId', element: <InboxChatPage/>},

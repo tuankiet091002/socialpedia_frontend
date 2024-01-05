@@ -24,28 +24,30 @@ export const ChannelList = () => {
     const {data} = useGetChannelListQuery({pageNo: pageIndex, pageSize, orderBy: "id", orderDirection: "ASC"});
     // column data
     const columns = useMemo(() => [
-        columnHelper.accessor('name', {
-            header: () => 'Full Name',
-            cell: info => info.getValue(),
-        }),
-        columnHelper.accessor("avatar", {
-            header: () => 'Avatar',
-            cell: info => <span>{info.getValue().filename}</span>,
-            footer: info => info.column.id,
+        columnHelper.accessor(row => ({name: row.name, avatar: row.avatar}), {
+            id: 'name',
+            header: () => 'Kênh',
+            cell: info => <p>
+                <img src={info.getValue().avatar?.url} className="mr-1 inline h-10 w-10" alt="Avatar"/>
+                {info.getValue().name}
+            </p>
         }),
         columnHelper.accessor('createdBy', {
-            header: () => 'Creator',
+            header: () => 'Người tạo',
             cell: info => <span>{info.getValue().name}</span>,
             footer: info => info.column.id,
         }),
-        columnHelper.accessor('createDate', {
-            header: () => "Created Date",
+        columnHelper.accessor('createdDate', {
+            header: () => "Ngày tạo",
             cell: info => <span>{moment(info.getValue()).fromNow()}</span>,
             footer: info => info.column.id,
         }),
         columnHelper.accessor('id', {
             header: () => "",
-            cell: info => <Link to={`/channels/${info.getValue()}/profile`}><a>View</a></Link>,
+            cell: info => <Link to={`/channels/${info.getValue()}/profile`}
+                                className="hover:text-blue-500">
+                Xem
+            </Link>,
             footer: info => info.column.id,
         }),
     ], [])
@@ -66,9 +68,9 @@ export const ChannelList = () => {
     if (!data) return null;
 
     return (
-        <div className="table table-striped border border-2">
+        <div className="w-full">
             <CustomTable table={table}/>
-            <div className="h-2"/>
+            <hr className="h-6"/>
             <Paginate table={table}/>
         </div>
     )

@@ -11,6 +11,6 @@ export type ChannelResponse = {
     avatar: ResourceEntity;
     latestMessage?: MessageResponse;
     createdBy: UserResponse;
-    createDate: string;
+    createdDate: string;
     channelMembers: ChannelMemberResponse[];
 }

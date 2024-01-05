@@ -1,19 +1,16 @@
-import {Head} from '@components/elements/Head.tsx'
 import {ReactNode} from "react";
+import {Outlet} from "react-router-dom";
 
-type ContentLayoutProps = {
-    title: string;
-    children: ReactNode
+type TwoSectionLayoutProps = {
     navbar: ReactNode
 };
 
-export const TwoSectionLayout = ({title, children, navbar}: ContentLayoutProps) => {
+export const TwoSectionLayout = ({navbar}: TwoSectionLayoutProps) => {
     return (
         <>
-            <Head title={title}/>
             <div className="grid h-full grid-cols-[250px_auto]">
                 {navbar}
-                {children}
+                <Outlet/>
             </div>
         </>
     );

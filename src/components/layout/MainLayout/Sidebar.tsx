@@ -10,7 +10,7 @@ import {
 import {HiOutlineUserGroup, HiUserGroup} from "react-icons/hi";
 
 const linkList = [
-    {link: "/user", icon: IoPeopleCircleOutline, solidIcon: IoPeopleCircle},
+    {link: "/user/list", icon: IoPeopleCircleOutline, solidIcon: IoPeopleCircle},
     {link: "/channel/list", icon: IoListOutline, solidIcon: IoList},
     {link: "/inbox", icon: IoChatboxEllipsesOutline, solidIcon: IoChatboxEllipses},
     {link: "/channel", icon: HiOutlineUserGroup, solidIcon: HiUserGroup},
