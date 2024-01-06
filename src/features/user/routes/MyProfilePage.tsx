@@ -1,28 +1,25 @@
-import {useParams} from "react-router-dom";
-import {UserProfileForm} from "@features/user/components/UserProfilePage/UserProfileForm.tsx";
-import {useGetUserProfileQuery} from "@features/user/api.ts";
 import {UserAvatarForm} from "@features/user/components/UserProfilePage/UserAvatarForm.tsx";
+import {UserProfileForm} from "@features/user/components/UserProfilePage/UserProfileForm.tsx";
+import {useGetOwnerQuery} from "@features/auth/api.ts";
 import {IoPeopleCircleOutline} from "react-icons/io5";
 import {Button} from "@components/elements/Button.tsx";
-import {Head} from "@components/elements/Head.tsx";
+import {useState} from "react";
 
-export const UserProfilePage = () => {
+export const MyProfilePage = () => {
 
-    //// SETTING VARIABLES
-    // get user email
-    const {userEmail} = useParams();
+    const [edit, setEdit] = useState<boolean>(false);
 
     // main data
-    const {data} = useGetUserProfileQuery(decodeURIComponent(userEmail as string));
+    const {data} = useGetOwnerQuery(null);
     if (!data) return null;
 
-    return (<>
-        <Head title={`${data.name} | Profile`}/>
+
+    return (
         <div className="min-h-full w-full bg-white">
             <div
                 className="flex items-center border border-gray-300 bg-white px-3 text-start text-3xl shadow-2xl h-[50px]">
                 <IoPeopleCircleOutline className="mr-2 inline rounded-md bg-blue-500 text-white"/>
-                <span className="align-sub">User Profile</span>
+                <span className="align-sub">Hồ sơ cá nhân</span>
             </div>
             <div
                 className={`relative flex items-center justify-between px-6 py-3 h-[120px] lg:justify-center
@@ -32,12 +29,14 @@ export const UserProfilePage = () => {
 
             </div>
             <div className="flex items-center justify-end gap-4 bg-white px-5 shadow-2xl h-[50px]">
-                <Button type="button" className="w-[170px]">Nhắn tin</Button>
-                <Button type="button" className="w-[170px]">Thêm bạn</Button>
+                <Button type="button" className="w-[170px]"
+                        onClick={() => setEdit(true)} disabled={edit}>Sửa hồ sơ</Button>
+                <Button type="button" className="w-[170px]">Đổi mật khẩu</Button>
             </div>
             <div className="p-10">
-                <UserProfileForm data={data} edit={false}/>
+                <UserProfileForm data={data} edit={edit} setEdit={setEdit}/>
             </div>
+
         </div>
-    </>)
+    )
 }

@@ -8,10 +8,10 @@ import {Outlet} from "react-router-dom";
 export const MainLayout = () => {
 
     return (
-        <div className="w-100 h-screen">
+        <div className="h-screen w-100">
             <Header/>
             <Sidebar/>
-            <div className="w-100 h-[calc(100vh-68px)] lg:pl-[60px]">
+            <div className="w-100 h-[calc(100vh-68px)] lg:pl-[60px] overflow-scroll">
                 <SuspenseLayout>
                     <Outlet/>
                 </SuspenseLayout>

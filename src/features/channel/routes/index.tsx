@@ -10,12 +10,12 @@ const {ChannelProfilePage} = namedImport(() => import("./ChannelProfilePage.tsx"
 export const ChannelRoutes = () => {
     return useRoutes([
         {path: 'list', element: <ChannelListPage/>},
+        {path: ":locationId/profile", element: <ChannelProfilePage/>},
         {
-            path: '*',
+            path: ':locationId',
             element: <TwoSectionLayout navbar={<ChannelColumn/>}/>,
             children: [
-                {path: ":locationId/profile", element: <ChannelProfilePage/>},
-                {path: ":locationId", element: <ChannelChatPage/>},
+                {index: true, element: <ChannelChatPage/>},
             ]
         }]
     )

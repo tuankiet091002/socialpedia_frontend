@@ -1,14 +1,15 @@
-import {Avatar} from "@components/elements/Avatar.tsx";
 import {ChangeEvent, useState} from "react";
-import {Button} from "@components/elements/Button.tsx";
 import {useUpdateChannelAvatarMutation} from "@features/channel/api.ts";
 import {ChannelResponse} from "@features/channel/types/ChannelResponse.ts";
+import emptyAvatar from "@assets/empty avatar.webp"
 
 type ChannelAvatarFormProps = {
-    data: ChannelResponse
+    data: ChannelResponse;
+    edit: boolean
 }
 
-export const ChannelAvatarForm = ({data}: ChannelAvatarFormProps) => {
+export const ChannelAvatarForm = ({data, edit}: ChannelAvatarFormProps) => {
+
     const [updateChannelAvatar] = useUpdateChannelAvatarMutation();
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [file, setFile] = useState<File>();
@@ -25,13 +26,14 @@ export const ChannelAvatarForm = ({data}: ChannelAvatarFormProps) => {
         window.alert("Channel avatar update successfully.")
     }
 
-    return (<>
-        <Avatar src={isEdit && file ? URL.createObjectURL(file) : data.avatar?.url} size="md"/>
-        {isEdit ? <div>
-                <input type="file" className="form-control" onChange={handleChange}/>
-                <Button onClick={handleSubmit} disabled={!file}>Save change</Button>
-                <Button onClick={() => setIsEdit(false)}>Cancel</Button>
-            </div>
-            : <Button onClick={() => setIsEdit(true)}>Edit Image</Button>}
-    </>);
+    return (<div className="static left-[calc(50%-75px)] top-[20px] lg:absolute">
+        <img src={edit && isEdit && file ? URL.createObjectURL(file) : data.avatar?.url}
+             className="rounded-full border-white border-[5px] h-[150px]" alt={emptyAvatar}/>
+        {/*{isEdit ? <div>*/}
+        {/*        <input type="file" className="form-control" onChange={handleChange}/>*/}
+        {/*        <Button onClick={handleSubmit} disabled={!file}>Save change</Button>*/}
+        {/*        <Button onClick={() => setIsEdit(false)}>Cancel</Button>*/}
+        {/*    </div>*/}
+        {/*    : <Button onClick={() => setIsEdit(true)}>Edit Image</Button>}*/}
+    </div>);
 }

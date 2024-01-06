@@ -1,7 +1,6 @@
 import {InputField} from "@components/form/InputField.tsx";
 import {ErrorResponse} from "@src/types.ts";
 import {Button} from "@components/elements/Button.tsx";
-import {Link} from "react-router-dom";
 import {Form} from "@components/form/Form.tsx";
 import {z} from "zod";
 import {useState} from "react";
@@ -10,7 +9,8 @@ import {useUpdateChannelProfileMutation} from "@features/channel/api.ts";
 import {ChannelProfileRequest} from "@features/channel/types/ChannelProfileRequest.ts";
 
 type ChannelProfileFormProps = {
-    data: ChannelResponse
+    data: ChannelResponse;
+    edit: boolean;
 }
 
 const schema = z.object({
@@ -18,7 +18,8 @@ const schema = z.object({
     description: z.string().min(1, 'Description is required')
 })
 
-export const ChannelProfileForm = ({data}: ChannelProfileFormProps) => {
+export const ChannelProfileForm = ({data, edit}: ChannelProfileFormProps) => {
+
     const [updateChannelProfile, result] = useUpdateChannelProfileMutation();
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -39,31 +40,33 @@ export const ChannelProfileForm = ({data}: ChannelProfileFormProps) => {
             {({register, formState}) => (
                 <>
                     <InputField
-                        id="profileName"
                         type="text"
-                        label="Fullname"
+                        label="Fullname:"
                         error={formState.errors['name']}
                         registration={{...register('name'), disabled: !isEditing}}
+                        className="w-5/6 text-lg disabled:border-none"
                     />
                     <InputField
-                        id="profileDesc"
                         type="text"
-                        label="Description"
+                        label="Description:"
                         error={formState.errors['description']}
                         registration={{...register('description'), disabled: !isEditing}}
+                        className="w-5/6 text-lg disabled:border-none"
                     />
-                    {result.isError && (result.error as { data: ErrorResponse }).data.message}
-                    <div className="p-3 d-flex align-items-center justify-content-center">
-                        {isEditing && <Button type="submit" className="w-full" isLoading={result.isLoading}>
-                            Save profile
-                        </Button>}
-                        <Button type="button" className="w-full mx-2"
-                                onClick={() => setIsEditing((isEditing) => !isEditing)}>
-                            {isEditing ? "Cancel" : "Edit profile"}</Button>
-                        <Link to="/users/changePassword">
-                            <Button type="button" className="w-full mx-2">Change password</Button>
-                        </Link>
-                    </div>
+                    {result.isError && <span className="text-sm text-red-500">
+                        {(result.error as { data: ErrorResponse }).data.message}
+                    </span>}
+
+                    {edit && isEditing &&
+                        <div className="mt-5 flex items-center justify-center space-x-3">
+                            <Button type="submit" isLoading={result.isLoading}>
+                                Save
+                            </Button>
+                            <Button type="button" variant="danger"
+                                    onClick={() => setIsEditing(false)}>
+                                Cancel
+                            </Button>
+                        </div>}
                 </>
             )}
         </Form>

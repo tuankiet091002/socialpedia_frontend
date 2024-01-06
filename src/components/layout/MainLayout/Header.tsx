@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom";
-import avatar from "/src/assets/Logomark.svg"
+import avatar from "@assets/Logomark.svg"
+import emptyAvatar from "@assets/empty avatar.webp"
 import {NotificationList} from "@features/notification/components/NotificationList.tsx";
 import storage from "@utils/storage.ts";
 import {IoIosArrowDown} from "react-icons/io";
@@ -9,23 +10,25 @@ export const Header = () => {
     const user = storage.getUser()
     const [profileMenu, setProfileMenu] = useState<boolean>(false);
 
-    return (<nav className="border-gray-200 bg-white px-4 shadow-2xl py-2.5 dark:bg-gray-800 lg:px-6">
+    return (<nav className="border-gray-200 bg-blue-500 px-4 shadow-2xl py-2.5 dark:bg-gray-800 lg:px-6">
         <div className="mx-auto flex flex-wrap items-center justify-between">
             <Link to="/" className="flex items-center">
                 <img className="mr-3 h-10 w-10 rounded-full" src={avatar} alt="Rounded avatar"/>
-                <div className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">Socialpedia</div>
+                <div
+                    className="self-center whitespace-nowrap text-2xl font-semibold text-white dark:text-white">Socialpedia
+                </div>
             </Link>
 
             <div className="flex items-center">
                 <NotificationList/>
-                {user ? <div className="rounded-r-lg p-1 rounded-l-[25px] hover:bg-gray-300"
+                {user ? <div className="rounded-r-lg p-1 rounded-l-[25px] hover:bg-blue-300"
                              onClick={() => setProfileMenu((profileMenu) => !profileMenu)}>
-                        <img className="mr-3 inline-block h-10 w-10 rounded-full" src={user.avatar?.url}
-                             alt="Rounded avatar"/>
-                        <IoIosArrowDown className="inline text-xl"/>
+                        <img className="mr-3 inline-block h-10 w-10 rounded-full" src={user.avatar?.url} alt={emptyAvatar}/>
+                        <span className="mr-1 font-semibold text-white">{user.name}</span>
+                        <IoIosArrowDown className="inline text-xl text-white"/>
                         {profileMenu &&
-                            <ul className="fixed right-8 rounded-md border border-gray-300 bg-white p-1 w-[150px] mt-[8px]">
-                                <Link to="/user/list">
+                            <ul className="fixed right-8 z-40 rounded-md border border-gray-300 bg-white p-1 w-[150px] mt-[8px]">
+                                <Link to="/user/profile">
                                     <li className="rounded-md hover:bg-blue-500 hover:text-white">Trang cá nhân
                                     </li>
                                 </Link>
@@ -49,7 +52,7 @@ export const Header = () => {
                         </button>
                     </Link>}
                 <button data-collapse-toggle="mobile-menu" type="button"
-                        className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 
+                        className="inline-flex items-center p-2 ml-1 text-sm text-white rounded-lg lg:hidden hover:bg-gray-100
                         focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                         aria-controls="mobile-menu" aria-expanded="false">
                     <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

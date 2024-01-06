@@ -8,9 +8,10 @@ export const ChannelListPage = () => {
     return (<>
         <Head title="Channel List"/>
         <div className="h-full bg-red-200">
-            <div className="border border-gray-300 px-3 text-start text-3xl shadow-2xl">
+            <div
+                className="flex items-center border border-gray-300 bg-white px-3 text-start text-3xl shadow-2xl h-[50px]">
                 <IoPeopleCircleOutline className="mr-2 inline rounded-md bg-blue-500 text-white"/>
-                <span className="align-sub">Channel list</span>
+                <span className="align-sub">Channel List</span>
             </div>
             <div className="flex items-center border border-gray-300 px-3 text-start shadow-2xl h-[43px]">
                 <IoFilter className="mr-3 inline"/>

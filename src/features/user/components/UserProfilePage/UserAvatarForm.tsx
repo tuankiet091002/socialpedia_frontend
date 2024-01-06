@@ -1,7 +1,6 @@
-import {Avatar} from "@components/elements/Avatar.tsx";
 import {ChangeEvent, useState} from "react";
-import {Button} from "@components/elements/Button.tsx";
 import {useUpdateAvatarMutation} from "@features/auth/api.ts";
+import emptyAvatar from "@assets/empty avatar.webp"
 
 type AvatarFormProps = {
     defaultUrl: string
@@ -24,13 +23,14 @@ export const UserAvatarForm = ({defaultUrl}: AvatarFormProps) => {
         window.alert("Profile update successfully.")
     }
 
-    return (<>
-        <Avatar src={isEdit && file ? URL.createObjectURL(file) : defaultUrl} size="md"/>
-        {isEdit ? <div>
-                <input type="file" className="form-control" onChange={handleChange}/>
-                <Button onClick={handleSubmit} disabled={!file}>Save change</Button>
-                <Button onClick={() => setIsEdit(false)}>Cancel</Button>
-            </div>
-            : <Button onClick={() => setIsEdit(true)}>Edit Image</Button>}
-    </>);
+    return (<div className="static left-20 top-[20px] lg:absolute">
+        <img src={isEdit && file ? URL.createObjectURL(file) : defaultUrl}
+             className="rounded-full border-white border-[5px] h-[150px]" alt={emptyAvatar}/>
+        {/*{isEdit ? <div>*/}
+        {/*        <input type="file" className="form-control" onChange={handleChange}/>*/}
+        {/*        <Button onClick={handleSubmit} disabled={!file}>Save change</Button>*/}
+        {/*        <Button onClick={() => setIsEdit(false)}>Cancel</Button>*/}
+        {/*    </div>*/}
+        {/*    : <Button onClick={() => setIsEdit(true)}>Edit Image</Button>}*/}
+    </div>);
 }

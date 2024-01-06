@@ -24,21 +24,14 @@ export const UserList = () => {
     const {data} = useGetUserListQuery({pageNo: pageIndex, pageSize, orderBy: "id", orderDirection: "ASC"});
     // column data
     const columns = useMemo(() => [
-        columnHelper.accessor(row => ({name: row.name, avatar: row.avatar}), {
+        columnHelper.accessor(row => ({name: row.name, email: row.email, avatar: row.avatar}), {
             id: 'name',
             header: () => 'Người dùng',
-            cell: info => <p>
+            cell: info => <Link to={`/user/${encodeURIComponent(info.getValue().email).replace(/\./g, '%2E')}`}
+                                className="cursor-pointer hover:text-blue-500">
                 <img src={info.getValue().avatar?.url} className="mr-1 inline h-10 w-10" alt="Avatar"/>
                 {info.getValue().name}
-            </p>
-        }),
-        columnHelper.accessor("email", {
-            header: () => 'Email',
-            cell: info => <Link to={`./${encodeURIComponent(info.getValue()).replace(/\./g, '%2E')}`}
-                                className="cursor-pointer hover:text-blue-500">
-                {info.getValue()}
-            </Link>,
-            footer: info => info.column.id,
+            </Link>
         }),
         columnHelper.accessor('phone', {
             header: () => 'Số điện thoại',
@@ -52,7 +45,7 @@ export const UserList = () => {
         }),
         columnHelper.accessor('gender', {
             header: () => 'Giới tính',
-            cell: info => <span>{info.getValue() ? "Male" : "Female"}</span>,
+            cell: info => <span>{info.getValue() ? "Nam" : "Nữ"}</span>,
             footer: info => info.column.id,
         }),
         columnHelper.accessor('role', {
@@ -62,7 +55,7 @@ export const UserList = () => {
         }),
         columnHelper.accessor('id', {
             header: () => '',
-            cell: (info) => <span className="w-2 !text-xl text-center !font-bold">
+            cell: () => <span className="w-2 !text-xl text-center !font-bold">
                 <HiDotsVertical class="inline cursor-pointer hover:text-blue-500"/>
             </span>,
             footer: info => info.column.id,

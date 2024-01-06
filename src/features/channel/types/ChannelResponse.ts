@@ -8,6 +8,7 @@ export type ChannelResponse = {
     id: number;
     name: string;
     description: string;
+    memberNum: number;
     avatar: ResourceEntity;
     latestMessage?: MessageResponse;
     createdBy: UserResponse;
