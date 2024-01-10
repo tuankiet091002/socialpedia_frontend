@@ -1,5 +1,5 @@
 export type MessageQueryRequest = {
-    channel: number,
+    locationId: number,
     content?: string,
     pageNo: number,
     pageSize: number

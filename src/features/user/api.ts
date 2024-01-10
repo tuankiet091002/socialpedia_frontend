@@ -16,8 +16,8 @@ export const userApi = createApi({
                     method: "GET",
                     params: query
                 }),
-                providesTags: (result) => !result ? [{type: 'User', id: "DUMMY"}] :
-                    [...result.content.map(({id}) => ({type: 'User' as const, id})), {type: 'User', id: "DUMMY"}],
+                providesTags: (result) => !result ? [{type: "User", id: "LIST"}] :
+                    [...result.content.map(({id}) => ({type: "User" as const, id})), {type: "User", id: "LIST"}]
             }),
             getFriendList: builder.query<Page<UserResponse>, UserQueryRequest>({
                 query: (query) => ({
@@ -25,15 +25,15 @@ export const userApi = createApi({
                     method: "GET",
                     params: query
                 }),
-                providesTags: (result) => !result ? [{type: 'User', id: "DUMMY"}] :
-                    [...result.content.map(({id}) => ({type: 'User' as const, id})), {type: 'User', id: "DUMMY"}],
+                providesTags: (result) => !result ? [{type: "User", id: "LIST"}] :
+                    [...result.content.map(({id}) => ({type: "User" as const, id})), {type: "User", id: "LIST"}]
             }),
             getUserProfile: builder.query<UserResponse, string>({
                 query: (email) => ({
                     url: `/user/${email}`,
-                    method: "GET",
+                    method: "GET"
                 }),
-                providesTags: (result) => [{type: 'User', id: result ? result.id : "DUMMY"}],
+                providesTags: (result) => [{type: "User", id: result ? result.id : "LIST"}]
             }),
             updateUserRole: builder.mutation<void, UserRoleRequest>({
                 query: ({id, ...role}) => ({
@@ -41,46 +41,46 @@ export const userApi = createApi({
                     method: "PUT",
                     param: role
                 }),
-                invalidatesTags: (_, __, {id}: { id: number }) => [{type: 'User', id: id}],
+                invalidatesTags: (_, __, {id}: { id: number }) => [{type: "User", id: id}]
             }),
             disableUser: builder.mutation<void, number>({
                 query: (id) => ({
                     url: `/user/${id}`,
-                    method: "DELETE",
+                    method: "DELETE"
                 }),
-                invalidatesTags: (_, __, id) => [{type: 'User', id: id}],
+                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
             }),
             createFriendRequest: builder.mutation<void, number>({
                 query: (id) => ({
                     url: `/user/${id}/friend`,
-                    method: "POST",
+                    method: "POST"
                 }),
-                invalidatesTags: (_, __, id) => [{type: 'User', id: id}],
+                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
             }),
             acceptFriendRequest: builder.mutation<void, number>({
                 query: (id) => ({
                     url: `/user/${id}/friend/accept`,
-                    method: "PUT",
+                    method: "PUT"
                 }),
-                invalidatesTags: (_, __, id) => [{type: 'User', id: id}],
+                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
             }),
             rejectFriendRequest: builder.mutation<void, number>({
                 query: (id) => ({
                     url: `/user/${id}/friend/reject`,
-                    method: "PUT",
+                    method: "PUT"
                 }),
-                invalidatesTags: (_, __, id) => [{type: 'User', id: id}],
+                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
             }),
             unFriend: builder.mutation<void, number>({
                 query: (id) => ({
                     url: `/user/${id}/friend`,
-                    method: "DELETE",
+                    method: "DELETE"
                 }),
-                invalidatesTags: (_, __, id) => [{type: 'User', id: id}],
+                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
             })
-        }),
+        })
     }
-)
+);
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -94,4 +94,4 @@ export const {
     useAcceptFriendRequestMutation,
     useRejectFriendRequestMutation,
     useUnFriendMutation
-} = userApi
+} = userApi;

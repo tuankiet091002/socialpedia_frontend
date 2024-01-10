@@ -32,7 +32,7 @@ export const ChannelProfilePage = () => {
                 <div className="flex items-center justify-end gap-4 bg-white px-5 shadow-2xl h-[50px]">
                     <Button type="button" className="w-[170px]">Tham gia</Button>
                 </div>
-                <div className="p-10 grid grid-cols-[2fr_3fr] space-x-4">
+                <div className="grid p-10 grid-cols-[2fr_3fr] space-x-4">
                     <ChannelProfileForm data={data} edit={false}/>
                     <ChannelMemberForm data={data} edit={false}/>
                 </div>

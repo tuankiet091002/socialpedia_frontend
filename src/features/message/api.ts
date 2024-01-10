@@ -1,4 +1,4 @@
-import {createApi} from '@reduxjs/toolkit/query/react'
+import {createApi} from "@reduxjs/toolkit/query/react";
 import {Page} from "@src/types.ts";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import {MessageResponse} from "@features/message/types/MessageResponse.ts";
@@ -13,50 +13,54 @@ export const messageApi = createApi({
     baseQuery: baseQueryWithReAuth,
     endpoints: (builder) => ({
         getMessageFromChannel: builder.query<Page<MessageResponse>, MessageQueryRequest>({
-            query: (query) => ({
-                url: "/message",
+            query: ({locationId, ...content}) => ({
+                url: `/message/channel/${locationId}`,
                 method: "GET",
-                params: query
+                params: content
             }),
-            providesTags: (result) => !result ? [{type: 'Message', id: "DUMMY"}] :
-                [...result.content.map(({id}) => ({type: 'Message' as const, id})), {type: 'Message', id: "DUMMY"}],
+            providesTags: (result, _, {locationId}) => !result ? [{type: "Message", id: locationId + "_LIST"}] :
+                [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + "_" + id})),
+                    {type: "Message", id: locationId + "_LIST"}],
+            serializeQueryArgs: ({queryArgs, endpointName}) => {
+                return endpointName + "_" + queryArgs.locationId;
+            }
         }),
         getMessageFromInbox: builder.query<Page<MessageResponse>, MessageQueryRequest>({
-            query: (query) => ({
-                url: "/message",
+            query: ({locationId, ...content}) => ({
+                url: `/message/inbox/${locationId}`,
                 method: "GET",
-                params: query
+                params: content
             }),
-            providesTags: (result) => !result ? [{type: 'Message', id: "DUMMY"}] :
-                [...result.content.map(({id}) => ({type: 'Message' as const, id})), {type: 'Message', id: "DUMMY"}],
+            providesTags: (result, _, {locationId}) => !result ? [{type: "Message", id: locationId + "LIST"}] :
+                [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + id})),
+                    {type: "Message", id: locationId + "_LIST"}]
         }),
         sendMessageToChannel: builder.mutation<void, MessageCreateRequest>({
             query: ({locationId, files, ...content}) => {
+
                 const formData = new FormData();
-                files.forEach(file => formData.append("files[]", file))
-                formData.append("content", JSON.stringify(content))
+                files.forEach(file => formData.append("files", file, file.name));
+                formData.append("content", JSON.stringify(content));
 
                 return ({
                     url: `/message/channel/${locationId}`,
                     method: "POST",
                     body: formData
-                })
-            },
-            invalidatesTags: () => [{type: "Message", id: "DUMMY"}]
+                });
+            }
         }),
         sendMessageToInbox: builder.mutation<void, MessageCreateRequest>({
             query: ({locationId, files, ...content}) => {
                 const formData = new FormData();
-                files.forEach(file => formData.append("files[]", file))
-                formData.append("content", JSON.stringify(content))
+                files.forEach(file => formData.append("files", file));
+                formData.append("content", JSON.stringify(content));
 
                 return ({
                     url: `/message/inbox/${locationId}`,
                     method: "POST",
                     body: formData
-                })
-            },
-            invalidatesTags: () => [{type: "Message", id: "DUMMY"}]
+                });
+            }
         }),
         updateMessageContent: builder.mutation<void, MessageContentRequest>({
             query: ({locationId, id, ...status}) => ({
@@ -64,7 +68,7 @@ export const messageApi = createApi({
                 method: "PUT",
                 body: status
             }),
-            invalidatesTags: (_, __, {id}) => [{type: "Message", id: id}]
+            invalidatesTags: (_, __, {id, locationId}) => [{type: "Message", id: locationId + "_" + id}]
         }),
         updateMessageStatus: builder.mutation<void, MessageStatusRequest>({
             query: ({locationId, id, ...status}) => ({
@@ -72,18 +76,18 @@ export const messageApi = createApi({
                 method: "PUT",
                 body: status
             }),
-            invalidatesTags: (_, __, {id}) => [{type: "Message", id: id}]
+            invalidatesTags: (_, __, {id, locationId}) => [{type: "Message", id: locationId + "_" + id}]
         }),
-        deleteMessage: builder.mutation<void, { locationId: number, messageId: number }>({
-            query: ({locationId, messageId}) => ({
-                url: `/message/${locationId}/${messageId}`,
-                method: "DELETE",
+        deleteMessage: builder.mutation<void, { locationId: number, id: number }>({
+            query: ({locationId, id}) => ({
+                url: `/message/${locationId}/${id}`,
+                method: "DELETE"
             }),
-            invalidatesTags: [{type: "Message", id: "DUMMY"}]
-        }),
+            invalidatesTags: (_, __, {id, locationId}) => [{type: "Message", id: locationId + "_" + id}]
+        })
 
-    }),
-})
+    })
+});
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -95,5 +99,5 @@ export const {
     useUpdateMessageContentMutation,
     useUpdateMessageStatusMutation,
     useDeleteMessageMutation
-} = messageApi
+} = messageApi;
 

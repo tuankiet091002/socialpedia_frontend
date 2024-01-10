@@ -25,12 +25,16 @@ export type ErrorResponse = {
 
 export type SocketMessage = {
     type: SocketType,
-    content: string,
-    sender: string,
+    owner: string,
 }
 
 export enum SocketType {
-    CHAT, JOIN, LEAVE
+    TYPE = "TYPE",
+    STOP_TYPE = "STOP_TYPE",
+    CHAT = "CHAT",
+    JOIN = "JOIN",
+    LEAVE = "LEAVE",
+    SEEN = "SEEN",
 }
 
 export enum PermissionAccessType {

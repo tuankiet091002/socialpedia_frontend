@@ -34,7 +34,7 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
             footer: info => info.column.id,
         }),
         columnHelper.accessor('messagePermission', {
-            header: () => " Message Permission",
+            header: () => " MessageItem Permission",
             cell: info => info.renderValue(),
             footer: info => info.column.id,
         }),

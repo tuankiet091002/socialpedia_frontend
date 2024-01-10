@@ -1,6 +1,10 @@
+import {UserResponse} from "@features/user/types";
+import {ResourceEntity} from "@src/types.ts";
+
 export type MessageResponse = {
-    id: string,
+    id: number,
     content: string,
-    createdBy: string,
-    createdDate: Date
+    resources: ResourceEntity[],
+    createdBy: UserResponse | string,
+    modifiedDate: string
 };

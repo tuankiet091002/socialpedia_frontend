@@ -8,7 +8,7 @@ type TwoSectionLayoutProps = {
 export const TwoSectionLayout = ({navbar}: TwoSectionLayoutProps) => {
     return (
         <>
-            <div className="grid h-full grid-cols-[250px_auto]">
+            <div className="grid h-full grid-cols-[300px_auto]">
                 {navbar}
                 <Outlet/>
             </div>

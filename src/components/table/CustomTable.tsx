@@ -19,7 +19,7 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
     }, [table.getState().columnSizingInfo])
 
     return (
-        <table className="table-fixed min-w-full divide-x divide-gray-200"
+        <table className="min-w-full table-fixed divide-x divide-gray-200"
                style={{
                    ...columnSizeVars, //Define column sizes on the <table> element
                    width: table.getTotalSize(),
@@ -57,7 +57,7 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
                 <tr key={row.id} className="odd:bg-white even:bg-gray-100">
                     {row.getVisibleCells().map(cell => (
                         <td key={cell.id}
-                            className="px-6 py-4 text-sm font-medium text-gray-900 border border-gray-300">
+                            className="border border-gray-300 px-6 py-4 text-sm font-medium text-gray-900">
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                     ))}

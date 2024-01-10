@@ -1,13 +1,13 @@
 import {Link} from "react-router-dom";
-import avatar from "@assets/Logomark.svg"
-import emptyAvatar from "@assets/empty avatar.webp"
+import avatar from "@assets/Logomark.svg";
+import emptyAvatar from "@assets/empty avatar.jpg";
 import {NotificationList} from "@features/notification/components/NotificationList.tsx";
 import storage from "@utils/storage.ts";
 import {IoIosArrowDown} from "react-icons/io";
 import {useState} from "react";
 
 export const Header = () => {
-    const user = storage.getUser()
+    const user = storage.getUser();
     const [profileMenu, setProfileMenu] = useState<boolean>(false);
 
     return (<nav className="border-gray-200 bg-blue-500 px-4 shadow-2xl py-2.5 dark:bg-gray-800 lg:px-6">
@@ -19,10 +19,10 @@ export const Header = () => {
                 </div>
             </Link>
 
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
                 <NotificationList/>
-                {user ? <div className="rounded-r-lg p-1 rounded-l-[25px] hover:bg-blue-300"
-                             onClick={() => setProfileMenu((profileMenu) => !profileMenu)}>
+                {user ? <section className="rounded-r-lg bg-blue-400 p-1 rounded-l-[25px] hover:bg-blue-300"
+                                 onClick={() => setProfileMenu((profileMenu) => !profileMenu)}>
                         <img className="mr-3 inline-block h-10 w-10 rounded-full" src={user.avatar?.url} alt={emptyAvatar}/>
                         <span className="mr-1 font-semibold text-white">{user.name}</span>
                         <IoIosArrowDown className="inline text-xl text-white"/>
@@ -42,7 +42,7 @@ export const Header = () => {
                                     </li>
                                 </Link>
                             </ul>}
-                    </div> :
+                    </section> :
                     <Link to="/auth/login">
                         <button
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium 
@@ -70,5 +70,5 @@ export const Header = () => {
             </div>
 
         </div>
-    </nav>)
-}
+    </nav>);
+};

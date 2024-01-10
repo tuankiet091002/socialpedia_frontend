@@ -13,15 +13,15 @@ const linkList = [
     {link: "/user/list", icon: IoPeopleCircleOutline, solidIcon: IoPeopleCircle},
     {link: "/channel/list", icon: IoListOutline, solidIcon: IoList},
     {link: "/inbox", icon: IoChatboxEllipsesOutline, solidIcon: IoChatboxEllipses},
-    {link: "/channel", icon: HiOutlineUserGroup, solidIcon: HiUserGroup},
-]
+    {link: "/channel", icon: HiOutlineUserGroup, solidIcon: HiUserGroup}
+];
 
 export const Sidebar = () => {
-    const location = useLocation()
+    const location = useLocation();
 
     return (<div className="flex flex-col items-center justify-between fixed top-0 lg:left-0 left-[-300px] duration-200
     py-3 mt-[68px] w-[60px] overflow-y-auto bg-white shadow h-screen" id="mobile-menu">
-            <ul className="mt-1 flex w-full flex-col items-center">
+            <ul className="mt-1 flex w-full flex-col items-center gap-y-3">
                 {linkList.map(item => <Link to={item.link} key={item.link}>
                     {location.pathname == item.link ?
                         <li className="flex cursor-pointer items-center justify-center rounded-lg bg-blue-500 text-white 
@@ -35,5 +35,5 @@ export const Sidebar = () => {
                 </Link>)}
             </ul>
         </div>
-    )
-}
+    );
+};

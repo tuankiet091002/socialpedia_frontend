@@ -13,7 +13,7 @@ export const ChannelListPage = () => {
                 <IoPeopleCircleOutline className="mr-2 inline rounded-md bg-blue-500 text-white"/>
                 <span className="align-sub">Channel List</span>
             </div>
-            <div className="flex items-center border border-gray-300 px-3 text-start shadow-2xl h-[43px]">
+            <div className="flex items-center border border-gray-300 px-3 text-start shadow-2xl h-[50px]">
                 <IoFilter className="mr-3 inline"/>
                 <span className="mr-3">Filter:</span>
                 <div className="flex flex-row items-center">

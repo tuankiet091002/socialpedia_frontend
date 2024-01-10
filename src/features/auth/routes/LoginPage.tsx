@@ -8,7 +8,7 @@ export const LoginPage = () => {
 
     return (<>
         <Head title="Login Page"/>
-        <div className="text-start mb-2">
+        <div className="mb-2 text-start">
             <img className="mr-3 inline-block h-12 w-12 rounded-full" src={avatar} alt="Rounded avatar"/>
             <span className="text-2xl dark:text-white">Socialpedia</span>
         </div>

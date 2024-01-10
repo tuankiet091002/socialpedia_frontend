@@ -17,6 +17,12 @@ export const ChannelRoutes = () => {
             children: [
                 {index: true, element: <ChannelChatPage/>},
             ]
+        }, {
+            path: '*',
+            element: <TwoSectionLayout navbar={<ChannelColumn/>}/>,
+            children: [
+                {index: true, element: <div>Wrong site</div>},
+            ]
         }]
     )
 }

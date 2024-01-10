@@ -1,6 +1,6 @@
 import {ChangeEvent, useState} from "react";
 import {useUpdateAvatarMutation} from "@features/auth/api.ts";
-import emptyAvatar from "@assets/empty avatar.webp"
+import emptyAvatar from "@assets/empty avatar.jpg";
 
 type AvatarFormProps = {
     defaultUrl: string
@@ -16,12 +16,12 @@ export const UserAvatarForm = ({defaultUrl}: AvatarFormProps) => {
         if (selectedFile) {
             setFile(selectedFile);
         }
-    }
+    };
 
     const handleSubmit = () => {
         if (file) updateAvatar(file);
-        window.alert("Profile update successfully.")
-    }
+        window.alert("Profile update successfully.");
+    };
 
     return (<div className="static left-20 top-[20px] lg:absolute">
         <img src={isEdit && file ? URL.createObjectURL(file) : defaultUrl}
@@ -33,4 +33,4 @@ export const UserAvatarForm = ({defaultUrl}: AvatarFormProps) => {
         {/*    </div>*/}
         {/*    : <Button onClick={() => setIsEdit(true)}>Edit Image</Button>}*/}
     </div>);
-}
+};
