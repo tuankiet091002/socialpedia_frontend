@@ -15,10 +15,6 @@ import {userApi} from "@features/user/api.ts";
 import {notificationApi} from "@features/notification/api.ts";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {messageApi} from "@features/message/api.ts";
-import {activateSocket} from "@utils/socketMessage.ts";
-
-// enable socket message
-activateSocket();
 
 // reducer store config
 const store = configureStore({

@@ -1,5 +1,6 @@
 import {ReactNode} from "react";
 import {Outlet} from "react-router-dom";
+import {SuspenseLayout} from "./SuspenseLayout";
 
 type TwoSectionLayoutProps = {
     navbar: ReactNode
@@ -10,7 +11,9 @@ export const TwoSectionLayout = ({navbar}: TwoSectionLayoutProps) => {
         <>
             <div className="grid h-full grid-cols-[300px_auto]">
                 {navbar}
-                <Outlet/>
+                <SuspenseLayout>
+                    <Outlet/>
+                </SuspenseLayout>
             </div>
         </>
     );

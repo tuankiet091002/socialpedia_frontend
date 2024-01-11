@@ -19,7 +19,7 @@ const linkList = [
 export const Sidebar = () => {
     const location = useLocation();
 
-    return (<div className="flex flex-col items-center justify-between fixed top-0 lg:left-0 left-[-300px] duration-200
+    return (<nav className="flex flex-col items-center justify-between fixed top-0 lg:left-0 left-[-300px] duration-200
     py-3 mt-[68px] w-[60px] overflow-y-auto bg-white shadow h-screen" id="mobile-menu">
             <ul className="mt-1 flex w-full flex-col items-center gap-y-3">
                 {linkList.map(item => <Link to={item.link} key={item.link}>
@@ -34,6 +34,6 @@ export const Sidebar = () => {
                         </li>}
                 </Link>)}
             </ul>
-        </div>
+        </nav>
     );
 };

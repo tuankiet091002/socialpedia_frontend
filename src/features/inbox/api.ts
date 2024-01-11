@@ -9,6 +9,7 @@ import {subscribeTo, unsubscribeTo} from "@utils/socketMessage.ts";
 import {difference} from "@utils/arrayUtil.ts";
 import {messageApi} from "@features/message/api.ts";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
+import moment from "moment/moment";
 
 const inboxSet = new Set<InboxResponse>();
 
@@ -35,14 +36,13 @@ export const inboxApi = createApi({
                             (a, b) => a.id === b.id);
 
                         // add new inbox to set and subscribe to new one
-                        addedInbox.forEach(inbox => {
-
+                        await Promise.all(addedInbox.map(inbox => {
                             inboxSet.add(inbox);
 
                             // fetch one when there are new message
-                            subscribeTo(`inbox/${inbox.id}`, (message) => {
-                                    switch (message.type) {
+                            subscribeTo(`space/${inbox.id}`, (message) => {
 
+                                    switch (message.type) {
                                         case (SocketType.CHAT):
                                             dispatch(inboxApi.util?.invalidateTags([{type: "Inbox", id: inbox.id}]));
                                             dispatch(messageApi.util?.invalidateTags([{
@@ -55,11 +55,12 @@ export const inboxApi = createApi({
                                             dispatch(messageApi.util?.updateQueryData("getMessageFromInbox",
                                                 {locationId: inbox.id} as MessageQueryRequest,
                                                 data => {
-                                                    data.content.push({
-                                                        id: inbox.id * 1000 + Number(message.owner) * 10 + 3,
-                                                        content: `${message.owner} is typing`,
+                                                    data.content.unshift({
+                                                        id: inbox.id * 1000 + message.owner.id * 10 + 3,
+                                                        content: `${message.owner.name} is typing`,
+                                                        resources: [],
                                                         createdBy: "System",
-                                                        createdDate: new Date()
+                                                        modifiedDate: moment(Date.now()).toISOString()
                                                     });
                                                     return data;
                                                 }));
@@ -68,23 +69,18 @@ export const inboxApi = createApi({
                                         case SocketType.STOP_TYPE:
                                             dispatch(messageApi.util?.updateQueryData("getMessageFromInbox",
                                                 {locationId: inbox.id} as MessageQueryRequest,
-                                                data => {
-                                                    data.content.push({
-                                                        id: inbox.id * 1000 + Number(message.owner) * 10 + 4,
-                                                        content: `${message.owner} stop typing`,
-                                                        createdBy: "System",
-                                                        createdDate: new Date()
-                                                    });
-                                                    return data;
-                                                }));
+                                                data => ({
+                                                    ...data, content: data.content.filter(m =>
+                                                        m.id != inbox.id * 1000 + message.owner.id * 10 + 3)
+                                                })));
                                             break;
-                                            
+
                                         default:
                                             break;
                                     }
                                 }
                             );
-                        });
+                        }));
 
                     } catch (err) {
                         console.log(err);

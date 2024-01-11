@@ -1,4 +1,4 @@
-import {ResourceEntity} from "@src/types.ts";
+import {NotificationType, ResourceEntity} from "@src/types.ts";
 
 export type NotificationResponse = {
     id: number;
@@ -6,5 +6,6 @@ export type NotificationResponse = {
     title: string;
     content: string;
     target: string;
-    isRead: boolean;
+    type: NotificationType;
+    createdDate: string;
 }

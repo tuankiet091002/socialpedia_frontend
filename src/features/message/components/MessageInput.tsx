@@ -48,11 +48,13 @@ export const MessageInput = ({queryFunc}: MessageInputProps) => {
     useEffect(() => {
         if (isTyping != prevIsTyping.current) {
             // socket message
-            console.log("typing switch to " + isTyping);
             prevIsTyping.current = isTyping;
-            sendTo(`space/${locationId}`, isTyping ? SocketType.TYPE : SocketType.STOP_TYPE, owner.name);
+            sendTo(`space/${locationId}`, isTyping ? SocketType.TYPE : SocketType.STOP_TYPE, {
+                id: owner!.id,
+                name: owner!.name
+            }).then();
         }
-    }, [isTyping, locationId]);
+    }, [owner, isTyping, locationId]);
 
     return (
         <div className="relative flex h-full items-center gap-x-2 px-6">

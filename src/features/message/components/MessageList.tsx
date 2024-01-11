@@ -1,11 +1,11 @@
-import {useParams} from "react-router-dom";
 import {MessageItem} from "@features/message/components/MessageItem.tsx";
-import {useEffect, useRef, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useRef} from "react";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
 import {UseQuery} from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import {BaseQueryFn, FetchArgs, FetchBaseQueryError, QueryDefinition} from "@reduxjs/toolkit/query";
 import {MessageResponse} from "@features/message/types/MessageResponse.ts";
 import {Page} from "@src/types.ts";
+import {useParams} from "react-router-dom";
 
 export type MessageListProps = {
     queryFunc: UseQuery<QueryDefinition<
@@ -14,18 +14,16 @@ export type MessageListProps = {
         "Message",
         Page<MessageResponse>,
         "message">>;
+    query: MessageQueryRequest
+    setQuery: Dispatch<SetStateAction<MessageQueryRequest>>
 }
 
 const INITIAL_PAGE = 3;
 
-export const MessageList = ({queryFunc}: MessageListProps) => {
+export const MessageList = ({queryFunc, query, setQuery}: MessageListProps) => {
     //// SETTING VARIABLE
-    // get current channelId as number
     const {locationId: locationNum} = useParams();
     const locationId = Number(locationNum);
-    // default query state without name field
-    const initialState = {locationId, pageNo: 0, pageSize: INITIAL_PAGE};
-    const [query, setQuery] = useState<MessageQueryRequest>(initialState);
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
 
@@ -35,7 +33,7 @@ export const MessageList = ({queryFunc}: MessageListProps) => {
         // get value in map, or else fetch first page
         const pageSize = map.current.get(locationId) || INITIAL_PAGE;
         setQuery(query => ({...query, locationId, pageSize: pageSize}));
-    }, [locationId]);
+    }, [locationId, setQuery]);
 
     const {data} = queryFunc(query);
 
@@ -71,7 +69,7 @@ export const MessageList = ({queryFunc}: MessageListProps) => {
     if (!data) return null;
 
     return (
-        <ul className="overflow-y-auto p-2 h-[571.6px] space-y-2" ref={listScrollRef}>
+        <ul className="overflow-y-auto p-2 h-[calc(100vh-178px)] space-y-2" ref={listScrollRef}>
             {data?.content.slice().reverse().map(item => <MessageItem key={item.id} data={item}/>)}
         </ul>
     );

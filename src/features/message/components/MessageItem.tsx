@@ -8,7 +8,7 @@ type MessageProps = {
 
 export const MessageItem = ({data}: MessageProps) => {
 
-        return (<li className="flex flex-row items-center justify-between rounded-md bg-blue-600 p-2">
+        return (<li className="flex flex-row items-center justify-between rounded-md bg-blue-600 p-2 h-[800px]">
                 {typeof data.createdBy !== "string" ?
                     <div className="flex flex-row items-end gap-4">
                         <img className="h-12 w-12 rounded-full"

@@ -21,12 +21,19 @@ stompClient.onStompError = (frame) => {
     console.error("Additional details: " + frame.body);
 };
 
-export function activateSocket() {
-    stompClient.activate();
-    console.log("Socket activated!");
+async function connect(): Promise<void> {
+    if (!stompClient.connected) {
+        return new Promise((resolve) => {
+            stompClient.activate();
+            stompClient.onConnect = () => {
+                resolve();
+            };
+        });
+    }
 }
 
-export function subscribeTo(destination: string, callback: (arg0: SocketMessage) => void) {
+export async function subscribeTo(destination: string, callback: (arg0: SocketMessage) => void) {
+    await connect();
     stompClient.subscribe(`/${destination}`, (message) => callback(JSON.parse(message.body)));
     console.log("Subscribed to " + destination + "!");
 }
@@ -36,7 +43,8 @@ export function unsubscribeTo(destination: string) {
     console.log("Unsubscribed to " + destination + "!");
 }
 
-export function sendTo(destination: string, type: SocketType, owner: string) {
+export async function sendTo(destination: string, type: SocketType, owner: { id: number, name: string }) {
+    await connect();
     stompClient.publish({
         destination: `/app/${destination}`,
         body: JSON.stringify({type, owner} as SocketMessage)

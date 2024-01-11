@@ -23,6 +23,9 @@ export const messageApi = createApi({
                     {type: "Message", id: locationId + "_LIST"}],
             serializeQueryArgs: ({queryArgs, endpointName}) => {
                 return endpointName + "_" + queryArgs.locationId;
+            },
+            forceRefetch({currentArg, previousArg}) {
+                return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
             }
         }),
         getMessageFromInbox: builder.query<Page<MessageResponse>, MessageQueryRequest>({
@@ -33,7 +36,13 @@ export const messageApi = createApi({
             }),
             providesTags: (result, _, {locationId}) => !result ? [{type: "Message", id: locationId + "LIST"}] :
                 [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + id})),
-                    {type: "Message", id: locationId + "_LIST"}]
+                    {type: "Message", id: locationId + "_LIST"}],
+            serializeQueryArgs: ({queryArgs, endpointName}) => {
+                return endpointName + "_" + queryArgs.locationId;
+            },
+            forceRefetch({currentArg, previousArg}) {
+                return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
+            }
         }),
         sendMessageToChannel: builder.mutation<void, MessageCreateRequest>({
             query: ({locationId, files, ...content}) => {

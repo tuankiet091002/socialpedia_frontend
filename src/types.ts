@@ -25,7 +25,7 @@ export type ErrorResponse = {
 
 export type SocketMessage = {
     type: SocketType,
-    owner: string,
+    owner: { id: number, name: string },
 }
 
 export enum SocketType {
@@ -50,4 +50,10 @@ export enum MessageStatusType {
     MODIFIED = "modified",
     INACTIVE = "inactive",
     PINNED = "pinned"
+}
+
+export enum NotificationType {
+    VIEW = "VIEW",
+    REQUEST = "REQUEST",
+    DONE = "DONE",
 }

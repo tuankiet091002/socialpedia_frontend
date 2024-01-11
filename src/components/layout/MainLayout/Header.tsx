@@ -1,14 +1,15 @@
 import {Link} from "react-router-dom";
 import avatar from "@assets/Logomark.svg";
 import emptyAvatar from "@assets/empty avatar.jpg";
-import {NotificationList} from "@features/notification/components/NotificationList.tsx";
 import storage from "@utils/storage.ts";
-import {IoIosArrowDown} from "react-icons/io";
+import {IoIosArrowDown, IoIosNotificationsOutline} from "react-icons/io";
 import {useState} from "react";
+import {NotificationList} from "@features/notification/components/NotificationList.tsx";
 
 export const Header = () => {
     const user = storage.getUser();
     const [profileMenu, setProfileMenu] = useState<boolean>(false);
+    const [notification, setNotification] = useState<boolean>(false);
 
     return (<nav className="border-gray-200 bg-blue-500 px-4 shadow-2xl py-2.5 dark:bg-gray-800 lg:px-6">
         <div className="mx-auto flex flex-wrap items-center justify-between">
@@ -20,29 +21,38 @@ export const Header = () => {
             </Link>
 
             <div className="flex items-center gap-2">
-                <NotificationList/>
-                {user ? <section className="rounded-r-lg bg-blue-400 p-1 rounded-l-[25px] hover:bg-blue-300"
+
+                {user ? <div className="relative flex flex-row gap-x-4">
+                        <div
+                            className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 p-1 hover:bg-blue-300"
+                            onClick={() => setNotification(nof => !nof)}>
+                            <IoIosNotificationsOutline className="cursor-pointer text-4xl font-bold text-white"/>
+                        </div>
+                        {notification && <NotificationList/>}
+                        <section className="rounded-r-lg bg-blue-400 p-1 rounded-l-[25px] hover:bg-blue-300"
                                  onClick={() => setProfileMenu((profileMenu) => !profileMenu)}>
-                        <img className="mr-3 inline-block h-10 w-10 rounded-full" src={user.avatar?.url} alt={emptyAvatar}/>
-                        <span className="mr-1 font-semibold text-white">{user.name}</span>
-                        <IoIosArrowDown className="inline text-xl text-white"/>
-                        {profileMenu &&
-                            <ul className="fixed right-8 z-40 rounded-md border border-gray-300 bg-white p-1 w-[150px] mt-[8px]">
-                                <Link to="/user/profile">
-                                    <li className="rounded-md hover:bg-blue-500 hover:text-white">Trang cá nhân
-                                    </li>
-                                </Link>
-                                <Link to="/user/list">
-                                    <li className="mt-1 rounded-md hover:bg-blue-500 hover:text-white">Đổi mật khẩu</li>
-                                </Link>
-                                <div className="w-full bg-gray-300 h-[1px]"></div>
-                                <Link to="/auth/login" onClick={() => storage.clearAll()} className="mt-[10px]">
-                                    <li className="mt-1 rounded-md text-red-600 hover:bg-red-500 hover:text-white">
-                                        Đăng xuất
-                                    </li>
-                                </Link>
-                            </ul>}
-                    </section> :
+                            <img className="mr-3 inline-block h-10 w-10 rounded-full" src={user.avatar?.url}
+                                 alt={emptyAvatar}/>
+                            <span className="mr-1 font-semibold text-white">{user.name}</span>
+                            <IoIosArrowDown className="inline text-xl text-white"/>
+                            {profileMenu &&
+                                <ul className="absolute right-8 z-40 rounded-md border border-gray-300 bg-white p-1 w-[150px] bottom-[-90px]">
+                                    <Link to="/user/profile">
+                                        <li className="rounded-md hover:bg-blue-500 hover:text-white">Trang cá nhân
+                                        </li>
+                                    </Link>
+                                    <Link to="/user/list">
+                                        <li className="mt-1 rounded-md hover:bg-blue-500 hover:text-white">Đổi mật khẩu</li>
+                                    </Link>
+                                    <div className="w-full bg-gray-300 h-[1px]"></div>
+                                    <Link to="/auth/login" onClick={() => storage.clearAll()} className="mt-[10px]">
+                                        <li className="mt-1 rounded-md text-red-600 hover:bg-red-500 hover:text-white">
+                                            Đăng xuất
+                                        </li>
+                                    </Link>
+                                </ul>}
+                        </section>
+                    </div> :
                     <Link to="/auth/login">
                         <button
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium 

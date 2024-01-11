@@ -52,14 +52,14 @@ export const channelApi = createApi({
                             Array.from(channelSet),
                             (a, b) => a.id === b.id);
 
-
                         // add new channel to channelSet and subscribe to new channel
-                        addedChannel.forEach(channel => {
+                        await Promise.all(addedChannel.map(async (channel) => {
 
                             channelSet.add(channel);
 
                             // fetch one when there are new message
-                            subscribeTo(`space/${channel.id}`, (message) => {
+                            await subscribeTo(`space/${channel.id}`, (message) => {
+                                    
                                     switch (message.type) {
                                         case (SocketType.CHAT):
                                             dispatch(channelApi.util?.invalidateTags([{type: "Channel", id: channel.id}]));
@@ -74,8 +74,8 @@ export const channelApi = createApi({
                                                 {locationId: channel.id} as MessageQueryRequest,
                                                 data => {
                                                     data.content.push({
-                                                        id: channel.id * 1000 + Number(message.owner) * 10 + 2,
-                                                        content: `${message.owner} just join the channel`,
+                                                        id: channel.id * 1000 + message.owner.id * 10 + 2,
+                                                        content: `${message.owner.name} just join the channel`,
                                                         resources: [],
                                                         createdBy: "System",
                                                         modifiedDate: moment(Date.now()).toISOString()
@@ -89,8 +89,8 @@ export const channelApi = createApi({
                                                 {locationId: channel.id} as MessageQueryRequest,
                                                 data => {
                                                     data.content.unshift({
-                                                        id: channel.id * 1000 + Number(message.owner) * 10 + 2,
-                                                        content: `${message.owner} just leave the channel`,
+                                                        id: channel.id * 1000 + message.owner.id * 10 + 2,
+                                                        content: `${message.owner.name} just leave the channel`,
                                                         resources: [],
                                                         createdBy: "System",
                                                         modifiedDate: moment(Date.now()).toISOString()
@@ -104,8 +104,8 @@ export const channelApi = createApi({
                                                 {locationId: channel.id} as MessageQueryRequest,
                                                 data => {
                                                     data.content.unshift({
-                                                        id: channel.id * 1000 + Number(message.owner) * 10 + 3,
-                                                        content: `${message.owner} is typing`,
+                                                        id: channel.id * 1000 + message.owner.id * 10 + 3,
+                                                        content: `${message.owner.name} is typing`,
                                                         resources: [],
                                                         createdBy: "System",
                                                         modifiedDate: moment(Date.now()).toISOString()
@@ -119,7 +119,7 @@ export const channelApi = createApi({
                                                 {locationId: channel.id} as MessageQueryRequest,
                                                 data => ({
                                                     ...data, content: data.content.filter(m =>
-                                                        m.id != channel.id * 1000 + Number(message.owner) * 10 + 3)
+                                                        m.id != channel.id * 1000 + message.owner.id * 10 + 3)
                                                 })));
                                             break;
 
@@ -128,7 +128,7 @@ export const channelApi = createApi({
                                     }
                                 }
                             );
-                        });
+                        }));
 
                     } catch (err) {
                         console.log(err);
