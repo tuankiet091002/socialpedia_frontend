@@ -7,6 +7,7 @@ import {CustomTable} from "@components/table/CustomTable.tsx";
 import {Paginate} from "@components/table/Paginate.tsx";
 import moment from "moment";
 import {HiDotsVertical} from "react-icons/hi";
+import emptyAvatar from "@assets/empty avatar.jpg";
 
 const columnHelper = createColumnHelper<UserResponse>();
 
@@ -24,12 +25,12 @@ export const UserList = () => {
     const {data} = useGetUserListQuery({pageNo: pageIndex, pageSize, orderBy: "id", orderDirection: "ASC"});
     // column data
     const columns = useMemo(() => [
-        columnHelper.accessor(row => ({name: row.name, email: row.email, avatar: row.avatar}), {
+        columnHelper.accessor(row => ({name: row.name, id: row.id, avatar: row.avatar}), {
             id: "name",
             header: () => "Người dùng",
-            cell: info => <Link to={`/user/${encodeURIComponent(info.getValue().email).replace(/\./g, "%2E")}`}
+            cell: info => <Link to={`/user/${info.getValue().id}`}
                                 className="cursor-pointer hover:text-blue-500">
-                <img src={info.getValue().avatar?.url} className="mr-1 inline h-10 w-10" alt="Avatar"/>
+                <img src={info.getValue().avatar?.url || emptyAvatar} className="mr-1 inline h-10 w-10" alt=""/>
                 {info.getValue().name}
             </Link>
         }),

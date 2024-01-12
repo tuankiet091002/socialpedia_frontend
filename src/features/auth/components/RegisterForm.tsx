@@ -11,13 +11,13 @@ import {RegisterRequest} from "@features/auth/types/RegisterRequest.ts";
 import {ErrorResponse} from "@src/types.ts";
 
 const schema = z.object({
-    email: z.string().min(1, 'Email is required.').email('Wrong email format.'),
-    name: z.string().min(1, 'Name is required.'),
-    password: z.string().min(1, 'Password is required.'),
+    email: z.string().min(1, "Email is required.").email("Wrong email format."),
+    name: z.string().min(1, "Name is required."),
+    password: z.string().min(1, "Password is required."),
     phone: z.string().regex(new RegExp("^0\\d{9}$"), "Phone must start with 0 and have 10 characters."),
-    dob: z.preprocess((value) => new Date(value ? z.string().parse(value) : 0).toLocaleDateString('en-GB'), z.string().min(1, 'Date is required.')),
-    gender: z.enum(['true', 'false']),
-})
+    dob: z.preprocess((value) => new Date(value ? z.string().parse(value) : 0).toLocaleDateString("en-GB"), z.string().min(1, "Date is required.")),
+    gender: z.enum(["true", "false"])
+});
 
 type RegisterFormProp = {
     onSuccess: () => void;
@@ -46,37 +46,37 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                     <InputField
                         type="text"
                         label="Email Address"
-                        error={formState.errors['email']}
-                        registration={register('email')}
+                        error={formState.errors["email"]}
+                        registration={register("email")}
                     />
                     <InputField
                         type="text"
                         label="Fullname"
-                        error={formState.errors['name']}
-                        registration={register('name')}
+                        error={formState.errors["name"]}
+                        registration={register("name")}
                     />
                     <InputField
                         type="password"
                         label="Password"
-                        error={formState.errors['password']}
-                        registration={register('password')}
+                        error={formState.errors["password"]}
+                        registration={register("password")}
                     />
                     <InputField
                         type="text"
                         label="Phone Number"
-                        error={formState.errors['phone']}
-                        registration={register('phone')}
+                        error={formState.errors["phone"]}
+                        registration={register("phone")}
                     />
                     <InputField
                         type="date"
                         label="Date of Birth"
-                        error={formState.errors['dob']}
-                        registration={register('dob')}
+                        error={formState.errors["dob"]}
+                        registration={register("dob")}
                     />
                     <SelectField
                         label="Gender"
-                        error={formState.errors['gender']}
-                        registration={register('gender')}
+                        error={formState.errors["gender"]}
+                        registration={register("gender")}
                         options={[
                             {label: "Male", value: "true"},
                             {label: "Female", value: "false"}
@@ -115,7 +115,9 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                         </div>
                     </div>
 
-                    {result.isError && (result.error as { data: ErrorResponse }).data.message}
+                    {result.isError && <p className="text-start text-red-500">{(result.error as {
+                        data: ErrorResponse
+                    }).data.message}</p>}
                     <div className="mt-3 flex items-center justify-center">
                         <Button type="submit" isLoading={result.isLoading}>
                             Register
@@ -131,5 +133,5 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                 </Link>
             </div>
         </div>
-    </div>)
-}
+    </div>);
+};

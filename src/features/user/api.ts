@@ -28,9 +28,9 @@ export const userApi = createApi({
                 providesTags: (result) => !result ? [{type: "User", id: "LIST"}] :
                     [...result.content.map(({id}) => ({type: "User" as const, id})), {type: "User", id: "LIST"}]
             }),
-            getUserProfile: builder.query<UserResponse, string>({
-                query: (email) => ({
-                    url: `/user/${email}`,
+            getUserProfile: builder.query<UserResponse, number>({
+                query: (id) => ({
+                    url: `/user/${id}`,
                     method: "GET"
                 }),
                 providesTags: (result) => [{type: "User", id: result ? result.id : "LIST"}]
@@ -49,34 +49,6 @@ export const userApi = createApi({
                     method: "DELETE"
                 }),
                 invalidatesTags: (_, __, id) => [{type: "User", id: id}]
-            }),
-            createFriendRequest: builder.mutation<void, number>({
-                query: (id) => ({
-                    url: `/user/${id}/friend`,
-                    method: "POST"
-                }),
-                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
-            }),
-            acceptFriendRequest: builder.mutation<void, number>({
-                query: (id) => ({
-                    url: `/user/${id}/friend/accept`,
-                    method: "PUT"
-                }),
-                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
-            }),
-            rejectFriendRequest: builder.mutation<void, number>({
-                query: (id) => ({
-                    url: `/user/${id}/friend/reject`,
-                    method: "PUT"
-                }),
-                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
-            }),
-            unFriend: builder.mutation<void, number>({
-                query: (id) => ({
-                    url: `/user/${id}/friend`,
-                    method: "DELETE"
-                }),
-                invalidatesTags: (_, __, id) => [{type: "User", id: id}]
             })
         })
     }
@@ -89,9 +61,5 @@ export const {
     useGetFriendListQuery,
     useGetUserProfileQuery,
     useUpdateUserRoleMutation,
-    useDisableUserMutation,
-    useCreateFriendRequestMutation,
-    useAcceptFriendRequestMutation,
-    useRejectFriendRequestMutation,
-    useUnFriendMutation
+    useDisableUserMutation
 } = userApi;

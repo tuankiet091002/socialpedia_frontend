@@ -1,4 +1,4 @@
-import {createApi} from '@reduxjs/toolkit/query/react'
+import {createApi} from "@reduxjs/toolkit/query/react";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import storage from "@utils/storage.ts";
 
@@ -8,47 +8,48 @@ import {LoginRequest} from "@features/auth/types/LoginRequest.ts";
 import {RegisterRequest} from "@features/auth/types/RegisterRequest.ts";
 import {UserProfileRequest} from "@features/auth/types/UserProfileRequest.ts";
 import {UserResponse} from "src/features/user/types";
+import {UserFriendshipResponse} from "@features/user/types/UserFriendshipResponse.ts";
 
 export const authApi = createApi({
-        reducerPath: 'auth',
-        tagTypes: ['Auth'],
+        reducerPath: "auth",
+        tagTypes: ["Auth", "Friendship"],
         baseQuery: baseQueryWithReAuth,
         endpoints: (builder) => ({
             login: builder.mutation<LoginResponse, LoginRequest>({
                 query: (body) => ({
-                    url: '/auth/login',
+                    url: "/auth/login",
                     method: "POST",
                     body
                 }),
-                async onQueryStarted(_, {queryFulfilled}) {
+                async onQueryStarted(_, {queryFulfilled, dispatch}) {
                     try {
                         const result = await queryFulfilled;
 
-                        storage.setLoginResponse(result.data)
+                        storage.setLoginResponse(result.data);
 
+                        dispatch(authApi.endpoints?.getOwner.initiate(null, {forceRefetch: true}));
                     } catch (err) {
-                        console.log(err)
+                        console.log(err);
                     }
-                },
-                invalidatesTags: ['Auth']
+                }
             }),
             register: builder.mutation<void, RegisterRequest & { file?: File }>({
                 query: ({file, ...content}) => {
 
                     const formData = new FormData();
-                    formData.append("content", JSON.stringify(content))
-                    formData.append("file", file ? file : '');
+                    formData.append("content", JSON.stringify(content));
+                    formData.append("file", file ? file : "");
 
                     return ({
-                        url: '/auth/register',
+                        url: "/auth/register",
                         method: "POST",
                         body: formData
-                    })
-                },
+                    });
+                }
             }),
             refreshToken: builder.mutation<{ accessToken: string }, string>({
                 query: (body) => ({
-                    url: '/auth/refreshToken',
+                    url: "/auth/refreshToken",
                     method: "POST",
                     body: {refreshToken: body}
                 }),
@@ -56,12 +57,12 @@ export const authApi = createApi({
                     try {
                         const result = await queryFulfilled;
 
-                        storage.setToken(result.data.accessToken)
+                        storage.setToken(result.data.accessToken);
 
                     } catch (err) {
-                        console.log(err)
+                        console.log(err);
                     }
-                },
+                }
             }),
             updateProfile: builder.mutation<void, UserProfileRequest>({
                 query: (body) => ({
@@ -69,14 +70,14 @@ export const authApi = createApi({
                     method: "PUT",
                     body
                 }),
-                invalidatesTags: ['Auth']
+                invalidatesTags: ["Auth"]
             }),
             updatePassword: builder.mutation<void, UserPasswordRequest>({
                 query: (body) => ({
                     url: `/auth/password`,
                     method: "PUT",
                     body
-                }),
+                })
             }),
             updateAvatar: builder.mutation<void, File>({
                 query: (file) => {
@@ -87,28 +88,63 @@ export const authApi = createApi({
                         url: `/auth/avatar`,
                         method: "PUT",
                         body: formData
-                    })
+                    });
                 },
-                invalidatesTags: ['Auth']
+                invalidatesTags: ["Auth"]
             }),
             getOwner: builder.query<UserResponse, null>({
                 query: () => ({
-                    url: `/user/${storage.getUser().email}`,
-                    method: "GET",
+                    url: `/user/${storage.getUser().id}`,
+                    method: "GET"
                 }),
                 async onQueryStarted(_, {queryFulfilled}) {
                     try {
-                        const result = await queryFulfilled
-                        storage.setUser(result.data)
+                        const result = await queryFulfilled;
+                        storage.setUser(result.data);
                     } catch (err) {
-                        console.log(err)
+                        console.log(err);
                     }
                 },
-                providesTags: ['Auth'],
+                providesTags: ["Auth"]
             }),
-        }),
+            getUserFriendship: builder.query<UserFriendshipResponse | null, number>({
+                query: (id) => ({
+                    url: `/user/${id}/friendship`,
+                    method: "GET"
+                }),
+                providesTags: (result, _, id) => !result ? [] : [{type: "Friendship", id: id}]
+            }),
+            createFriendRequest: builder.mutation<void, number>({
+                query: (id) => ({
+                    url: `/user/${id}/friend`,
+                    method: "POST"
+                }),
+                invalidatesTags: (_, __, id) => [{type: "Friendship", id: id}]
+            }),
+            acceptFriendRequest: builder.mutation<void, number>({
+                query: (id) => ({
+                    url: `/user/${id}/friend/accept`,
+                    method: "PUT"
+                }),
+                invalidatesTags: (_, __, id) => [{type: "Friendship", id: id}]
+            }),
+            rejectFriendRequest: builder.mutation<void, number>({
+                query: (id) => ({
+                    url: `/user/${id}/friend/reject`,
+                    method: "PUT"
+                }),
+                invalidatesTags: (_, __, id) => [{type: "Friendship", id: id}]
+            }),
+            unFriend: builder.mutation<void, number>({
+                query: (id) => ({
+                    url: `/user/${id}/friend`,
+                    method: "DELETE"
+                }),
+                invalidatesTags: (_, __, id) => [{type: "Friendship", id: id}]
+            })
+        })
     }
-)
+);
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -119,5 +155,9 @@ export const {
     useUpdateAvatarMutation,
     useUpdatePasswordMutation,
     useGetOwnerQuery,
-    useLazyGetOwnerQuery
-} = authApi
+    useGetUserFriendshipQuery,
+    useCreateFriendRequestMutation,
+    useAcceptFriendRequestMutation,
+    useRejectFriendRequestMutation,
+    useUnFriendMutation
+} = authApi;

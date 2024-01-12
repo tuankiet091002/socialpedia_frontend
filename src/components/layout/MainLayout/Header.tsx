@@ -5,9 +5,11 @@ import storage from "@utils/storage.ts";
 import {IoIosArrowDown, IoIosNotificationsOutline} from "react-icons/io";
 import {useState} from "react";
 import {NotificationList} from "@features/notification/components/NotificationList.tsx";
+import {useAuth} from "@utils/useAuth.ts";
+import {Button} from "@components/elements/Button.tsx";
 
 export const Header = () => {
-    const user = storage.getUser();
+    const {user} = useAuth();
     const [profileMenu, setProfileMenu] = useState<boolean>(false);
     const [notification, setNotification] = useState<boolean>(false);
 
@@ -31,8 +33,8 @@ export const Header = () => {
                         {notification && <NotificationList/>}
                         <section className="rounded-r-lg bg-blue-400 p-1 rounded-l-[25px] hover:bg-blue-300"
                                  onClick={() => setProfileMenu((profileMenu) => !profileMenu)}>
-                            <img className="mr-3 inline-block h-10 w-10 rounded-full" src={user.avatar?.url}
-                                 alt={emptyAvatar}/>
+                            <img className="mr-3 inline-block h-10 w-10 rounded-full" src={user.avatar?.url || emptyAvatar}
+                                 alt=""/>
                             <span className="mr-1 font-semibold text-white">{user.name}</span>
                             <IoIosArrowDown className="inline text-xl text-white"/>
                             {profileMenu &&
@@ -54,12 +56,9 @@ export const Header = () => {
                         </section>
                     </div> :
                     <Link to="/auth/login">
-                        <button
-                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium 
-                            rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 
-                            focus:outline-none dark:focus:ring-blue-800">
+                        <Button type="button" className="h-[48px]">
                             Login
-                        </button>
+                        </Button>
                     </Link>}
                 <button data-collapse-toggle="mobile-menu" type="button"
                         className="inline-flex items-center p-2 ml-1 text-sm text-white rounded-lg lg:hidden hover:bg-gray-100

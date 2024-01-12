@@ -1,7 +1,7 @@
 import {UserResponse} from "src/features/user/types";
 import {LoginResponse} from "@features/auth/types/LoginResponse.ts";
 
-const STORAGE_PREFIX = 'socialpedia_';
+const STORAGE_PREFIX = "socialpedia_";
 
 const storage = {
     getToken: () => {
@@ -14,7 +14,7 @@ const storage = {
         return JSON.parse(window.localStorage.getItem(`${STORAGE_PREFIX}user`) as string);
     },
     clearAll: () => {
-        // window.localStorage.clear();
+        window.localStorage.clear();
     },
     setLoginResponse: (value: LoginResponse) => {
         window.localStorage.clear();
@@ -27,7 +27,7 @@ const storage = {
     },
     setUser: (value: UserResponse | undefined) => {
         window.localStorage.setItem(`${STORAGE_PREFIX}user`, JSON.stringify(value));
-    },
+    }
 };
 
 export default storage;

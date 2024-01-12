@@ -8,9 +8,9 @@ import {Button} from "@components/elements/Button.tsx";
 import {LoginRequest} from "@features/auth/types/LoginRequest.ts";
 
 const schema = z.object({
-    email: z.string().min(1, 'Email is required.').email('Wrong email format.'),
-    password: z.string().min(1, 'Password must at least 6 character.')
-})
+    email: z.string().min(1, "Email is required.").email("Wrong email format."),
+    password: z.string().min(1, "Password must at least 6 character.")
+});
 
 type LoginFormProps = {
     onSuccess: () => void;
@@ -19,12 +19,15 @@ type LoginFormProps = {
 export const LoginForm = ({onSuccess}: LoginFormProps) => {
     const [login, result] = useLoginMutation();
 
-    if (result.isSuccess) onSuccess();
+    if (result.isSuccess) {
+        onSuccess();
+    }
+
 
     return (<div>
         <Form<LoginRequest, typeof schema>
             onSubmit={async (values: LoginRequest) => {
-                login(values)
+                await login(values);
             }}
             schema={schema}
         >
@@ -33,16 +36,18 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
                     <InputField
                         type="text"
                         label="Email Address"
-                        error={formState.errors['email']}
-                        registration={register('email')}
+                        error={formState.errors["email"]}
+                        registration={register("email")}
                     />
                     <InputField
                         type="password"
                         label="Password"
-                        error={formState.errors['password']}
-                        registration={register('password')}
+                        error={formState.errors["password"]}
+                        registration={register("password")}
                     />
-                    {result.isError && (result.error as { data: ErrorResponse }).data.message}
+                    {result.isError && <p className="text-start text-red-500">{(result.error as {
+                        data: ErrorResponse
+                    }).data.message}</p>}
                     <div className="flex justify-center">
                         <Button type="submit" size="md" isLoading={result.isLoading} className="mt-3">
                             Log in
@@ -58,5 +63,5 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
                 Register
             </Link>
         </p>
-    </div>)
+    </div>);
 };

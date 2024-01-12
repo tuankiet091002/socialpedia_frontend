@@ -57,3 +57,9 @@ export enum NotificationType {
     REQUEST = "REQUEST",
     DONE = "DONE",
 }
+
+export enum RequestType {
+    PENDING = "PENDING",
+    ACCEPTED = "ACCEPTED",
+    REJECTED = "REJECTED",
+}

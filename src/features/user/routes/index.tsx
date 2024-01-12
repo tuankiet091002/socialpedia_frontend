@@ -11,7 +11,7 @@ export const UserRoutes = () => {
         {path: "list", element: <UserListPage/>},
         {path: "changePassword", element: <ChangePasswordPage/>},
         {path: "profile", element: <MyProfilePage/>},
-        {path: ":userEmail", element: <UserProfilePage/>}]
-    )
-}
+        {path: ":userId", element: <UserProfilePage/>}]
+    );
+};
 

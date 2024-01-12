@@ -5,7 +5,7 @@ export type NotificationResponse = {
     avatar: ResourceEntity;
     title: string;
     content: string;
-    target: string;
+    destination: string;
     type: NotificationType;
     createdDate: string;
 }

@@ -10,7 +10,6 @@ export type UserResponse = {
     gender?: boolean,
     isActive?: boolean,
     avatar: ResourceEntity
-    friends?: UserResponse[]
 }
 
 type DetailRole = {

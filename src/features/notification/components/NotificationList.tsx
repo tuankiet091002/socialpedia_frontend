@@ -42,14 +42,10 @@ export const NotificationList = () => {
 
     return (
         <section
-            className="absolute rounded-md border border-gray-300 bg-white p-2 shadow-xl bottom-[-500px] h-[500px] w-[400px] right-[20px]">
+            className="absolute z-30 rounded-md border border-gray-300 bg-white p-2 shadow-xl bottom-[-500px] h-[500px] w-[400px] right-[20px] ">
             <p className="text-start text-3xl">Notification List</p>
             <hr className="m-2 bg-gray-400"/>
-            <ul className="overflow-y-auto space-y-2 h-[439.2px]" ref={listScrollRef}>
-                {data.content.map(notification => <NotificationItem key={notification.id} data={notification}/>)}
-                {data.content.map(notification => <NotificationItem key={notification.id} data={notification}/>)}
-                {data.content.map(notification => <NotificationItem key={notification.id} data={notification}/>)}
-                {data.content.map(notification => <NotificationItem key={notification.id} data={notification}/>)}
+            <ul className="overflow-y-auto h-[439.2px]" ref={listScrollRef}>
                 {data.content.map(notification => <NotificationItem key={notification.id} data={notification}/>)}
             </ul>
 
