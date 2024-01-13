@@ -14,6 +14,7 @@ const storage = {
         return JSON.parse(window.localStorage.getItem(`${STORAGE_PREFIX}user`) as string);
     },
     clearAll: () => {
+        console.log("clear storage");
         window.localStorage.clear();
     },
     setLoginResponse: (value: LoginResponse) => {

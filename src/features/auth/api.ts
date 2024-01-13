@@ -9,10 +9,11 @@ import {RegisterRequest} from "@features/auth/types/RegisterRequest.ts";
 import {UserProfileRequest} from "@features/auth/types/UserProfileRequest.ts";
 import {UserResponse} from "src/features/user/types";
 import {UserFriendshipResponse} from "@features/user/types/UserFriendshipResponse.ts";
+import {ChannelMemberResponse} from "@features/channel/types/ChannelMemberResponse.ts";
 
 export const authApi = createApi({
         reducerPath: "auth",
-        tagTypes: ["Auth", "Friendship"],
+        tagTypes: ["Auth", "Friendship", "Member"],
         baseQuery: baseQueryWithReAuth,
         endpoints: (builder) => ({
             login: builder.mutation<LoginResponse, LoginRequest>({
@@ -31,7 +32,8 @@ export const authApi = createApi({
                     } catch (err) {
                         console.log(err);
                     }
-                }
+                },
+                invalidatesTags: ["Friendship", "Member"]
             }),
             register: builder.mutation<void, RegisterRequest & { file?: File }>({
                 query: ({file, ...content}) => {
@@ -141,6 +143,27 @@ export const authApi = createApi({
                     method: "DELETE"
                 }),
                 invalidatesTags: (_, __, id) => [{type: "Friendship", id: id}]
+            }),
+            createChannelRequest: builder.mutation<void, number>({
+                query: (channelId) => ({
+                    url: `/channel/${channelId}/member`,
+                    method: "POST"
+                }),
+                invalidatesTags: (_, __, channelId) => [{type: "Member", id: channelId}]
+            }),
+            getChannelRelation: builder.query<ChannelMemberResponse, number>({
+                query: (channelId) => ({
+                    url: `/channel/${channelId}/relation`,
+                    method: "GET"
+                }),
+                providesTags: (_, __, channelId) => [{type: "Member", id: channelId}]
+            }),
+            leaveChannel: builder.mutation<void, number>({
+                query: (channelId) => ({
+                    url: `/channel/${channelId}/member/leave`,
+                    method: "DELETE"
+                }),
+                invalidatesTags: (_, __, channelId) => [{type: "Member", id: channelId}]
             })
         })
     }
@@ -159,5 +182,8 @@ export const {
     useCreateFriendRequestMutation,
     useAcceptFriendRequestMutation,
     useRejectFriendRequestMutation,
-    useUnFriendMutation
+    useUnFriendMutation,
+    useCreateChannelRequestMutation,
+    useGetChannelRelationQuery,
+    useLeaveChannelMutation
 } = authApi;

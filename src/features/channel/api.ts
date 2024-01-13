@@ -1,7 +1,7 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {Page, SocketType} from "@src/types.ts";
 import {difference} from "@utils/arrayUtil.ts";
-import {subscribeTo, unsubscribeTo} from "@utils/socketMessage.ts";
+import {connect, subscribeTo, unsubscribeTo} from "@utils/socketMessage.ts";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import {ChannelResponse} from "@features/channel/types/ChannelResponse.ts";
 import {ChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
@@ -48,9 +48,9 @@ export const channelApi = createApi({
                         await queryFulfilled;
 
                         // compare old and new cache
-                        const addedChannel = difference<ChannelResponse>(getCacheEntry().data?.content || [],
-                            Array.from(channelSet),
-                            (a, b) => a.id === b.id);
+                        const addedChannel = difference<ChannelResponse>(getCacheEntry().data?.content || [], Array.from(channelSet), (a, b) => a.id === b.id);
+
+                        await connect();
 
                         // add new channel to channelSet and subscribe to new channel
                         await Promise.all(addedChannel.map(async (channel) => {
@@ -59,7 +59,7 @@ export const channelApi = createApi({
 
                             // fetch one when there are new message
                             await subscribeTo(`space/${channel.id}`, (message) => {
-                                    
+
                                     switch (message.type) {
                                         case (SocketType.CHAT):
                                             dispatch(channelApi.util?.invalidateTags([{type: "Channel", id: channel.id}]));
@@ -198,13 +198,6 @@ export const channelApi = createApi({
                 }),
                 invalidatesTags: (_, __, channelId) => [{type: "Channel", id: channelId}]
             }),
-            createChannelRequest: builder.mutation<void, number>({
-                query: (id) => ({
-                    url: `/channel/${id}/member`,
-                    method: "GET"
-                }),
-                invalidatesTags: (_, __, channelId) => [{type: "Channel", id: channelId}]
-            }),
             acceptChannelRequest: builder.mutation<void, { channelId: number, memberId: number }>({
                 query: ({channelId, memberId}) => ({
                     url: `/channel/${channelId}/member/${memberId}/accept`,
@@ -225,13 +218,6 @@ export const channelApi = createApi({
                     body: content
                 }),
                 invalidatesTags: (_, __, {channelId}) => [{type: "Channel", id: channelId}]
-            }),
-            unMember: builder.mutation<void, { channelId: number, memberId: number }>({
-                query: ({channelId, memberId}) => ({
-                    url: `/channel/${channelId}/member/${memberId}`,
-                    method: "DELETE"
-                }),
-                invalidatesTags: (_, __, {channelId}) => [{type: "Channel", id: channelId}]
             })
         })
     }
@@ -247,10 +233,8 @@ export const {
     useUpdateChannelProfileMutation,
     useUpdateChannelAvatarMutation,
     useDisableChannelMutation,
-    useCreateChannelRequestMutation,
     useAcceptChannelRequestMutation,
     useRejectChannelRequestMutation,
-    useUpdateMemberPermissionMutation,
-    useUnMemberMutation
+    useUpdateMemberPermissionMutation
 } = channelApi;
 

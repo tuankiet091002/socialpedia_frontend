@@ -5,7 +5,7 @@ import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import {InboxProfileRequest} from "@features/inbox/types/InboxProfileRequest.ts";
 import {InboxResponse} from "@features/inbox/types/InboxResponse.ts";
 import {InboxQueryRequest} from "@features/inbox/types/InboxQueryRequest.ts";
-import {subscribeTo, unsubscribeTo} from "@utils/socketMessage.ts";
+import {connect, subscribeTo, unsubscribeTo} from "@utils/socketMessage.ts";
 import {difference} from "@utils/arrayUtil.ts";
 import {messageApi} from "@features/message/api.ts";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
@@ -35,12 +35,15 @@ export const inboxApi = createApi({
                             Array.from(inboxSet),
                             (a, b) => a.id === b.id);
 
+                        await connect();
+
                         // add new inbox to set and subscribe to new one
-                        await Promise.all(addedInbox.map(inbox => {
+                        await Promise.all(addedInbox.map(async inbox => {
+
                             inboxSet.add(inbox);
 
                             // fetch one when there are new message
-                            subscribeTo(`space/${inbox.id}`, (message) => {
+                            await subscribeTo(`space/${inbox.id}`, (message) => {
 
                                     switch (message.type) {
                                         case (SocketType.CHAT):

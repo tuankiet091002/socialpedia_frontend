@@ -6,14 +6,25 @@ import {Button} from "@components/elements/Button.tsx";
 import {ChannelAvatarForm} from "@features/channel/components/ChannelProfilePage/ChannelAvatarForm.tsx";
 import {ChannelMemberForm} from "@features/channel/components/ChannelProfilePage/ChannelMemberForm.tsx";
 import {ChannelProfileForm} from "@features/channel/components/ChannelProfilePage/ChannelProfileForm.tsx";
+import {RequestType} from "@src/types.ts";
+import {
+    useCreateChannelRequestMutation,
+    useGetChannelRelationQuery,
+    useLeaveChannelMutation
+} from "@features/auth/api.ts";
 
 export const ChannelProfilePage = () => {
     //// SETTING VARIABLES
     // get user email
-    const {locationId} = useParams();
+    const {locationId: locationIdString} = useParams();
+    const locationId = Number(locationIdString);
 
     // main data
-    const {data} = useGetChannelProfileQuery(Number(locationId));
+    const {data} = useGetChannelProfileQuery(locationId);
+    const {data: member} = useGetChannelRelationQuery(locationId);
+    const [createRequest, createResult] = useCreateChannelRequestMutation();
+    const [leaveRequest, leaveResult] = useLeaveChannelMutation();
+
     if (!data) return null;
 
     return (<>
@@ -30,13 +41,36 @@ export const ChannelProfilePage = () => {
                     <ChannelAvatarForm data={data} edit={false}/>
                 </div>
                 <div className="flex items-center justify-end gap-4 bg-white px-5 shadow-2xl h-[50px]">
-                    <Button type="button" className="w-[170px]">Tham gia</Button>
+                    {
+                        // waiting for response
+                        member?.status == RequestType.PENDING ?
+                            <>
+                                <Button type="button" variant="inverse" disabled={true}
+                                        className="w-[250px]">Đang chờ phản hồi</Button>
+                            </>
+                            // already member
+                            : member?.status == RequestType.ACCEPTED ?
+                                <>
+                                    <Button type="button" className="w-[170px]">Nhắn tin</Button>
+                                    <Button type="button" variant="danger" className="w-[170px]"
+                                            onClick={() => leaveRequest(locationId)} isLoading={leaveResult.isLoading}>
+                                        Rời nhóm
+                                    </Button>
+                                </> :
+                                // don't have any relationship
+                                <>
+                                    <Button type="button" className="w-[170px]"
+                                            onClick={() => createRequest(locationId)} isLoading={createResult.isLoading}>
+                                        Vào nhóm
+                                    </Button>
+                                </>
+                    }
                 </div>
-                <div className="grid p-10 grid-cols-[2fr_3fr] space-x-4">
+                <div className="grid p-10 grid-cols-[1fr_3fr] space-x-4">
                     <ChannelProfileForm data={data} edit={false}/>
                     <ChannelMemberForm data={data} edit={false}/>
                 </div>
             </div>
         </>
     );
-}
+};

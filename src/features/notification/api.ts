@@ -3,7 +3,7 @@ import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import {Page} from "@src/types.ts";
 import {NotificationResponse} from "@features/notification/types/NotficationResponse.ts";
 import {NotificationQueryRequest} from "@features/notification/types/NotificationQueryRequest.ts";
-import {subscribeTo, unsubscribeTo} from "@utils/socketMessage.ts";
+import {connect, subscribeTo, unsubscribeTo} from "@utils/socketMessage.ts";
 import storage from "@utils/storage.ts";
 
 
@@ -16,8 +16,7 @@ export const notificationApi = createApi({
             query: (query) => ({url: "/notification", method: "GET", params: query}),
             providesTags: (result) => !result ? [{type: "Notification", id: "LIST"}] :
                 [...result.content.map(({id}) => ({type: "Notification" as const, id})), {
-                    type: "Notification",
-                    id: "LIST"
+                    type: "Notification", id: "LIST"
                 }],
             async onCacheEntryAdded(_, {dispatch, cacheDataLoaded, cacheEntryRemoved}) {
 
@@ -27,10 +26,14 @@ export const notificationApi = createApi({
                 try {
                     await cacheDataLoaded;
 
-                    subscribeTo(`/user/${userId}`, () =>
-                        // if previous code not work because cache, use this
-                        dispatch(notificationApi.util?.invalidateTags([{type: "Notification", id: "LIST"}]))
+                    await connect();
+
+                    await subscribeTo(`user/${userId}/notification`, () => {
+                            console.log("message go");
+                            dispatch(notificationApi.util?.invalidateTags([{type: "Notification", id: "LIST"}]));
+                        }
                     );
+
                 } catch (err) {
                     console.log(err);
                 }

@@ -21,7 +21,7 @@ stompClient.onStompError = (frame) => {
     console.error("Additional details: " + frame.body);
 };
 
-async function connect(): Promise<void> {
+export async function connect(): Promise<void> {
     if (!stompClient.connected) {
         return new Promise((resolve) => {
             stompClient.activate();
@@ -33,7 +33,6 @@ async function connect(): Promise<void> {
 }
 
 export async function subscribeTo(destination: string, callback: (arg0: SocketMessage) => void) {
-    await connect();
     stompClient.subscribe(`/${destination}`, (message) => callback(JSON.parse(message.body)));
     console.log("Subscribed to " + destination + "!");
 }

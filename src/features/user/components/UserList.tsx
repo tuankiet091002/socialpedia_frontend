@@ -78,7 +78,7 @@ export const UserList = () => {
     if (!data) return null;
 
     return (
-        <div className="w-full">
+        <div className="w-full overflow-x-auto">
             <CustomTable table={table}/>
             <hr className="h-6"/>
             <Paginate table={table}/>
