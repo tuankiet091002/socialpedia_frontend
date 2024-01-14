@@ -1,7 +1,11 @@
 import {PersonalChannelList} from "@features/channel/components/ChannelColumn/PersonalChannelList.tsx";
 import {HiOutlineUserGroup} from "react-icons/hi";
+import {ChannelCreateForm} from "@features/channel/components/ChannelColumn/ChannelCreateForm.tsx";
+import {useState} from "react";
+import {Button} from "@components/elements/Button.tsx";
 
 export const ChannelColumn = () => {
+    const [show, setShow] = useState<boolean>(false);
 
     return (<div className="flex h-full flex-col">
         <section
@@ -12,8 +16,9 @@ export const ChannelColumn = () => {
         <section className="grow bg-yellow-300">
             <PersonalChannelList/>
         </section>
-        <section className="bg-green-600 h-[50px]">
-            Add channel
+        <section className="h-[50px] flex justify-center p-1">
+            <Button type="button" onClick={() => setShow(true)}>Create New Channel</Button>
+            {show && <ChannelCreateForm setShow={setShow}/>}
         </section>
-    </div>)
-}
+    </div>);
+};

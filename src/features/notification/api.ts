@@ -19,7 +19,6 @@ export const notificationApi = createApi({
                     type: "Notification", id: "LIST"
                 }],
             async onCacheEntryAdded(_, {dispatch, cacheDataLoaded, cacheEntryRemoved}) {
-
                 // get current auth id
                 const userId = storage.getUser().id;
 
@@ -29,14 +28,13 @@ export const notificationApi = createApi({
                     await connect();
 
                     await subscribeTo(`user/${userId}/notification`, () => {
-                            console.log("message go");
                             dispatch(notificationApi.util?.invalidateTags([{type: "Notification", id: "LIST"}]));
                         }
                     );
-
                 } catch (err) {
                     console.log(err);
                 }
+
                 await cacheEntryRemoved;
                 unsubscribeTo(`/user/${userId}`);
             }

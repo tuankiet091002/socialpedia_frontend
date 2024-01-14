@@ -19,8 +19,9 @@ const linkList = [
 export const Sidebar = () => {
     const location = useLocation();
 
-    return (<nav className="flex flex-col items-center justify-between fixed top-0 lg:left-0 left-[-300px] duration-200
-    py-3 mt-[68px] w-[60px] overflow-y-auto bg-white shadow h-screen" id="mobile-menu">
+    return (<nav
+            className="fixed top-0 flex h-screen flex-col items-center justify-between overflow-y-auto bg-white py-3 shadow duration-200 left-[-300px] mt-[68px] w-[60px] md:left-0"
+            id="mobile-menu">
             <ul className="mt-1 flex w-full flex-col items-center gap-y-3">
                 {linkList.map(item => <Link to={item.link} key={item.link}>
                     {location.pathname == item.link ?

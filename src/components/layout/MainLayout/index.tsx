@@ -11,11 +11,11 @@ export const MainLayout = () => {
         <div className="h-screen w-100">
             <Header/>
             <Sidebar/>
-            <div className="w-100 h-[calc(100vh-68px)] lg:pl-[60px] overflow-scroll">
+            <div className="w-100 h-[calc(100vh-68px)] md:pl-[60px] overflow-scroll">
                 <SuspenseLayout>
                     <Outlet/>
                 </SuspenseLayout>
             </div>
         </div>
-    )
-}
+    );
+};

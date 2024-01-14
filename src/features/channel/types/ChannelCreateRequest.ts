@@ -3,6 +3,6 @@ import {ChannelMemberRequest} from "@features/channel/types/ChannelMemberRequest
 export type ChannelCreateRequest = {
     name: string;
     description: string;
-    avatarFile: File;
+    avatarFile?: File;
     channelMembersId: ChannelMemberRequest[];
 }
