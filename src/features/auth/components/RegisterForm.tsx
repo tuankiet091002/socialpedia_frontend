@@ -27,8 +27,6 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
     const [register, result] = useRegisterMutation();
     const [file, setFile] = useState<File>();
 
-    if (result.isSuccess) onSuccess();
-
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setFile(e.target.files[0]);
@@ -37,7 +35,7 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
     return (<div>
         <Form<RegisterRequest, typeof schema>
             onSubmit={async (value: RegisterRequest) => {
-                register({...value, file});
+                register({...value, file}).unwrap().then(onSuccess);
             }}
             schema={schema}
         >
@@ -107,8 +105,7 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
                             <input
                                 id="registerFile"
                                 type="file"
-                                className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm text-gray-900 border border-gray-300
-                                shadow-sm hover:bg-gray-100"
+                                className="hidden"
                                 onChange={handleFileChange}
                             />
 

@@ -19,15 +19,10 @@ type LoginFormProps = {
 export const LoginForm = ({onSuccess}: LoginFormProps) => {
     const [login, result] = useLoginMutation();
 
-    if (result.isSuccess) {
-        onSuccess();
-    }
-
-
     return (<div>
         <Form<LoginRequest, typeof schema>
             onSubmit={async (values: LoginRequest) => {
-                await login(values);
+                login(values).unwrap().then(onSuccess);
             }}
             schema={schema}
         >

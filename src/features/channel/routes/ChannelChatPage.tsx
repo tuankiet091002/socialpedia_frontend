@@ -10,7 +10,8 @@ import {MessageInput} from "@features/message/components/MessageInput.tsx";
 import {useState} from "react";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
 
-const INITIAL_PAGE = 3;
+
+const INITIAL_PAGE = 10;
 
 export const ChannelChatPage = () => {
     // get current locationId as number

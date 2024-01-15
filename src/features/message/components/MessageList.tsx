@@ -6,6 +6,7 @@ import {BaseQueryFn, FetchArgs, FetchBaseQueryError, QueryDefinition} from "@red
 import {MessageResponse} from "@features/message/types/MessageResponse.ts";
 import {Page} from "@src/types.ts";
 import {useParams} from "react-router-dom";
+import {setScrollspy} from "@utils/setScrollspy.ts";
 
 export type MessageListProps = {
     queryFunc: UseQuery<QueryDefinition<
@@ -18,12 +19,14 @@ export type MessageListProps = {
     setQuery: Dispatch<SetStateAction<MessageQueryRequest>>
 }
 
-const INITIAL_PAGE = 3;
+const INITIAL_PAGE = 10;
 
 export const MessageList = ({queryFunc, query, setQuery}: MessageListProps) => {
     //// SETTING VARIABLE
+    // get location id
     const {locationId: locationNum} = useParams();
     const locationId = Number(locationNum);
+
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
 
@@ -39,31 +42,16 @@ export const MessageList = ({queryFunc, query, setQuery}: MessageListProps) => {
 
     // set up scrollspy
     useEffect(() => {
-        const listScrollElement: HTMLUListElement | null = listScrollRef.current;
-
-        if (listScrollElement) {
-            // scroll to bottom in the first time
-            if (data?.size === INITIAL_PAGE) {
-                listScrollElement.scrollTo(0, listScrollElement.scrollHeight);
-            } else {
-                // scroll to previous location in next time
-                listScrollElement.scrollTo(0, data ? (INITIAL_PAGE) * 200 : 0);
-            }
-            // try to fetch new data if scroll to the top
-            const onScroll = () => {
-                if (listScrollElement.scrollTop == 0 && data && !data.last) {
-                    const newSize = query.pageSize + INITIAL_PAGE;
-                    map.current.set(locationId, newSize);
-                    setQuery(query => ({...query, pageSize: newSize}));
-                }
-            };
-            listScrollElement.addEventListener("scroll", onScroll);
-            // clean-up
-            return () => {
-                listScrollElement.removeEventListener("scroll", onScroll);
-            };
+            return setScrollspy<HTMLUListElement>(listScrollRef, false,
+                () => {
+                    if (data && !data.last) {
+                        const newSize = query.pageSize + INITIAL_PAGE;
+                        map.current.set(locationId, newSize);
+                        setQuery(query => ({...query, pageSize: newSize}));
+                    }
+                });
         }
-    }, [data]);
+        , [data, locationId, query.pageSize, setQuery]);
 
     // wait for next render when there is data
     if (!data) return null;

@@ -10,6 +10,7 @@ import {UserProfileRequest} from "@features/auth/types/UserProfileRequest.ts";
 import {UserResponse} from "src/features/user/types";
 import {UserFriendshipResponse} from "@features/user/types/UserFriendshipResponse.ts";
 import {ChannelMemberResponse} from "@features/channel/types/ChannelMemberResponse.ts";
+import {notificationApi} from "@features/notification/api.ts";
 
 export const authApi = createApi({
         reducerPath: "auth",
@@ -128,6 +129,15 @@ export const authApi = createApi({
                     url: `/user/${id}/friend/accept`,
                     method: "PUT"
                 }),
+                async onQueryStarted(_, {queryFulfilled, dispatch}) {
+                    try {
+                        await queryFulfilled;
+
+                        dispatch(notificationApi.util?.invalidateTags(["Notification"]));
+                    } catch (err) {
+                        console.log(err);
+                    }
+                },
                 invalidatesTags: (_, __, id) => [{type: "Friendship", id: id}]
             }),
             rejectFriendRequest: builder.mutation<void, number>({
@@ -135,6 +145,15 @@ export const authApi = createApi({
                     url: `/user/${id}/friend/reject`,
                     method: "PUT"
                 }),
+                async onQueryStarted(_, {queryFulfilled, dispatch}) {
+                    try {
+                        await queryFulfilled;
+
+                        dispatch(notificationApi.util?.invalidateTags(["Notification"]));
+                    } catch (err) {
+                        console.log(err);
+                    }
+                },
                 invalidatesTags: (_, __, id) => [{type: "Friendship", id: id}]
             }),
             unFriend: builder.mutation<void, number>({

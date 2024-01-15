@@ -1,11 +1,10 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {UserProfileForm} from "@features/user/components/UserProfilePage/UserProfileForm.tsx";
 import {useGetUserProfileQuery} from "@features/user/api.ts";
 import {UserAvatarForm} from "@features/user/components/UserProfilePage/UserAvatarForm.tsx";
 import {IoPeopleCircleOutline} from "react-icons/io5";
 import {Button} from "@components/elements/Button.tsx";
 import {Head} from "@components/elements/Head.tsx";
-import emptyAvatar from "@assets/empty avatar.jpg";
 import {
     useAcceptFriendRequestMutation,
     useCreateFriendRequestMutation,
@@ -15,9 +14,12 @@ import {
 } from "@features/auth/api.ts";
 import {RequestType} from "@src/types.ts";
 import {useAuth} from "@utils/useAuth.ts";
+import {useCreateInboxMutation} from "@features/inbox/api.ts";
 
 export const UserProfilePage = () => {
+    ////
     // get user email
+    const navigate = useNavigate()
     const {userId: userIdString} = useParams();
     const userId = Number(userIdString);
 
@@ -25,12 +27,22 @@ export const UserProfilePage = () => {
     const {data} = useGetUserProfileQuery(Number(userId));
     const {user} = useAuth();
     const {data: friendship} = useGetUserFriendshipQuery(userId);
+    const [createInbox] = useCreateInboxMutation();
     const [createRequest, createResult] = useCreateFriendRequestMutation();
     const [acceptRequest, acceptResult] = useAcceptFriendRequestMutation();
     const [rejectRequest, rejectResult] = useRejectFriendRequestMutation();
     const [unFriend, unFriendResult] = useUnFriendMutation();
 
     if (!data || !user) return null;
+
+    const handleNavigateToMessage = () => {
+        if (friendship?.inboxId) {
+            navigate(`/inbox/${friendship.inboxId}`)
+        } else {
+            createInbox(userId).unwrap()
+                .then(() => navigate(`/inbox`))
+        }
+    }
 
     return (<>
         <Head title={`${data.name} | Profile`}/>
@@ -43,7 +55,7 @@ export const UserProfilePage = () => {
             <div
                 className={`relative flex items-center justify-between px-6 py-3 h-[120px] lg:justify-center
                 bg-[url("/src/assets/8795038.jpg")]`}>
-                <UserAvatarForm defaultUrl={data.avatar?.url || emptyAvatar}/>
+                <UserAvatarForm edit={false} defaultUrl={data.avatar?.url}/>
                 <div className="text-5xl text-white">{data.name}</div>
 
             </div>
@@ -53,32 +65,32 @@ export const UserProfilePage = () => {
                     friendship?.status == RequestType.PENDING && friendship?.senderId == user.id ?
                         <>
                             <Button type="button" variant="inverse" disabled={true}
-                                    className="w-[250px]">Đang chờ phản hồi</Button>
+                                    className="w-[250px]">Wait for response</Button>
                         </> : friendship?.status == RequestType.PENDING && friendship?.receiverId == user.id ?
                             <>
                                 <Button type="button" className="w-[170px]"
                                         onClick={() => acceptRequest(userId)} isLoading={acceptResult.isLoading}>
-                                    Chấp nhận
+                                    Accept
                                 </Button>
                                 <Button type="button" variant="danger" className="w-[170px]"
                                         onClick={() => rejectRequest(userId)} isLoading={rejectResult.isLoading}>
-                                    Từ chối
+                                    Reject
                                 </Button>
                             </>
                             // already friend
                             : friendship?.status == RequestType.ACCEPTED ?
                                 <>
-                                    <Button type="button" className="w-[170px]">Nhắn tin</Button>
+                                    <Button type="button" onClick={handleNavigateToMessage}>Message</Button>
                                     <Button type="button" variant="danger" className="w-[170px]"
                                             onClick={() => unFriend(userId)} isLoading={unFriendResult.isLoading}>
-                                        Hủy kết bạn
+                                        Unfriend
                                     </Button>
                                 </> :
                                 // don't have any relationship
                                 <>
                                     <Button type="button" className="w-[170px]"
                                             onClick={() => createRequest(userId)} isLoading={createResult.isLoading}>
-                                        Thêm bạn
+                                        Add friend
                                     </Button>
                                 </>
                 }

@@ -1,14 +1,16 @@
 import {ChangeEvent, useState} from "react";
 import {useUpdateAvatarMutation} from "@features/auth/api.ts";
 import emptyAvatar from "@assets/empty avatar.jpg";
+import {IoIosSettings} from "react-icons/io";
+import {Button} from "@components/elements/Button.tsx";
 
 type AvatarFormProps = {
-    defaultUrl: string
+    defaultUrl: string,
+    edit: boolean
 }
 
-export const UserAvatarForm = ({defaultUrl}: AvatarFormProps) => {
+export const UserAvatarForm = ({edit, defaultUrl}: AvatarFormProps) => {
     const [updateAvatar] = useUpdateAvatarMutation();
-    const [isEdit, setIsEdit] = useState<boolean>(false);
     const [file, setFile] = useState<File>();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -19,18 +21,35 @@ export const UserAvatarForm = ({defaultUrl}: AvatarFormProps) => {
     };
 
     const handleSubmit = () => {
-        if (file) updateAvatar(file);
-        window.alert("Profile update successfully.");
+        if (file) updateAvatar(file).unwrap().then(() => {
+            setFile(undefined);
+            window.alert("Profile updated successfully.");
+        });
     };
 
     return (<div className="static left-20 top-[20px] lg:absolute">
-        <img src={isEdit && file ? URL.createObjectURL(file) : defaultUrl}
-             className="rounded-full border-white border-[5px] h-[150px]" alt={emptyAvatar}/>
-        {/*{isEdit ? <div>*/}
-        {/*        <input type="file" className="form-control" onChange={handleChange}/>*/}
-        {/*        <Button onClick={handleSubmit} disabled={!file}>Save change</Button>*/}
-        {/*        <Button onClick={() => setIsEdit(false)}>Cancel</Button>*/}
-        {/*    </div>*/}
-        {/*    : <Button onClick={() => setIsEdit(true)}>Edit Image</Button>}*/}
+        <div className="relative">
+            <img src={file && URL.createObjectURL(file) || defaultUrl || emptyAvatar}
+                 className="rounded-full border-white border-[5px] h-[150px] w-[150px]" alt=""/>
+            {edit &&
+                <label>
+                    <IoIosSettings
+                        className="absolute right-2 cursor-pointer rounded-full border-blue-600 bg-blue-600 text-3xl text-white top-[110px] border-[3px]"/>
+                    <input
+                        type="file"
+                        className="hidden"
+                        onChange={handleChange}
+                    />
+                    {file &&
+                        <div
+                            className="absolute inset-x-auto mt-2 flex w-full justify-center gap-x-2 bottom-[-30px] lg:right-[-150px] lg:bottom-3">
+                            <Button type="button" size="sm"
+                                    className="!px-0" onClick={handleSubmit}>Save</Button>
+                            <Button type="button" variant="danger" size="sm"
+                                    className="!px-0" onClick={() => setFile(undefined)}>Cancel</Button>
+                        </div>}
+                </label>
+            }
+        </div>
     </div>);
 };

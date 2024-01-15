@@ -5,4 +5,5 @@ export type UserFriendshipResponse = {
     receiverId: number;
     status: RequestType;
     modifiedDate: string;
+    inboxId: number;
 }

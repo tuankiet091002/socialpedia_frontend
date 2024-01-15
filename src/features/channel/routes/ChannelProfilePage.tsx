@@ -12,6 +12,7 @@ import {
     useGetChannelRelationQuery,
     useLeaveChannelMutation
 } from "@features/auth/api.ts";
+import {useState} from "react";
 
 export const ChannelProfilePage = () => {
     //// SETTING VARIABLES
@@ -22,6 +23,7 @@ export const ChannelProfilePage = () => {
     // main data
     const {data} = useGetChannelProfileQuery(locationId);
     const {data: member} = useGetChannelRelationQuery(locationId);
+    const [edit, setEdit] = useState<boolean>(false);
     const [createRequest, createResult] = useCreateChannelRequestMutation();
     const [leaveRequest, leaveResult] = useLeaveChannelMutation();
 
@@ -38,7 +40,7 @@ export const ChannelProfilePage = () => {
                 <div
                     className={`relative flex items-center justify-between px-6 py-3 h-[120px] lg:justify-center
                 bg-[url("/src/assets/8795038.jpg")]`}>
-                    <ChannelAvatarForm data={data} edit={false}/>
+                    <ChannelAvatarForm data={data} edit={edit}/>
                 </div>
                 <div className="flex items-center justify-end gap-4 bg-white px-5 shadow-2xl h-[50px]">
                     {
@@ -46,29 +48,29 @@ export const ChannelProfilePage = () => {
                         member?.status == RequestType.PENDING ?
                             <>
                                 <Button type="button" variant="inverse" disabled={true}
-                                        className="w-[250px]">Đang chờ phản hồi</Button>
+                                        className="w-[250px]">Waiting for response</Button>
                             </>
                             // already member
                             : member?.status == RequestType.ACCEPTED ?
                                 <>
-                                    <Button type="button" className="w-[170px]">Nhắn tin</Button>
-                                    <Button type="button" variant="danger" className="w-[170px]"
+                                    <Button type="button" onClick={() => setEdit(e => !e)}>Edit</Button>
+                                    <Button type="button" variant="danger"
                                             onClick={() => leaveRequest(locationId)} isLoading={leaveResult.isLoading}>
-                                        Rời nhóm
+                                        Leave Channel
                                     </Button>
                                 </> :
                                 // don't have any relationship
                                 <>
                                     <Button type="button" className="w-[170px]"
                                             onClick={() => createRequest(locationId)} isLoading={createResult.isLoading}>
-                                        Vào nhóm
+                                        Join Channel
                                     </Button>
                                 </>
                     }
                 </div>
                 <div className="grid p-10 grid-cols-[1fr_3fr] space-x-4">
-                    <ChannelProfileForm data={data} edit={false}/>
-                    <ChannelMemberForm data={data} edit={false}/>
+                    <ChannelProfileForm data={data} edit={edit}/>
+                    <ChannelMemberForm data={data} edit={edit}/>
                 </div>
             </div>
         </>

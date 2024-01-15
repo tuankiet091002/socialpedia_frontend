@@ -2,12 +2,15 @@ import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
 import {ChannelCreateRequest} from "@features/channel/types/ChannelCreateRequest.ts";
 import {useGetFriendListQuery} from "@features/user/api.ts";
 import {ChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
-import {ChannelMemberItem} from "@features/channel/components/ChannelColumn/ChannelMemberItem.tsx";
+import {ChannelMemberItem} from "@features/channel/components/ChannelColumn/ChannelCreateForm/ChannelMemberItem.tsx";
+import {setScrollspy} from "@utils/setScrollspy.ts";
 
 type ChannelCreateFormMemberProps = {
     form: ChannelCreateRequest,
     setForm: Dispatch<SetStateAction<ChannelCreateRequest>>
 }
+
+const INITIAL_PAGE = 8;
 
 export const ChannelCreateFormMember = ({form, setForm}: ChannelCreateFormMemberProps) => {
     //// SETTING VARIABLE
@@ -21,24 +24,13 @@ export const ChannelCreateFormMember = ({form, setForm}: ChannelCreateFormMember
 
     // set up scrollspy
     useEffect(() => {
-        const listScrollElement: HTMLUListElement | null = listScrollRef.current;
-
-        if (listScrollElement) {
-            const onScroll = () => {
-                const {scrollTop, scrollHeight, clientHeight} = listScrollElement;
-                const isNearBottom = scrollTop + clientHeight >= scrollHeight;
-
-                if (data && isNearBottom && !data.last) {
-                    setQuery(query => ({...query, pageSize: query.pageSize + 3}));
-                }
-            };
-            listScrollElement.addEventListener("scroll", onScroll);
-            // clean-up
-            return () => {
-                listScrollElement.removeEventListener("scroll", onScroll);
-            };
+            return setScrollspy<HTMLUListElement>(listScrollRef, true,
+                () => data && !data.last && setQuery(query => ({
+                    ...query,
+                    pageSize: query.pageSize + INITIAL_PAGE
+                })));
         }
-    }, [data]);
+        , [data]);
 
 
     if (!data) return null;

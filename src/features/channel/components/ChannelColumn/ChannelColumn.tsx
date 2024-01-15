@@ -1,6 +1,6 @@
 import {PersonalChannelList} from "@features/channel/components/ChannelColumn/PersonalChannelList.tsx";
 import {HiOutlineUserGroup} from "react-icons/hi";
-import {ChannelCreateForm} from "@features/channel/components/ChannelColumn/ChannelCreateForm.tsx";
+import {ChannelCreateForm} from "@features/channel/components/ChannelColumn/ChannelCreateForm";
 import {useState} from "react";
 import {Button} from "@components/elements/Button.tsx";
 

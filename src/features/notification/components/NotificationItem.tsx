@@ -37,7 +37,7 @@ export const NotificationItem = ({data}: NotificationItemProps) => {
             acceptFunc = () => acceptMemberRequest({
                 channelId: Number(destinationArray[2]),
                 memberId: Number(destinationArray[2])
-            });
+            }).unwrap().then();
             acceptResult = acceptMemberResult;
             rejectFunc = () => rejectMemberRequest({
                 channelId: Number(destinationArray[2]),

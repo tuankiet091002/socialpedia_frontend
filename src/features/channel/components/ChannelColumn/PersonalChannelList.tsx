@@ -3,16 +3,17 @@ import {useEffect, useRef, useState} from "react";
 import {ChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
 import {useGetPersonalChannelListQuery} from "@features/channel/api.ts";
 import {SpaceItem} from "@features/message/components/SpaceItem.tsx";
+import {setScrollspy} from "@utils/setScrollspy.ts";
 
-const INITIAL_PAGE = 3
+const INITIAL_PAGE = 3;
 
 export const PersonalChannelList = () => {
     //// SETTING VARIABLE
     // default query state without name field
-    const initialState = {pageNo: 0, pageSize: INITIAL_PAGE, orderBy: "id" as const, orderDirection: "ASC" as const}
-    const [query, setQuery] = useState<ChannelQueryRequest>(initialState)
+    const initialState = {pageNo: 0, pageSize: INITIAL_PAGE, orderBy: "id" as const, orderDirection: "ASC" as const};
+    const [query, setQuery] = useState<ChannelQueryRequest>(initialState);
     // variable use for search
-    const [name, setName] = useState<string | undefined>(undefined)
+    const [name, setName] = useState<string | undefined>(undefined);
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
     // main data
@@ -22,32 +23,21 @@ export const PersonalChannelList = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             // merge name into query
-            setQuery(query => ({...query, name, pageNo: 0}))
-        }, 500)
+            setQuery(query => ({...query, name, pageNo: 0}));
+        }, 500);
 
         return () => clearTimeout(timer);
-    }, [name])
+    }, [name]);
 
     // set up scrollspy
     useEffect(() => {
-        const listScrollElement: HTMLUListElement | null = listScrollRef.current;
-
-        if (listScrollElement) {
-            const onScroll = () => {
-                const {scrollTop, scrollHeight, clientHeight} = listScrollElement;
-                const isNearBottom = scrollTop + clientHeight >= scrollHeight;
-
-                if (data && isNearBottom && !data.last) {
-                    setQuery(query => ({...query, pageSize: query.pageSize + INITIAL_PAGE}))
-                }
-            }
-            listScrollElement.addEventListener("scroll", onScroll);
-            // clean-up
-            return () => {
-                listScrollElement.removeEventListener("scroll", onScroll);
-            };
+            return setScrollspy<HTMLUListElement>(listScrollRef, true,
+                () => data && !data.last && setQuery(query => ({
+                    ...query,
+                    pageSize: query.pageSize + INITIAL_PAGE
+                })));
         }
-    }, [data]);
+        , [data]);
 
     // wait for next render when there is data
     if (!data) return null;
@@ -64,5 +54,5 @@ export const PersonalChannelList = () => {
                 {data?.content.map(item => <SpaceItem key={item.id} type="channel" data={item}/>)}
             </ul>
         </div>
-    )
-}
+    );
+};

@@ -4,7 +4,9 @@ import emptyAvatar from "@assets/empty avatar.jpg";
 import {FaPlus} from "react-icons/fa";
 import {Button} from "@components/elements/Button.tsx";
 import {ChannelCreateRequest} from "@features/channel/types/ChannelCreateRequest.ts";
-import {ChannelCreateFormMember} from "@features/channel/components/ChannelColumn/ChannelCreateFormMember.tsx";
+import {
+    ChannelCreateFormMember
+} from "@features/channel/components/ChannelColumn/ChannelCreateForm/ChannelCreateFormMember.tsx";
 
 export type ChannelCreateFormProps = {
     setShow: Dispatch<SetStateAction<boolean>>
