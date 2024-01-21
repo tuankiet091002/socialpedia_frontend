@@ -1,12 +1,12 @@
 export type Page<T> = {
     content: T[];
-    "last": boolean,
-    "totalElements": number,
-    "totalPages": number,
-    "size": number,
-    "number": number,
-    "first": boolean,
-    "empty": boolean
+    size: number,
+    number: number,
+    first: boolean,
+    last: boolean,
+    empty: boolean
+    totalElements: number,
+    totalPages: number,
 }
 
 export type ResourceEntity = {

@@ -1,16 +1,18 @@
 import {IoIosSearch} from "react-icons/io";
 import {useEffect, useRef, useState} from "react";
-import {ChannelQueryRequest, newChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
 import {useGetPersonalChannelListQuery} from "@features/channel/api.ts";
 import {SpaceItem} from "@features/message/components/SpaceItem.tsx";
 import {setScrollspy} from "@utils/setScrollspy.ts";
+import {RootState} from "@src/main.tsx";
+import {useDispatch, useSelector} from "react-redux";
+import {channelQueryChange} from "@src/querySlice.ts";
 
 export const PersonalChannelList = () => {
     //// SETTING VARIABLE
-    // default query state without name field
-    const [query, setQuery] = useState<ChannelQueryRequest>(newChannelQueryRequest());
-    // variable use for search
-    const [name, setName] = useState<string | undefined>(undefined);
+    // get query from slice
+    const dispatch = useDispatch();
+    const query = useSelector((state: RootState) => state.query.channelQuery)
+    const [name, setName] = useState<string>("");
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
     // main data
@@ -20,7 +22,7 @@ export const PersonalChannelList = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             // merge name into query
-            setQuery(query => ({...query, name, pageNo: 0}));
+            dispatch(channelQueryChange({...query, name: name}))
         }, 500);
 
         return () => clearTimeout(timer);
@@ -28,13 +30,10 @@ export const PersonalChannelList = () => {
 
     // set up scrollspy
     useEffect(() => {
-            return setScrollspy<HTMLUListElement>(listScrollRef, true,
-                () => data && !data.last && setQuery(query => ({
-                    ...query,
-                    pageSize: query.pageSize + 3
-                })));
-        }
-        , [data]);
+        return setScrollspy<HTMLUListElement>(listScrollRef, true,
+            () => data && !data.last &&
+                dispatch(channelQueryChange({...query, pageNo: query.pageNo + 1})))
+    }, [data]);
 
     // wait for next render when there is data
     if (!data) return null;

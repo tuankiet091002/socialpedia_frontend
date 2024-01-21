@@ -1,12 +1,13 @@
 import {MessageItem} from "@features/message/components/MessageItem.tsx";
-import {Dispatch, SetStateAction, useEffect, useRef} from "react";
+import {useEffect, useRef} from "react";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
 import {UseQuery} from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import {BaseQueryFn, FetchArgs, FetchBaseQueryError, QueryDefinition} from "@reduxjs/toolkit/query";
 import {MessageResponse} from "@features/message/types/MessageResponse.ts";
 import {Page} from "@src/types.ts";
-import {useParams} from "react-router-dom";
 import {setScrollspy} from "@utils/setScrollspy.ts";
+import {useDispatch} from "react-redux";
+import {messageQueryChange} from "@src/querySlice.ts";
 
 export type MessageListProps = {
     queryFunc: UseQuery<QueryDefinition<
@@ -16,42 +17,22 @@ export type MessageListProps = {
         Page<MessageResponse>,
         "message">>;
     query: MessageQueryRequest
-    setQuery: Dispatch<SetStateAction<MessageQueryRequest>>
 }
 
-const INITIAL_PAGE = 10;
-
-export const MessageList = ({queryFunc, query, setQuery}: MessageListProps) => {
+export const MessageList = ({queryFunc, query}: MessageListProps) => {
     //// SETTING VARIABLE
-    // get location id
-    const {locationId: locationNum} = useParams();
-    const locationId = Number(locationNum);
-
+    const dispatch = useDispatch();
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
-
-    // map to get each space's last page size
-    const map = useRef(new Map<number, number>());
-    useEffect(() => {
-        // get value in map, or else fetch first page
-        const pageSize = map.current.get(locationId) || INITIAL_PAGE;
-        setQuery(query => ({...query, locationId, pageSize: pageSize}));
-    }, [locationId, setQuery]);
 
     const {data} = queryFunc(query);
 
     // set up scrollspy
     useEffect(() => {
-            return setScrollspy<HTMLUListElement>(listScrollRef, false,
-                () => {
-                    if (data && !data.last) {
-                        const newSize = query.pageSize + INITIAL_PAGE;
-                        map.current.set(locationId, newSize);
-                        setQuery(query => ({...query, pageSize: newSize}));
-                    }
-                });
-        }
-        , [data, locationId, query.pageSize, setQuery]);
+        return setScrollspy<HTMLUListElement>(listScrollRef, true,
+            () => data && !data.last &&
+                dispatch(messageQueryChange({...query, pageNo: query.pageNo + 1})))
+    }, [data]);
 
     // wait for next render when there is data
     if (!data) return null;

@@ -1,7 +1,7 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {Page, SocketType} from "@src/types.ts";
 import {difference} from "@utils/arrayUtil.ts";
-import {connect, subscribeTo, unsubscribeTo} from "@utils/socketMessage.ts";
+import {connect, subscribeTo} from "@utils/socketMessage.ts";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import {ChannelResponse} from "@features/channel/types/ChannelResponse.ts";
 import {ChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
@@ -135,19 +135,29 @@ export const channelApi = createApi({
                         console.log(err);
                     }
                 },
-                async onCacheEntryAdded(_, {cacheDataLoaded, cacheEntryRemoved}) {
-                    try {
-                        // wait for the initial query to resolve before proceeding
-                        await cacheDataLoaded;
+                serializeQueryArgs: ({queryArgs, endpointName}) => {
+                    return endpointName + "_" + queryArgs.name;
+                },
+                merge: (currentCache, newItems) => {
+                    // setting variable
+                    const numberDifference = newItems.totalElements - currentCache.totalElements;
+                    const size = currentCache.size;
 
-                    } catch (err) {
-                        console.log(err);
+                    if (numberDifference <= size) {
+                        // splice logic
+                        currentCache.content.splice(Math.max(newItems.number * size - numberDifference, 0),
+                            newItems.number == 0 ? size - numberDifference : size, ...newItems.content);
+                        // other fields
+                        currentCache.totalElements = newItems.totalElements
+                        currentCache.last = newItems.last
+                        currentCache.totalPages = newItems.totalPages
+                    } else {
+                        console.log("overflowing number of element")
                     }
 
-                    // cacheEntryRemoved will resolve when the cache subscription is no longer active
-                    await cacheEntryRemoved;
-                    // unsubscribed to channel when cache is inactive
-                    channelSet.forEach((channel) => unsubscribeTo(`channel/${channel.id}`));
+                },
+                forceRefetch({currentArg, previousArg}) {
+                    return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
                 }
             }),
             getChannelProfile: builder.query<ChannelResponse, number>({

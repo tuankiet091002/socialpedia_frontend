@@ -1,15 +1,18 @@
 import {SpaceItem} from "@features/message/components/SpaceItem.tsx";
 import {useEffect, useRef, useState} from "react";
 import {useGetInboxListQuery} from "@features/inbox/api.ts";
-import {InboxQueryRequest, newInboxQueryRequest} from "@features/inbox/types/InboxQueryRequest.ts";
 import {IoIosSearch} from "react-icons/io";
 import {setScrollspy} from "@utils/setScrollspy.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "@src/main.tsx";
+import {inboxQueryChange} from "@src/querySlice.ts";
 
 export const InboxList = () => {
     //// SETTING VARIABLE
-    const [query, setQuery] = useState<InboxQueryRequest>(newInboxQueryRequest())
+    const dispatch = useDispatch();
+    const query = useSelector((state: RootState) => state.query.inboxQuery)
     // variable use for search
-    const [name, setName] = useState<string | undefined>(undefined)
+    const [name, setName] = useState<string>("")
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
     // main data
@@ -19,21 +22,18 @@ export const InboxList = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             // merge name into query
-            setQuery(query => ({...query, name, pageNo: 0}))
+            dispatch(inboxQueryChange({...query, name: name}))
         }, 500)
 
         return () => clearTimeout(timer);
     }, [name])
-    
+
     // set up scrollspy
     useEffect(() => {
-            return setScrollspy<HTMLUListElement>(listScrollRef, true,
-                () => data && !data.last && setQuery(query => ({
-                    ...query,
-                    pageSize: query.pageSize + 3
-                })));
-        }
-        , [data]);
+        return setScrollspy<HTMLUListElement>(listScrollRef, true,
+            () => data && !data.last &&
+                dispatch(inboxQueryChange({...query, pageNo: query.pageNo + 1})))
+    }, [data]);
 
     // wait for next render when there is data
     if (!data) return null;

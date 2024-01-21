@@ -79,7 +79,6 @@ export const Paginate = <Entry, >({table}: PaginateProps<Entry>) => {
             </span>
             <select
                 value={table.getState().pagination.pageSize}
-                defaultValue={5}
                 className="w-24 rounded border p-1 focus:outline-none"
                 onChange={e => {
                     table.setPageSize(Number(e.target.value))
