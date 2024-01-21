@@ -7,6 +7,7 @@ import {useState} from "react";
 import {ChannelResponse} from "@features/channel/types/ChannelResponse.ts";
 import {useUpdateChannelProfileMutation} from "@features/channel/api.ts";
 import {ChannelProfileRequest} from "@features/channel/types/ChannelProfileRequest.ts";
+import {TextareaField} from "@components/form/TextareaField.tsx";
 
 type ChannelProfileFormProps = {
     data: ChannelResponse;
@@ -14,8 +15,8 @@ type ChannelProfileFormProps = {
 }
 
 const schema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    description: z.string().min(1, 'Description is required')
+    name: z.string().min(1, "Name is required"),
+    description: z.string().min(1, "Description is required")
 })
 
 export const ChannelProfileForm = ({data, edit}: ChannelProfileFormProps) => {
@@ -32,8 +33,8 @@ export const ChannelProfileForm = ({data, edit}: ChannelProfileFormProps) => {
             options={{
                 defaultValues: {
                     name: data.name,
-                    description: data.description,
-                },
+                    description: data.description
+                }
             }}
             schema={schema}
         >
@@ -42,16 +43,15 @@ export const ChannelProfileForm = ({data, edit}: ChannelProfileFormProps) => {
                     <InputField
                         type="text"
                         label="Fullname:"
-                        error={formState.errors['name']}
-                        registration={{...register('name'), disabled: !isEditing}}
+                        error={formState.errors["name"]}
+                        registration={{...register("name"), disabled: !isEditing}}
                         className="w-5/6 text-lg disabled:border-none"
                     />
-                    <InputField
-                        type="text"
+                    <TextareaField
                         label="Description:"
-                        error={formState.errors['description']}
-                        registration={{...register('description'), disabled: !isEditing}}
-                        className="w-5/6 text-lg disabled:border-none"
+                        error={formState.errors["description"]}
+                        registration={{...register("description"), disabled: !isEditing}}
+                        className="w-5/6 !text-lg    disabled:border-none h-[250px]"
                     />
                     {result.isError && <span className="text-sm text-red-500">
                         {(result.error as { data: ErrorResponse }).data.message}

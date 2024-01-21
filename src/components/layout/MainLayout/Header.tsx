@@ -1,12 +1,12 @@
 import {Link} from "react-router-dom";
 import avatar from "@assets/Logomark.svg";
-import emptyAvatar from "@assets/empty avatar.jpg";
 import storage from "@utils/storage.ts";
 import {IoIosArrowDown, IoIosNotificationsOutline} from "react-icons/io";
 import {useState} from "react";
 import {NotificationList} from "@features/notification/components/NotificationList.tsx";
 import {useAuth} from "@utils/useAuth.ts";
 import {Button} from "@components/elements/Button.tsx";
+import {Avatar} from "@components/elements/Avatar.tsx";
 
 export const Header = () => {
     const {user} = useAuth();
@@ -16,7 +16,7 @@ export const Header = () => {
     return (<nav className="border-gray-200 bg-blue-500 px-4 shadow-2xl py-2.5 dark:bg-gray-800 lg:px-6">
         <div className="mx-auto flex flex-wrap items-center justify-between">
             <Link to="/" className="flex items-center">
-                <img className="mr-3 h-10 w-10 rounded-full" src={avatar} alt="Rounded avatar"/>
+                <Avatar className="mr-3 !w-10 !h-10" src={avatar}/>
                 <div
                     className="self-center whitespace-nowrap text-2xl font-semibold text-white dark:text-white">Socialpedia
                 </div>
@@ -33,8 +33,7 @@ export const Header = () => {
                         {notification && <NotificationList/>}
                         <section className="rounded-r-lg bg-blue-400 p-1 rounded-l-[25px] hover:bg-blue-300"
                                  onClick={() => setProfileMenu((profileMenu) => !profileMenu)}>
-                            <img className="mr-3 inline-block h-10 w-10 rounded-full" src={user.avatar?.url || emptyAvatar}
-                                 alt=""/>
+                            <Avatar size="sm" className="mr-3 inline-block !w-10 !h-10" src={user.avatar?.url}/>
                             <span className="mr-1 font-semibold text-white">{user.name}</span>
                             <IoIosArrowDown className="inline text-xl text-white"/>
                             {profileMenu &&

@@ -1,16 +1,13 @@
 import {SpaceItem} from "@features/message/components/SpaceItem.tsx";
 import {useEffect, useRef, useState} from "react";
 import {useGetInboxListQuery} from "@features/inbox/api.ts";
-import {InboxQueryRequest} from "@features/inbox/types/InboxQueryRequest.ts";
+import {InboxQueryRequest, newInboxQueryRequest} from "@features/inbox/types/InboxQueryRequest.ts";
 import {IoIosSearch} from "react-icons/io";
+import {setScrollspy} from "@utils/setScrollspy.ts";
 
-const INITIAL_PAGE = 3
 export const InboxList = () => {
     //// SETTING VARIABLE
-    // default query state without name field
-    const initialState = {pageNo: 0, pageSize: INITIAL_PAGE}
-    const [query, setQuery] = useState<InboxQueryRequest>(initialState)
-
+    const [query, setQuery] = useState<InboxQueryRequest>(newInboxQueryRequest())
     // variable use for search
     const [name, setName] = useState<string | undefined>(undefined)
     // ref for scrollable div
@@ -27,27 +24,16 @@ export const InboxList = () => {
 
         return () => clearTimeout(timer);
     }, [name])
-
+    
     // set up scrollspy
     useEffect(() => {
-        const listScrollElement: HTMLUListElement | null = listScrollRef.current;
-
-        if (listScrollElement) {
-            const onScroll = () => {
-                const {scrollTop, scrollHeight, clientHeight} = listScrollElement;
-                const isNearBottom = scrollTop + clientHeight >= scrollHeight;
-
-                if (data && isNearBottom && !data.last) {
-                    setQuery(query => ({...query, pageSize: query.pageSize + INITIAL_PAGE}))
-                }
-            }
-            listScrollElement.addEventListener("scroll", onScroll);
-            // clean-up
-            return () => {
-                listScrollElement.removeEventListener("scroll", onScroll);
-            };
+            return setScrollspy<HTMLUListElement>(listScrollRef, true,
+                () => data && !data.last && setQuery(query => ({
+                    ...query,
+                    pageSize: query.pageSize + 3
+                })));
         }
-    }, [data]);
+        , [data]);
 
     // wait for next render when there is data
     if (!data) return null;

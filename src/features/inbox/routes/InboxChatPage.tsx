@@ -8,20 +8,18 @@ import {useParams} from "react-router-dom";
 import {useGetInboxProfileQuery} from "@features/inbox/api.ts";
 import {MessageInput} from "@features/message/components/MessageInput.tsx";
 import {useState} from "react";
-import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
-
-const INITIAL_PAGE = 10;
+import {MessageQueryRequest, newMessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
 
 export const InboxChatPage = () => {
     // get current locationId as number
     const {locationId: locationNum} = useParams();
     const locationId = Number(locationNum);
     // default query state without name field
-    const initialState = {locationId, pageNo: 0, pageSize: INITIAL_PAGE};
+    const initialState = newMessageQueryRequest(locationId);
     const [query, setQuery] = useState<MessageQueryRequest>(initialState);
 
     // main data
-    const {data} = useGetInboxProfileQuery(Number(locationId));
+    const {data} = useGetInboxProfileQuery(locationId);
     if (!data) return null;
 
     return (<>

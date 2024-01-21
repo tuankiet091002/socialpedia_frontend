@@ -1,17 +1,14 @@
 import {IoIosSearch} from "react-icons/io";
 import {useEffect, useRef, useState} from "react";
-import {ChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
+import {ChannelQueryRequest, newChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
 import {useGetPersonalChannelListQuery} from "@features/channel/api.ts";
 import {SpaceItem} from "@features/message/components/SpaceItem.tsx";
 import {setScrollspy} from "@utils/setScrollspy.ts";
 
-const INITIAL_PAGE = 3;
-
 export const PersonalChannelList = () => {
     //// SETTING VARIABLE
     // default query state without name field
-    const initialState = {pageNo: 0, pageSize: INITIAL_PAGE, orderBy: "id" as const, orderDirection: "ASC" as const};
-    const [query, setQuery] = useState<ChannelQueryRequest>(initialState);
+    const [query, setQuery] = useState<ChannelQueryRequest>(newChannelQueryRequest());
     // variable use for search
     const [name, setName] = useState<string | undefined>(undefined);
     // ref for scrollable div
@@ -34,7 +31,7 @@ export const PersonalChannelList = () => {
             return setScrollspy<HTMLUListElement>(listScrollRef, true,
                 () => data && !data.last && setQuery(query => ({
                     ...query,
-                    pageSize: query.pageSize + INITIAL_PAGE
+                    pageSize: query.pageSize + 3
                 })));
         }
         , [data]);

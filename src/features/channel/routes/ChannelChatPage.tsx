@@ -8,21 +8,18 @@ import {IoFilter} from "react-icons/io5";
 import {IoIosSearch} from "react-icons/io";
 import {MessageInput} from "@features/message/components/MessageInput.tsx";
 import {useState} from "react";
-import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
-
-
-const INITIAL_PAGE = 10;
+import {MessageQueryRequest, newMessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
 
 export const ChannelChatPage = () => {
     // get current locationId as number
     const {locationId: locationNum} = useParams();
     const locationId = Number(locationNum);
     // default query state without name field
-    const initialState = {locationId, pageNo: 0, pageSize: INITIAL_PAGE};
+    const initialState = newMessageQueryRequest(locationId);
     const [query, setQuery] = useState<MessageQueryRequest>(initialState);
 
     // main data
-    const {data} = useGetChannelProfileQuery(Number(locationId));
+    const {data} = useGetChannelProfileQuery(locationId);
     if (!data) return null;
 
 

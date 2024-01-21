@@ -36,7 +36,7 @@ export const NotificationItem = ({data}: NotificationItemProps) => {
         case "channel":
             acceptFunc = () => acceptMemberRequest({
                 channelId: Number(destinationArray[2]),
-                memberId: Number(destinationArray[2])
+                memberId: Number(destinationArray[4])
             }).unwrap().then();
             acceptResult = acceptMemberResult;
             rejectFunc = () => rejectMemberRequest({
@@ -53,10 +53,10 @@ export const NotificationItem = ({data}: NotificationItemProps) => {
         <li>
             <Link to={data.destination}
                   className={clsx("flex cursor-pointer flex-row items-center justify-between gap-x-2 rounded-sm p-2 hover:bg-gray-200", data.type != NotificationType.DONE && "border-2 border-blue-600")}>
-
-                <img className="h-12 w-12 flex-none rounded-full bg-gray-50"
-                     src={data.avatar?.url || emptyAvatar}
-                     alt=""/>
+                <img src={data.avatar?.url || emptyAvatar}
+                     className="h-12 w-12 flex-none rounded-full bg-gray-50"
+                     alt=""
+                />
                 <div className="flex-auto gap-y-2 text-start max-w-[210px]">
                     <p className="truncate">{data.title}</p>
                     <p className="text-xs text-gray-500">{data.content}</p>

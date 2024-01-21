@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import {CustomTable} from "@components/table/CustomTable.tsx";
 import {Paginate} from "@components/table/Paginate.tsx";
 import {HiDotsVertical} from "react-icons/hi";
-import emptyAvatar from "@assets/empty avatar.jpg";
+import {Avatar} from "@components/elements/Avatar.tsx";
 
 type ChannelMemberFormProps = {
     data: ChannelResponse;
@@ -24,7 +24,7 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
             header: () => "Thành viên",
             cell: info => <Link to={`/user/${encodeURIComponent(info.getValue().email).replace(/\./g, "%2E")}`}
                                 className="cursor-pointer hover:text-blue-500">
-                <img src={info.getValue().avatar?.url || emptyAvatar} className="mr-1 inline h-10 w-10" alt=""/>
+                <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
                 {info.getValue().name}
             </Link>,
             footer: info => info.column.id

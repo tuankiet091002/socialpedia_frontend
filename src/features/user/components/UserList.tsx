@@ -7,9 +7,11 @@ import {CustomTable} from "@components/table/CustomTable.tsx";
 import {Paginate} from "@components/table/Paginate.tsx";
 import moment from "moment";
 import {HiDotsVertical} from "react-icons/hi";
-import emptyAvatar from "@assets/empty avatar.jpg";
+import {Avatar} from "@components/elements/Avatar.tsx";
 
 const columnHelper = createColumnHelper<UserResponse>();
+
+const INITIAL_PAGE = 5
 
 export const UserList = () => {
     //// SETTING VARIABLES ////
@@ -18,7 +20,7 @@ export const UserList = () => {
     const [{pageIndex, pageSize}, setPagination] =
         useState<PaginationState>({
             pageIndex: 0,
-            pageSize: 1
+            pageSize: INITIAL_PAGE
         });
 
     // main data
@@ -27,30 +29,30 @@ export const UserList = () => {
     const columns = useMemo(() => [
         columnHelper.accessor(row => ({name: row.name, id: row.id, avatar: row.avatar}), {
             id: "name",
-            header: () => "Người dùng",
+            header: () => "User",
             cell: info => <Link to={`/user/${info.getValue().id}`}
                                 className="cursor-pointer hover:text-blue-500">
-                <img src={info.getValue().avatar?.url || emptyAvatar} className="mr-1 inline h-10 w-10" alt=""/>
+                <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
                 {info.getValue().name}
             </Link>
         }),
         columnHelper.accessor("phone", {
-            header: () => "Số điện thoại",
+            header: () => "Phone number",
             cell: info => info.renderValue(),
             footer: info => info.column.id
         }),
         columnHelper.accessor("dob", {
-            header: () => "Ngày sinh",
+            header: () => "Birthdate",
             cell: info => <span>{moment(info.getValue()).format("DD/MM/YYYY")}</span>,
             footer: info => info.column.id
         }),
         columnHelper.accessor("gender", {
-            header: () => "Giới tính",
+            header: () => "Gender",
             cell: info => <span>{info.getValue() ? "Nam" : "Nữ"}</span>,
             footer: info => info.column.id
         }),
         columnHelper.accessor("role", {
-            header: () => "Vai trò",
+            header: () => "Role",
             cell: info => <span>{info.getValue()?.name}</span>,
             footer: info => info.column.id
         }),

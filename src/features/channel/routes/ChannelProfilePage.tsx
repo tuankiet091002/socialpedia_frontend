@@ -68,7 +68,7 @@ export const ChannelProfilePage = () => {
                                 </>
                     }
                 </div>
-                <div className="grid p-10 grid-cols-[1fr_3fr] space-x-4">
+                <div className="grid p-10 grid-cols-[2fr_3fr] space-x-4">
                     <ChannelProfileForm data={data} edit={edit}/>
                     <ChannelMemberForm data={data} edit={edit}/>
                 </div>

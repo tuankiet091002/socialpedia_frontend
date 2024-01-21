@@ -2,8 +2,8 @@ import {ChangeEvent, useState} from "react";
 import {useUpdateChannelAvatarMutation} from "@features/channel/api.ts";
 import {ChannelResponse} from "@features/channel/types/ChannelResponse.ts";
 import {Button} from "@components/elements/Button.tsx";
-import emptyAvatar from "@assets/empty avatar.jpg";
 import {IoIosSettings} from "react-icons/io";
+import {Avatar} from "@components/elements/Avatar.tsx";
 
 type ChannelAvatarFormProps = {
     data: ChannelResponse;
@@ -28,8 +28,8 @@ export const ChannelAvatarForm = ({data, edit}: ChannelAvatarFormProps) => {
     };
 
     return (<div className="relative left-[calc(50%-75px)] top-[20px] lg:absolute">
-        <img src={file && URL.createObjectURL(file) || data.avatar?.url || emptyAvatar}
-             className="rounded-full border-white border-[5px] h-[150px]" alt=""/>
+        <Avatar src={file && URL.createObjectURL(file) || data.avatar?.url}
+                className=" border-white border-[5px] h-[150px]" size="lg"/>
         {edit &&
             <label>
                 <IoIosSettings

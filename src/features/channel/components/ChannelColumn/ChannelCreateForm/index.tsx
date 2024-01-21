@@ -1,12 +1,13 @@
 import {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
 import {RxCross2} from "react-icons/rx";
-import emptyAvatar from "@assets/empty avatar.jpg";
 import {FaPlus} from "react-icons/fa";
 import {Button} from "@components/elements/Button.tsx";
 import {ChannelCreateRequest} from "@features/channel/types/ChannelCreateRequest.ts";
 import {
     ChannelCreateFormMember
 } from "@features/channel/components/ChannelColumn/ChannelCreateForm/ChannelCreateFormMember.tsx";
+import {Avatar} from "@components/elements/Avatar.tsx";
+import {useCreateChannelMutation} from "@features/channel/api.ts";
 
 export type ChannelCreateFormProps = {
     setShow: Dispatch<SetStateAction<boolean>>
@@ -16,6 +17,8 @@ export const ChannelCreateForm = ({setShow}: ChannelCreateFormProps) => {
 
     const [stage, setStage] = useState<number>(0);
     const [error, setError] = useState<string>();
+    const [createChannel] = useCreateChannelMutation();
+
     // form content in a pack
     const [form, setForm] = useState<ChannelCreateRequest>({
         name: "",
@@ -58,7 +61,9 @@ export const ChannelCreateForm = ({setShow}: ChannelCreateFormProps) => {
     };
 
     const handleSubmit = () => {
-        console.log(form);
+        createChannel(form).unwrap()
+            .then(() => window.alert("Channel created successfully"))
+            .catch((err) => setError(err.message))
     };
 
     return (
@@ -75,8 +80,8 @@ export const ChannelCreateForm = ({setShow}: ChannelCreateFormProps) => {
                 {stage == 0 ? <section className="h-full">
                         <label htmlFor="createChannelFile"
                                className="relative flex cursor-pointer flex-col items-center justify-center gap-y-2">
-                            <img src={form.avatarFile ? URL.createObjectURL(form.avatarFile) : emptyAvatar}
-                                 className="rounded-full border-gray-300 border-[5px] h-[150px] w-[150px]" alt=""/>
+                            <Avatar src={form.avatarFile ? URL.createObjectURL(form.avatarFile) : ""}
+                                    className="border-gray-300 border-[5px]" size="lg"/>
                             <FaPlus
                                 className="rounded-full border-[3px] border-blue-600 bg-blue-600 text-3xl text-white absolute top-1.5 right-[calc(50%-65px)]"/>
                             <p className="font-semibold">{form.avatarFile?.name || "\u00a0"}</p>
@@ -95,9 +100,6 @@ export const ChannelCreateForm = ({setShow}: ChannelCreateFormProps) => {
                                    placeholder="Enter channel name"
                                    value={form.name}
                                    onChange={handleChange}/>
-                            <div role="alert" className="text-start text-sm text-red-500">
-                                {error}
-                            </div>
                         </div>
                     </section> :
                     stage == 1 ? <section className="h-full p-6">
@@ -111,14 +113,14 @@ export const ChannelCreateForm = ({setShow}: ChannelCreateFormProps) => {
                                       value={form.description}
                                       onChange={handleChange}
                             />
-                            <div role="alert" className="text-start text-sm text-red-500">
-                                {error}
-                            </div>
                         </section>
                         : <section className="h-full">
                             <ChannelCreateFormMember form={form} setForm={setForm}/>
                         </section>}
                 <section className="flex justify-end gap-x-4">
+                    <div role="alert" className="text-start text-sm text-red-500">
+                        {error}
+                    </div>
                     {stage > 0 &&
                         <Button type="button" variant="danger" onClick={handlePreviousStage}>Back</Button>}
                     {stage == 2 ?

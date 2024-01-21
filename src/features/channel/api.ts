@@ -12,6 +12,7 @@ import {ChannelMemberRequest} from "@features/channel/types/ChannelMemberRequest
 import {messageApi} from "@features/message/api.ts";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
 import moment from "moment";
+import {notificationApi} from "@features/notification/api.ts";
 
 const channelSet = new Set<ChannelResponse>();
 
@@ -159,7 +160,8 @@ export const channelApi = createApi({
             createChannel: builder.mutation<void, ChannelCreateRequest>({
                 query: ({avatarFile, ...content}) => {
                     const formData = new FormData();
-                    formData.append("file", avatarFile);
+                    if (avatarFile)
+                        formData.append("file", avatarFile);
                     formData.append("content", JSON.stringify(content));
 
                     return ({
@@ -203,13 +205,31 @@ export const channelApi = createApi({
                     url: `/channel/${channelId}/member/${memberId}/accept`,
                     method: "PUT"
                 }),
+                async onQueryStarted(_, {queryFulfilled, dispatch}) {
+                    try {
+                        await queryFulfilled;
+
+                        dispatch(notificationApi.util?.invalidateTags(["Notification"]));
+                    } catch (err) {
+                        console.log(err);
+                    }
+                },
                 invalidatesTags: (_, __, {channelId}) => [{type: "Channel", id: channelId}]
             }),
             rejectChannelRequest: builder.mutation<void, { channelId: number, memberId: number }>({
                 query: ({channelId, memberId}) => ({
                     url: `/channel/${channelId}/member/${memberId}/reject`,
                     method: "PUT"
-                })
+                }),
+                async onQueryStarted(_, {queryFulfilled, dispatch}) {
+                    try {
+                        await queryFulfilled;
+
+                        dispatch(notificationApi.util?.invalidateTags(["Notification"]));
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
             }),
             updateMemberPermission: builder.mutation<void, ChannelMemberRequest & { channelId: number }>({
                 query: ({channelId, memberId, ...content}) => ({

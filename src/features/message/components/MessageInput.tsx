@@ -10,6 +10,7 @@ import {RxCross1} from "react-icons/rx";
 import {sendTo} from "@utils/socketMessage.ts";
 import {SocketType} from "@src/types.ts";
 import {useGetOwnerQuery} from "@features/auth/api.ts";
+import {Avatar} from "@components/elements/Avatar.tsx";
 
 type MessageInputProps = {
     queryFunc: UseMutation<MutationDefinition<
@@ -77,9 +78,7 @@ export const MessageInput = ({queryFunc}: MessageInputProps) => {
                     border-gray-300 bg-green-600 px-2 top-[-100px] h-[100px] rounded-lg">
                     {files.map(
                         (file, index) => <div className="relative flex-shrink-0 rounded-md bg-gray-200" key={index}>
-                            <img src={URL.createObjectURL(file)}
-                                 className="h-[100px]" alt="">
-                            </img>
+                            <Avatar src={URL.createObjectURL(file)} size="md" className="rounded-none !w-auto"/>
                             <div
                                 className="absolute top-0 right-0 cursor-pointer rounded-lg bg-gray-300 h-[15px]
                                 w-[15px] flex items-center justify-center hover:bg-gray-400"

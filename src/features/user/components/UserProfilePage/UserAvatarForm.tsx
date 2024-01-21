@@ -1,8 +1,8 @@
 import {ChangeEvent, useState} from "react";
 import {useUpdateAvatarMutation} from "@features/auth/api.ts";
-import emptyAvatar from "@assets/empty avatar.jpg";
 import {IoIosSettings} from "react-icons/io";
 import {Button} from "@components/elements/Button.tsx";
+import {Avatar} from "@components/elements/Avatar.tsx";
 
 type AvatarFormProps = {
     defaultUrl: string,
@@ -29,8 +29,8 @@ export const UserAvatarForm = ({edit, defaultUrl}: AvatarFormProps) => {
 
     return (<div className="static left-20 top-[20px] lg:absolute">
         <div className="relative">
-            <img src={file && URL.createObjectURL(file) || defaultUrl || emptyAvatar}
-                 className="rounded-full border-white border-[5px] h-[150px] w-[150px]" alt=""/>
+            <Avatar src={file && URL.createObjectURL(file) || defaultUrl} size="lg"
+                    className="rounded-full border-white border-[5px]"/>
             {edit &&
                 <label>
                     <IoIosSettings

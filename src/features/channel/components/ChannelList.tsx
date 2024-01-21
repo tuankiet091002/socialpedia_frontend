@@ -6,9 +6,10 @@ import {Paginate} from "@components/table/Paginate.tsx";
 import {useGetChannelListQuery} from "@features/channel/api.ts";
 import moment from "moment";
 import {Link} from "react-router-dom";
-import emptyAvatar from "@assets/empty avatar.jpg";
+import {Avatar} from "@components/elements/Avatar.tsx";
 
 const columnHelper = createColumnHelper<ChannelResponse>();
+const INITIAL_PAGE = 5
 
 export const ChannelList = () => {
 
@@ -18,7 +19,7 @@ export const ChannelList = () => {
     const [{pageIndex, pageSize}, setPagination] =
         useState<PaginationState>({
             pageIndex: 0,
-            pageSize: 1
+            pageSize: INITIAL_PAGE
         });
 
     // main data
@@ -27,24 +28,24 @@ export const ChannelList = () => {
     const columns = useMemo(() => [
         columnHelper.accessor(row => ({name: row.name, avatar: row.avatar, id: row.id}), {
             id: "name",
-            header: () => "Kênh",
+            header: () => "Channel",
             cell: info => <Link to={`/channel/${info.getValue().id}/profile`} className="hover:text-blue-500">
-                <img src={info.getValue().avatar?.url} className="mr-1 inline h-10 w-10" alt={emptyAvatar}/>
+                <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
                 {info.getValue().name}
             </Link>
         }),
         columnHelper.accessor("createdBy", {
-            header: () => "Người tạo",
+            header: () => "Creator",
             cell: info => <span>{info.getValue().name}</span>,
             footer: info => info.column.id
         }),
         columnHelper.accessor("createdDate", {
-            header: () => "Ngày tạo",
+            header: () => "Created date",
             cell: info => <span>{moment(info.getValue()).format("DD/MM/YYYY")}</span>,
             footer: info => info.column.id
         }),
         columnHelper.accessor("memberNum", {
-            header: () => "Số thành viên",
+            header: () => "Member number",
             cell: info => info.renderValue(),
             footer: info => info.column.id
         })

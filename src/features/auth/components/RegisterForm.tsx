@@ -35,7 +35,11 @@ export const RegisterForm = ({onSuccess}: RegisterFormProp) => {
     return (<div>
         <Form<RegisterRequest, typeof schema>
             onSubmit={async (value: RegisterRequest) => {
-                register({...value, file}).unwrap().then(onSuccess);
+                register({...value, file}).unwrap()
+                    .then(() => {
+                        window.alert("Account created successfully!")
+                        onSuccess();
+                    });
             }}
             schema={schema}
         >

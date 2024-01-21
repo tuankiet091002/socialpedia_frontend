@@ -16,7 +16,7 @@ export const LoginPage = () => {
         <p className="text-start text-lg text-gray-400">Start your website in seconds. Fill your login form. </p>
         <div className="pt-[50px]">
             <LoginForm onSuccess={() => {
-                navigate('/')
+                navigate("/channel")
             }}/>
         </div>
 

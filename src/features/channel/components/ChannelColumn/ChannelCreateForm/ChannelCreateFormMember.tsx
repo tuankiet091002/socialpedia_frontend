@@ -1,7 +1,7 @@
 import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
 import {ChannelCreateRequest} from "@features/channel/types/ChannelCreateRequest.ts";
 import {useGetFriendListQuery} from "@features/user/api.ts";
-import {ChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
+import {ChannelQueryRequest, newChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
 import {ChannelMemberItem} from "@features/channel/components/ChannelColumn/ChannelCreateForm/ChannelMemberItem.tsx";
 import {setScrollspy} from "@utils/setScrollspy.ts";
 
@@ -10,13 +10,9 @@ type ChannelCreateFormMemberProps = {
     setForm: Dispatch<SetStateAction<ChannelCreateRequest>>
 }
 
-const INITIAL_PAGE = 8;
-
 export const ChannelCreateFormMember = ({form, setForm}: ChannelCreateFormMemberProps) => {
     //// SETTING VARIABLE
-    // default query state
-    const initialState = {pageNo: 0, pageSize: 3, orderBy: "id" as const, orderDirection: "ASC" as const};
-    const [query, setQuery] = useState<ChannelQueryRequest>(initialState);
+    const [query, setQuery] = useState<ChannelQueryRequest>(newChannelQueryRequest());
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
     // main data
@@ -27,7 +23,7 @@ export const ChannelCreateFormMember = ({form, setForm}: ChannelCreateFormMember
             return setScrollspy<HTMLUListElement>(listScrollRef, true,
                 () => data && !data.last && setQuery(query => ({
                     ...query,
-                    pageSize: query.pageSize + INITIAL_PAGE
+                    pageSize: query.pageSize + 3
                 })));
         }
         , [data]);

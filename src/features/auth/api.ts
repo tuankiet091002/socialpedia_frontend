@@ -115,7 +115,7 @@ export const authApi = createApi({
                     url: `/user/${id}/friendship`,
                     method: "GET"
                 }),
-                providesTags: (result, _, id) => !result ? [] : [{type: "Friendship", id: id}]
+                providesTags: (_, __, id) => [{type: "Friendship", id: id}]
             }),
             createFriendRequest: builder.mutation<void, number>({
                 query: (id) => ({
