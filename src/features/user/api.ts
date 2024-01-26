@@ -39,7 +39,7 @@ export const userApi = createApi({
                 query: ({id, ...role}) => ({
                     url: `/user/${id}/role`,
                     method: "PUT",
-                    param: role
+                    params: role
                 }),
                 invalidatesTags: (_, __, {id}: { id: number }) => [{type: "User", id: id}]
             }),

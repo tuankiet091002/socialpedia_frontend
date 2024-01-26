@@ -2,6 +2,6 @@ export type ChannelQueryRequest = {
     name?: string;
     pageNo: number;
     pageSize: number;
-    orderBy?: "id" | "name";
+    orderBy?: "id" | "name" | "createdBy" | "createdDate";
     orderDirection?: "ASC" | "DESC";
 }

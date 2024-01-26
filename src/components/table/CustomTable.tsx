@@ -7,6 +7,7 @@ type TableProps<Entry> = {
 };
 
 export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) => {
+
     const columnSizeVars = useMemo(() => {
         const headers = table.getFlatHeaders();
         const colSizes: { [key: string]: number } = {};
@@ -27,9 +28,9 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
             <thead className="bg-gray-50">
             {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
+                    {headerGroup.headers.map((header, idx) => (
                         <th key={header.id}
-                            className="relative px-6 py-3 tracking-wider font-semibold font-sans"
+                            className="relative px-6 py-3 font-sans font-semibold tracking-wider "
                             style={{width: `calc(var(--header-${header?.id}-size) * 1px)`}}>
                             {header.isPlaceholder
                                 ? null
@@ -37,16 +38,16 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
                                     header.column.columnDef.header,
                                     header.getContext()
                                 )}
-                            <div
+                            {idx != headerGroup.headers.length - 1 && <div
                                 {...{
                                     onDoubleClick: () => header.column.resetSize(),
                                     onMouseDown: header.getResizeHandler(),
                                     onTouchStart: header.getResizeHandler(),
-                                    className: clsx("absolute top-0 h-full right-0 w-1 bg-gray-400 cursor-col-resize hover:bg-gray-500",
+                                    className: clsx("absolute inset-y-0 right-0 w-[2px] bg-gray-300 cursor-col-resize",
                                         header.column.getIsResizing() && "bg-gray-500")
                                 }}
                             >
-                            </div>
+                            </div>}
                         </th>
                     ))}
                 </tr>
