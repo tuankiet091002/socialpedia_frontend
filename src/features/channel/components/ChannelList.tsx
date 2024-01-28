@@ -10,6 +10,7 @@ import {Avatar} from "@components/elements/Avatar.tsx";
 import {HeaderWithSort} from "@components/table/HeaderWithSort.tsx";
 import {IoFilter} from "react-icons/io5";
 import {IoIosSearch} from "react-icons/io";
+import {IndependentInput} from "@components/elements/IndependentInput.tsx";
 
 const columnHelper = createColumnHelper<ChannelResponse>();
 const INITIAL_PAGE = 5
@@ -97,12 +98,7 @@ export const ChannelList = () => {
             <div className="flex items-center border border-gray-300 px-3 text-start shadow-2xl h-[50px]">
                 <IoFilter className="mr-3 inline"/>
                 <span className="mr-3">Filter:</span>
-                <div className="flex flex-row items-center">
-                    <input type="text" className="inline appearance-none text-sm rounded-sm border border-gray-300 pl-2
-                    pr-[25px] py-1 shadow-sm placeholder-gray-400  focus:outline-none" placeholder="Find"
-                           onChange={(e) => setTypingName(e.target.value)}/>
-                    <IoIosSearch className="text-gray-500 ml-[-25px]"/>
-                </div>
+                <IndependentInput textSize="sm" onChange={e => setTypingName(e.target.value)} endIcon={<IoIosSearch/>}/>
             </div>
             <CustomTable table={table}/>
             <hr className="h-6"/>

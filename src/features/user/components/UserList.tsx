@@ -11,6 +11,8 @@ import {HeaderWithSort} from "@components/table/HeaderWithSort.tsx";
 import {IoFilter} from "react-icons/io5";
 import {IoIosSearch, IoMdSettings} from "react-icons/io";
 import {Button} from "@components/elements/Button.tsx";
+import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
+import {IndependentInput} from "@components/elements/IndependentInput.tsx";
 
 const columnHelper = createColumnHelper<UserResponse>();
 
@@ -19,8 +21,8 @@ const INITIAL_PAGE = 5
 export const UserList = () => {
 
     // api hook
-    const [updateRole] = useUpdateUserRoleMutation();
-    const [disableUser] = useDisableUserMutation();
+    const [updateRole, updateResult] = useUpdateUserRoleMutation();
+    const [disableUser, disableResult] = useDisableUserMutation();
 
     // state for name filtering
     const [typingName, setTypingName] = useState<string>("");
@@ -38,7 +40,7 @@ export const UserList = () => {
             orderDirection?: "ASC" | "DESC";
         }>({orderBy: "id" as const, orderDirection: "ASC" as const});
     // state for action dropdown
-    const [actionId, setActionId] = useState<number | undefined>();
+    const [userId, setUserId] = useState<number | undefined>();
 
     // main data
     const {data} = useGetUserListQuery({name, pageNo: pageIndex, pageSize, ...order});
@@ -89,34 +91,58 @@ export const UserList = () => {
         }),
         columnHelper.accessor(row => ({id: row.id, role: row.role}), {
             id: "action",
-            header: () => "",
+            header: () => "Action",
             cell: info => <span className="relative w-2 !text-xl text-center !font-bold">
                 <IoMdSettings className="inline cursor-pointer hover:text-blue-500"
-                              onClick={() => setActionId(info.getValue().id)}/>
-                {actionId == info.getValue().id &&
+                              onClick={() => setUserId(info.getValue().id)}/>
+                {userId == info.getValue().id &&
                     <ul className="absolute -bottom-5 rounded-md border border-gray-300 bg-white p-1 text-base !font-normal left-[-100px] w-[220px]">
-                        <Button className="w-full !p-0 !border-0" size="md" variant="inverse"
-                                onClick={() => updateRole({
+                        <ConfirmationDialog
+                            isDone={updateResult.isSuccess}
+                            type="info"
+                            title="Change user role"
+                            body={info.getValue().role!.name == "user" ? "Are you sure you want to change this user's role to admin? Admin have permission to access global data" : "Are you sure you want to change this user's role to user?  User lose permission to access global data."
+                            }
+                            triggerButton={<Button className="w-full !p-0 !border-0" size="md" variant="inverse">
+                                Change role to {info.getValue().role!.name == "admin" ? "user" : "admin"}
+                            </Button>}
+                            confirmButton={
+                                <Button variant="primary" onClick={() => updateRole({
                                     id: info.getValue().id,
                                     role: info.getValue().role!.name == "admin" ? "user" : "admin"
                                 }).unwrap().then(() => {
                                     window.alert("Role updated successfully!");
-                                    setActionId(undefined);
+                                    setUserId(undefined);
                                 })}>
-                            Change role to {info.getValue().role!.name == "admin" ? "user" : "admin"}
-                        </Button>
+                                    Change
+                                </Button>
+                            }
+                        />
                         <div className="my-1 w-full bg-gray-300 h-[1px]"></div>
-                        <Button className="w-full !py-0 !border-0" variant="inverse_danger" size="md"
-                                onClick={() => disableUser(info.getValue().id).unwrap().then(() => {
-                                    window.alert("Account banned!");
-                                    setActionId(undefined);
-                                })}>
-                            Ban account</Button>
+                        <ConfirmationDialog
+                            isDone={disableResult.isSuccess}
+                            type="info"
+                            title="Ban account"
+                            body="Are you sure you want to ban this account? Banned account will not be useable and this can only be reverse by manually modify the database."
+                            triggerButton={<Button className="w-full !py-0 !border-0" variant="inverse_danger"
+                                                   size="md">
+                                Ban account
+                            </Button>}
+                            confirmButton={
+                                <Button variant="primary"
+                                        onClick={() => disableUser(info.getValue().id).unwrap().then(() => {
+                                            window.alert("Account banned!");
+                                            setUserId(undefined);
+                                        })}>
+                                    Ban
+                                </Button>
+                            }
+                        />
                     </ul>}
             </span>,
             footer: info => info.column.id
         })
-    ], [order, actionId]);
+    ], [order, userId]);
 
     // table definition
     const table = useReactTable({
@@ -138,12 +164,7 @@ export const UserList = () => {
             <div className="flex items-center border border-gray-300 px-3 text-start shadow-2xl h-[50px]">
                 <IoFilter className="mr-3 inline"/>
                 <span className="mr-3">Filter:</span>
-                <div className="flex flex-row items-center">
-                    <input type="text" className="inline appearance-none text-sm rounded-sm border border-gray-300 pl-2
-                    pr-[25px] py-1 shadow-sm placeholder-gray-400  focus:outline-none" placeholder="Find"
-                           onChange={(e) => setTypingName(e.target.value)}/>
-                    <IoIosSearch className="text-gray-500 ml-[-25px]"/>
-                </div>
+                <IndependentInput textSize="sm" onChange={e => setTypingName(e.target.value)} endIcon={<IoIosSearch/>}/>
             </div>
             <CustomTable table={table}/>
             <hr className="h-6"/>

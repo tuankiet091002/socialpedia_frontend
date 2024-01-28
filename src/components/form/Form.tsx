@@ -1,6 +1,6 @@
-import {zodResolver} from '@hookform/resolvers/zod';
-import {SubmitHandler, useForm, UseFormProps, UseFormReturn} from 'react-hook-form';
-import {ZodType, ZodTypeDef} from 'zod';
+import {zodResolver} from "@hookform/resolvers/zod";
+import {SubmitHandler, useForm, UseFormProps, UseFormReturn} from "react-hook-form";
+import {ZodType, ZodTypeDef} from "zod";
 import clsx from "clsx";
 import {ReactNode} from "react";
 

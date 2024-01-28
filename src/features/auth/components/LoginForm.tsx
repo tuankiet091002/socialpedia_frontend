@@ -40,9 +40,9 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
                         error={formState.errors["password"]}
                         registration={register("password")}
                     />
-                    {result.isError && <p className="text-start text-red-500">{(result.error as {
+                    {result.isError && <span className="text-start text-red-500">{(result.error as {
                         data: ErrorResponse
-                    }).data.message}</p>}
+                    }).data.message}</span>}
                     <div className="flex justify-center">
                         <Button type="submit" size="md" isLoading={result.isLoading} className="mt-3">
                             Log in

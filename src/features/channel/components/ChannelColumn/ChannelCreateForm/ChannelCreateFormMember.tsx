@@ -1,9 +1,9 @@
 import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
 import {ChannelCreateRequest} from "@features/channel/types/ChannelCreateRequest.ts";
 import {useGetFriendListQuery} from "@features/user/api.ts";
-import {ChannelQueryRequest} from "@features/channel/types/ChannelQueryRequest.ts";
 import {ChannelMemberItem} from "@features/channel/components/ChannelColumn/ChannelCreateForm/ChannelMemberItem.tsx";
 import {setScrollspy} from "@utils/setScrollspy.ts";
+import {UserQueryRequest} from "@features/user/types";
 
 type ChannelCreateFormMemberProps = {
     form: ChannelCreateRequest,
@@ -13,7 +13,7 @@ type ChannelCreateFormMemberProps = {
 export const ChannelCreateFormMember = ({form, setForm}: ChannelCreateFormMemberProps) => {
     //// SETTING VARIABLE
     const initialState = {name: "", pageNo: 0, pageSize: 3, orderBy: "id" as const, orderDirection: "ASC" as const}
-    const [query, setQuery] = useState<ChannelQueryRequest>(initialState);
+    const [query, setQuery] = useState<UserQueryRequest>(initialState);
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
     // main data

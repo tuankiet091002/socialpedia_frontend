@@ -9,7 +9,7 @@ import {MessageInput} from "@features/message/components/MessageInput.tsx";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@src/main.tsx";
-import {messageQueryChange} from "@src/querySlice.ts";
+import {messageQueryChange} from "@utils/querySlice.ts";
 import {Avatar} from "@components/elements/Avatar.tsx";
 
 export const ChannelChatPage = () => {

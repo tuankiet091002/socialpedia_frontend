@@ -13,6 +13,7 @@ import {
     useLeaveChannelMutation
 } from "@features/auth/api.ts";
 import {useState} from "react";
+import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 
 export const ChannelProfilePage = () => {
     //// SETTING VARIABLES
@@ -54,10 +55,20 @@ export const ChannelProfilePage = () => {
                             : member?.status == RequestType.ACCEPTED ?
                                 <>
                                     <Button type="button" onClick={() => setEdit(e => !e)}>Edit</Button>
-                                    <Button type="button" variant="danger"
-                                            onClick={() => leaveRequest(locationId)} isLoading={leaveResult.isLoading}>
-                                        Leave Channel
-                                    </Button>
+                                    <ConfirmationDialog
+                                        title="Leave channel"
+                                        type="danger"
+                                        body="Are you sure you want to leave this channel?"
+                                        isDone={leaveResult.isSuccess}
+                                        triggerButton={<Button type="button" variant="danger">Leave Channel</Button>}
+                                        confirmButton={
+                                            <Button type="button" variant="danger"
+                                                    onClick={() => leaveRequest(locationId)}
+                                                    isLoading={leaveResult.isLoading}>
+                                                Leave Channel
+                                            </Button>}
+                                    />
+
                                 </> :
                                 // don't have any relationship
                                 <>
@@ -69,8 +80,8 @@ export const ChannelProfilePage = () => {
                     }
                 </div>
                 <div className="grid p-10 grid-cols-[2fr_3fr] space-x-4">
-                    <ChannelProfileForm data={data} edit={edit}/>
-                    <ChannelMemberForm data={data} edit={edit}/>
+                    <ChannelProfileForm data={data} edit={edit} setEdit={setEdit}/>
+                    <ChannelMemberForm data={data} edit={edit} setEdit={setEdit}/>
                 </div>
             </div>
         </>

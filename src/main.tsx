@@ -12,7 +12,7 @@ import {authApi} from "@features/auth/api.ts";
 import {channelApi} from "@features/channel/api.ts";
 import {inboxApi} from "@features/inbox/api.ts";
 import {userApi} from "@features/user/api.ts";
-import {querySlice} from "@src/querySlice.ts";
+import {querySlice} from "@utils/querySlice.ts";
 import {notificationApi} from "@features/notification/api.ts";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {messageApi} from "@features/message/api.ts";

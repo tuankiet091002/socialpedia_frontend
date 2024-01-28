@@ -3,7 +3,7 @@ import {UserProfileForm} from "@features/user/components/UserProfilePage/UserPro
 import {IoPeopleCircleOutline} from "react-icons/io5";
 import {Button} from "@components/elements/Button.tsx";
 import {useState} from "react";
-import {useAuth} from "@utils/useAuth.ts";
+import {useAuth} from "@src/hooks/useAuth.ts";
 
 export const MyProfilePage = () => {
 

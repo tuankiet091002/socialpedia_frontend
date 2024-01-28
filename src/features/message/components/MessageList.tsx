@@ -7,7 +7,7 @@ import {MessageResponse} from "@features/message/types/MessageResponse.ts";
 import {Page} from "@src/types.ts";
 import {setScrollspy} from "@utils/setScrollspy.ts";
 import {useDispatch} from "react-redux";
-import {messageQueryChange} from "@src/querySlice.ts";
+import {messageQueryChange} from "@utils/querySlice.ts";
 
 export type MessageListProps = {
     queryFunc: UseQuery<QueryDefinition<

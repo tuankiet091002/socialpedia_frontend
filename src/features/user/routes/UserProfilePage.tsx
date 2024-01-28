@@ -13,8 +13,9 @@ import {
     useUnFriendMutation
 } from "@features/auth/api.ts";
 import {RequestType} from "@src/types.ts";
-import {useAuth} from "@utils/useAuth.ts";
+import {useAuth} from "@src/hooks/useAuth.ts";
 import {useCreateInboxMutation} from "@features/inbox/api.ts";
+import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 
 export const UserProfilePage = () => {
     ////
@@ -69,11 +70,15 @@ export const UserProfilePage = () => {
                         </> : friendship?.status == RequestType.PENDING && friendship?.receiverId == user.id ?
                             <>
                                 <Button type="button" className="w-[170px]"
-                                        onClick={() => acceptRequest(userId)} isLoading={acceptResult.isLoading}>
+                                        onClick={() => acceptRequest(userId).unwrap()
+                                            .then(() => window.alert("Request accepted!"))}
+                                        isLoading={acceptResult.isLoading}>
                                     Accept
                                 </Button>
                                 <Button type="button" variant="danger" className="w-[170px]"
-                                        onClick={() => rejectRequest(userId)} isLoading={rejectResult.isLoading}>
+                                        onClick={() => rejectRequest(userId).unwrap()
+                                            .then(() => window.alert("Request rejected!"))}
+                                        isLoading={rejectResult.isLoading}>
                                     Reject
                                 </Button>
                             </>
@@ -81,15 +86,32 @@ export const UserProfilePage = () => {
                             : friendship?.status == RequestType.ACCEPTED ?
                                 <>
                                     <Button type="button" onClick={handleNavigateToMessage}>Message</Button>
-                                    <Button type="button" variant="danger" className="w-[170px]"
-                                            onClick={() => unFriend(userId)} isLoading={unFriendResult.isLoading}>
-                                        Unfriend
-                                    </Button>
+                                    <ConfirmationDialog
+                                        isDone={unFriendResult.isSuccess}
+                                        type="danger"
+                                        title="Unfriend user"
+                                        body={"Are you sure you want to unfriend this user? Your inboxes will also be unusable."
+                                        }
+                                        triggerButton={<Button type="button" variant="danger" className="w-[170px]">
+                                            Unfriend
+                                        </Button>}
+                                        confirmButton={
+                                            <Button type="button" variant="danger" className="w-[170px]"
+                                                    onClick={() => unFriend(userId).unwrap()
+                                                        .then(() => window.alert("Unfriend successfully!"))}
+                                                    isLoading={unFriendResult.isLoading}>
+                                                Unfriend
+                                            </Button>
+                                        }
+                                    />
+
                                 </> :
                                 // don't have any relationship
                                 <>
                                     <Button type="button" className="w-[170px]"
-                                            onClick={() => createRequest(userId)} isLoading={createResult.isLoading}>
+                                            onClick={() => createRequest(userId).unwrap()
+                                                .then(() => window.alert("Friend request sent!"))}
+                                            isLoading={createResult.isLoading}>
                                         Add friend
                                     </Button>
                                 </>

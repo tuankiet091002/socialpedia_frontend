@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import * as React from "react";
+import {ButtonHTMLAttributes, forwardRef} from "react";
 import {Spinner} from "@components/elements/Spinner.tsx";
 
 const variants = {
@@ -15,18 +15,14 @@ const sizes = {
     lg: "py-3 px-6 text-lg"
 };
 
-type IconProps =
-    | { startIcon: React.ReactElement; endIcon?: never }
-    | { endIcon: React.ReactElement; startIcon?: never }
-    | { endIcon?: undefined; startIcon?: undefined };
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: keyof typeof variants;
     size?: keyof typeof sizes;
     isLoading?: boolean;
-} & IconProps;
+};
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
             type = "button",
@@ -34,8 +30,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             variant = "primary",
             size = "md",
             isLoading = false,
-            startIcon,
-            endIcon,
             ...props
         },
         ref
@@ -53,8 +47,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 {...props}
             >
                 {isLoading && <Spinner size="sm" className="text-current"/>}
-                {!isLoading && startIcon}
-                <span className="mx-2">{props.children}</span> {!isLoading && endIcon}
+                <span className="mx-2">{props.children}</span>
             </button>
         );
     }

@@ -4,7 +4,7 @@ import storage from "@utils/storage.ts";
 import {IoIosArrowDown, IoIosNotificationsOutline} from "react-icons/io";
 import {useState} from "react";
 import {NotificationList} from "@features/notification/components/NotificationList.tsx";
-import {useAuth} from "@utils/useAuth.ts";
+import {useAuth} from "@src/hooks/useAuth.ts";
 import {Button} from "@components/elements/Button.tsx";
 import {Avatar} from "@components/elements/Avatar.tsx";
 

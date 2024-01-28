@@ -4,6 +4,7 @@ import {PermissionAccessType, RequestType} from "@src/types.ts";
 export type ChannelMemberResponse = {
     member: UserResponse;
     status: RequestType;
+    joinedDate: string;
     messagePermission: PermissionAccessType;
     memberPermission: PermissionAccessType;
 }

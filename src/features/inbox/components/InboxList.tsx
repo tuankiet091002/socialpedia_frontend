@@ -5,7 +5,7 @@ import {IoIosSearch} from "react-icons/io";
 import {setScrollspy} from "@utils/setScrollspy.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@src/main.tsx";
-import {inboxQueryChange} from "@src/querySlice.ts";
+import {inboxQueryChange} from "@utils/querySlice.ts";
 
 export const InboxList = () => {
     //// SETTING VARIABLE

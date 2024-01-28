@@ -5,7 +5,7 @@ import {SpaceItem} from "@features/message/components/SpaceItem.tsx";
 import {setScrollspy} from "@utils/setScrollspy.ts";
 import {RootState} from "@src/main.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {channelQueryChange} from "@src/querySlice.ts";
+import {channelQueryChange} from "@utils/querySlice.ts";
 
 export const PersonalChannelList = () => {
     //// SETTING VARIABLE
