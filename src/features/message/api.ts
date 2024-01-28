@@ -22,9 +22,27 @@ export const messageApi = createApi({
                 [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + "_" + id})),
                     {type: "Message", id: locationId + "_LIST"}],
             serializeQueryArgs: ({queryArgs, endpointName}) => {
-                return endpointName + "_" + queryArgs.locationId;
+                return endpointName + "_" + queryArgs.locationId + "_" + queryArgs.content;
+            },
+            merge: (currentCache, newItems) => {
+                // setting variable
+                const numberDifference = newItems.totalElements - currentCache.totalElements;
+                const size = currentCache.size;
+
+                if (numberDifference <= size) {
+                    // splice logic
+                    currentCache.content.splice(Math.max(newItems.number * size - numberDifference, 0),
+                        newItems.number == 0 ? size - numberDifference : size, ...newItems.content);
+                    // other fields
+                    currentCache.totalElements = newItems.totalElements
+                    currentCache.last = newItems.last
+                    currentCache.totalPages = newItems.totalPages
+                } else {
+                    console.log("overflowing number of element")
+                }
             },
             forceRefetch({currentArg, previousArg}) {
+
                 return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
             }
         }),
@@ -38,7 +56,25 @@ export const messageApi = createApi({
                 [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + id})),
                     {type: "Message", id: locationId + "_LIST"}],
             serializeQueryArgs: ({queryArgs, endpointName}) => {
-                return endpointName + "_" + queryArgs.locationId;
+                return endpointName + "_" + queryArgs.locationId + "_" + queryArgs.content;
+            },
+            merge: (currentCache, newItems) => {
+                // setting variable
+                const numberDifference = newItems.totalElements - currentCache.totalElements;
+                const size = currentCache.size;
+
+                if (numberDifference <= size) {
+                    // splice logic
+                    currentCache.content.splice(Math.max(newItems.number * size - numberDifference, 0),
+                        newItems.number == 0 ? size - numberDifference : size, ...newItems.content);
+                    // other fields
+                    currentCache.totalElements = newItems.totalElements
+                    currentCache.last = newItems.last
+                    currentCache.totalPages = newItems.totalPages
+                } else {
+                    console.log("overflowing number of element")
+                }
+
             },
             forceRefetch({currentArg, previousArg}) {
                 return JSON.stringify(currentArg) !== JSON.stringify(previousArg);

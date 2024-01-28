@@ -1,5 +1,5 @@
-import {InboxList} from "@features/inbox/components/InboxList.tsx";
 import {HiOutlineUserGroup} from "react-icons/hi";
+import {SpaceList} from "@features/message/components/SpaceList.tsx";
 
 export const InboxColumn = () => {
 
@@ -10,7 +10,7 @@ export const InboxColumn = () => {
             <span className="align-sub">Inbox Chat</span>
         </section>
         <section className="grow bg-yellow-300">
-            <InboxList/>
+            <SpaceList type="inbox"/>
         </section>
     </div>)
 }

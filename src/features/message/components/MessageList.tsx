@@ -1,35 +1,29 @@
 import {MessageItem} from "@features/message/components/MessageItem.tsx";
 import {useEffect, useRef} from "react";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
-import {UseQuery} from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import {BaseQueryFn, FetchArgs, FetchBaseQueryError, QueryDefinition} from "@reduxjs/toolkit/query";
-import {MessageResponse} from "@features/message/types/MessageResponse.ts";
-import {Page} from "@src/types.ts";
 import {setScrollspy} from "@utils/setScrollspy.ts";
 import {useDispatch} from "react-redux";
 import {messageQueryChange} from "@utils/querySlice.ts";
+import {Spinner} from "@components/elements/Spinner.tsx";
+import {useGetMessageFromChannelQuery, useGetMessageFromInboxQuery} from "@features/message/api.ts";
 
 export type MessageListProps = {
-    queryFunc: UseQuery<QueryDefinition<
-        MessageQueryRequest,
-        BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
-        "Message",
-        Page<MessageResponse>,
-        "message">>;
+    type: "channel" | "inbox"
     query: MessageQueryRequest
 }
 
-export const MessageList = ({queryFunc, query}: MessageListProps) => {
+export const MessageList = ({type, query}: MessageListProps) => {
     //// SETTING VARIABLE
     const dispatch = useDispatch();
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
 
-    const {data} = queryFunc(query);
+    const queryFunc = type == "channel" ? useGetMessageFromChannelQuery : useGetMessageFromInboxQuery;
+    const {data, isFetching} = queryFunc(query);
 
     // set up scrollspy
     useEffect(() => {
-        return setScrollspy<HTMLUListElement>(listScrollRef, true,
+        return setScrollspy<HTMLUListElement>(listScrollRef, false,
             () => data && !data.last &&
                 dispatch(messageQueryChange({...query, pageNo: query.pageNo + 1})))
     }, [data]);
@@ -39,6 +33,7 @@ export const MessageList = ({queryFunc, query}: MessageListProps) => {
 
     return (
         <ul className="overflow-y-auto p-2 h-[calc(100vh-178px)] space-y-2" ref={listScrollRef}>
+            {isFetching && <Spinner className="mx-auto" size="lg"/>}
             {data?.content.slice().reverse().map(item => <MessageItem key={item.id} data={item}/>)}
         </ul>
     );

@@ -2,7 +2,7 @@ import {Head} from "@components/elements/Head.tsx";
 import {useParams} from "react-router-dom";
 import {useGetChannelProfileQuery} from "@features/channel/api.ts";
 import {MessageList} from "@features/message/components/MessageList.tsx";
-import {useGetMessageFromChannelQuery, useSendMessageToChannelMutation} from "@features/message/api.ts";
+import {useSendMessageToChannelMutation} from "@features/message/api.ts";
 import {IoFilter} from "react-icons/io5";
 import {IoIosSearch} from "react-icons/io";
 import {MessageInput} from "@features/message/components/MessageInput.tsx";
@@ -62,7 +62,7 @@ export const ChannelChatPage = () => {
                 </div>
             </section>
             <section className="flex-auto bg-red-500">
-                <MessageList query={query!} queryFunc={useGetMessageFromChannelQuery}/>
+                <MessageList type="channel" query={query!}/>
             </section>
             <section className="h-[50px]">
                 <MessageInput queryFunc={useSendMessageToChannelMutation}/>

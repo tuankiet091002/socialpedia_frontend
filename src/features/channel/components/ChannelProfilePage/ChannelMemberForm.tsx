@@ -130,7 +130,6 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
 
     return (
         <div className="overflow-y-auto">
-            {JSON.stringify(member)}
             <CustomTable table={table}/>
             <hr className="h-6"/>
             <Paginate table={table}/>

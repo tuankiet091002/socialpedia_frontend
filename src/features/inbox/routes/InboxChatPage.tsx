@@ -1,5 +1,5 @@
 import {MessageList} from "@features/message/components/MessageList.tsx";
-import {useGetMessageFromInboxQuery, useSendMessageToInboxMutation} from "@features/message/api.ts";
+import {useSendMessageToInboxMutation} from "@features/message/api.ts";
 import {Head} from "@components/elements/Head.tsx";
 import emptyAvatar from "@assets/empty avatar.jpg";
 import {IoFilter} from "react-icons/io5";
@@ -61,7 +61,7 @@ export const InboxChatPage = () => {
                 </div>
             </section>
             <section className="flex-auto bg-red-500">
-                <MessageList query={query!} queryFunc={useGetMessageFromInboxQuery}/>
+                <MessageList type="inbox" query={query!}/>
             </section>
             <section className="h-[50px]">
                 <MessageInput queryFunc={useSendMessageToInboxMutation}/>

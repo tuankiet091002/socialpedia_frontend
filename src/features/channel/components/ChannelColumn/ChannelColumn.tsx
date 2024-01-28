@@ -1,8 +1,8 @@
-import {PersonalChannelList} from "@features/channel/components/ChannelColumn/PersonalChannelList.tsx";
 import {HiOutlineUserGroup} from "react-icons/hi";
 import {ChannelCreateForm} from "@features/channel/components/ChannelColumn/ChannelCreateForm";
 import {useState} from "react";
 import {Button} from "@components/elements/Button.tsx";
+import {SpaceList} from "@features/message/components/SpaceList.tsx";
 
 export const ChannelColumn = () => {
     const [show, setShow] = useState<boolean>(false);
@@ -14,7 +14,7 @@ export const ChannelColumn = () => {
             <span className="align-sub">Channel Chat</span>
         </section>
         <section className="grow bg-yellow-300">
-            <PersonalChannelList/>
+            <SpaceList type="channel"/>
         </section>
         <section className="h-[50px] flex justify-center p-1">
             <Button type="button" onClick={() => setShow(true)}>Create New Channel</Button>

@@ -8,7 +8,7 @@ type MessageProps = {
 
 export const MessageItem = ({data}: MessageProps) => {
 
-        return (<li className="flex flex-row items-center justify-between rounded-md bg-blue-600 p-2">
+        return (<li className="relative flex flex-row items-center justify-between rounded-md bg-blue-600 p-2 group">
                 {typeof data.createdBy !== "string" ?
                     <div className="flex flex-row items-end gap-4">
                         <Avatar src={data.createdBy?.avatar?.url} size="sm"/>
@@ -23,8 +23,8 @@ export const MessageItem = ({data}: MessageProps) => {
                     </div>
                     : <p className="font-bold text-white">{data.content}</p>}
                 <p className="text-gray-200">{moment(data.modifiedDate).fromNow()}</p>
+                <div className="absolute right-2 hidden bg-red-500 top-[-10px] group-hover:block">abc</div>
             </li>
-        )
-            ;
+        );
     }
 ;
