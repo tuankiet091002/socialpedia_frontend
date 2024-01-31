@@ -20,7 +20,7 @@ export const InboxChatPage = () => {
     // get query, or else insert new query
     const dispatch = useDispatch();
     const query = useSelector((state: RootState) => state.query.messageQuery.find(m => m.locationId == locationId));
-    if (!query) dispatch(messageQueryChange({locationId, content: "", pageNo: 0, pageSize: 10}))
+    if (!query) dispatch(messageQueryChange({locationId, content: "", pageNo: 0, pageSize: 7}))
     const [content, setContent] = useState<string>("");
 
     // main data

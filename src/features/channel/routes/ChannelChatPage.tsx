@@ -20,7 +20,7 @@ export const ChannelChatPage = () => {
     // get query, or else insert new query
     const dispatch = useDispatch();
     const query = useSelector((state: RootState) => state.query.messageQuery.find(m => m.locationId == locationId));
-    if (!query) dispatch(messageQueryChange({locationId, content: "", pageNo: 0, pageSize: 10}))
+    if (!query) dispatch(messageQueryChange({locationId, content: "", pageNo: 0, pageSize: 7}))
     const [content, setContent] = useState<string>("");
 
     // main data
@@ -41,9 +41,9 @@ export const ChannelChatPage = () => {
 
     return (<>
         <Head title={`${data.name}`}/>
-        <div className="flex h-full flex-col">
+        <div className="flex h-full flex-col bg-gray-100">
             <section
-                className="flex items-center justify-between border border-gray-300 bg-white px-3 shadow-2xl h-[60px]">
+                className="flex items-center justify-between border border-gray-300 px-3 h-[60px]">
                 <div className="flex flex-row items-center gap-x-4">
                     <Avatar src={data.avatar?.url} size="sm"/>
                     <span className="text-start text-3xl">{data.name}</span>
@@ -61,7 +61,7 @@ export const ChannelChatPage = () => {
                     </div>
                 </div>
             </section>
-            <section className="flex-auto bg-red-500">
+            <section className="flex-auto">
                 <MessageList type="channel" query={query!}/>
             </section>
             <section className="h-[50px]">

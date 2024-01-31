@@ -27,11 +27,11 @@ export const IndependentInput = forwardRef<HTMLInputElement, IndependentInputPro
         }) : null;
 
         return (
-            <div className="flex flex-row items-center">
+            <div className="flex w-full flex-row items-center">
                 <input
                     type={type}
                     ref={ref}
-                    className={clsx("inline appearance-none text-sm rounded-sm border border-gray-300 pl-2 pr-[30px] py-1 shadow-sm placeholder-gray-400 focus:outline-none",
+                    className={clsx("inline appearance-none text-sm rounded-md border border-gray-300 pl-2 pr-[30px] py-1 placeholder-gray-400 shadow-md focus:outline-none  disabled:border-0 disabled:bg-gray-100 disabled:shadow-none",
                         sizes[textSize],
                         className
                     )}

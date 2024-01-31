@@ -32,7 +32,7 @@ export const MessageList = ({type, query}: MessageListProps) => {
     if (!data) return null;
 
     return (
-        <ul className="overflow-y-auto p-2 h-[calc(100vh-178px)] space-y-2" ref={listScrollRef}>
+        <ul className="overflow-y-auto p-2 h-[567.6px] space-y-1" ref={listScrollRef}>
             {isFetching && <Spinner className="mx-auto" size="lg"/>}
             {data?.content.slice().reverse().map(item => <MessageItem key={item.id} data={item}/>)}
         </ul>

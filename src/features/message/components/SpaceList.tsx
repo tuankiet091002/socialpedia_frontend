@@ -10,6 +10,7 @@ import {InboxQueryRequest} from "@features/inbox/types/InboxQueryRequest.ts";
 import {Spinner} from "@components/elements/Spinner.tsx";
 import {useGetPersonalChannelListQuery} from "@features/channel/api.ts";
 import {useGetInboxListQuery} from "@features/inbox/api.ts";
+import {IndependentInput} from "@components/elements/IndependentInput.tsx";
 
 type SpaceListProps = {
     type: "channel" | "inbox",
@@ -52,15 +53,17 @@ export const SpaceList = ({type}: SpaceListProps) => {
     // wait for next render when there is data
     if (!data) return null;
 
-    return (<div className="grid grid-rows-[45px_536.6px]">
-            <div className="mb-2 flex flex-row items-center bg-cyan-700 p-2">
-                <input type="text" className="w-full inline appearance-none text-sm pl-2
-                    pr-[25px] py-1 shadow-sm focus:outline-none placeholder-gray-400"
-                       placeholder="Find"
-                       onChange={(e) => setName(e.target.value)}/>
-                <IoIosSearch className="text-xl text-gray-500 ml-[-25px]"/>
+    return (<div className="grid grid-rows-[50px_527.6px]">
+            <div className="mb-2 flex w-full items-center justify-center p-2 h-[50px] border-gray-300 border-b">
+                <IndependentInput
+                    textSize="md"
+                    className="!w-full"
+                    endIcon={<IoIosSearch/>}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Find..."
+                />
             </div>
-            <ul className="overflow-y-scroll divide-y divide-gray-200" ref={listScrollRef}>
+            <ul className="overflow-y-scroll divide-y divide-gray-300" ref={listScrollRef}>
                 {data?.content.map(item => <SpaceItem key={item.id} type="channel" data={item}/>)}
                 {isFetching && <div><Spinner size="lg" className="mx-auto"/></div>}
             </ul>

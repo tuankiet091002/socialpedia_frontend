@@ -13,7 +13,7 @@ export const SpaceItem = ({data, type}: ChannelItemProps) => {
     const navigate = useNavigate();
 
     return (
-        <li className="flex cursor-pointer flex-row items-center justify-between gap-x-4 p-2 h-[500px] hover:bg-blue-400 hover:text-white"
+        <li className="flex cursor-pointer flex-row items-center justify-between gap-x-4 p-2 hover:bg-blue-500 hover:text-white"
             onClick={() => navigate(`/${type}/${data.id}`)}>
             <Avatar className="bg-gray-50" src={data.avatar?.url} size="sm"/>
             <div className="flex-auto text-start max-w-[170px]">

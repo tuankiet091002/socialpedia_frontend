@@ -6,12 +6,12 @@ import {useDisclosure} from "@src/hooks/useDisclosure.ts";
 import {createPortal} from "react-dom";
 
 type ConfirmationDialogProps = {
-    triggerButton: ReactElement;
-    confirmButton: ReactElement;
+    type?: "danger" | "info";
     title: string;
     body?: string;
+    triggerButton: ReactElement;
+    confirmButton: ReactElement;
     cancelButtonText?: string;
-    type?: "danger" | "info";
     isDone?: boolean;
 }
 

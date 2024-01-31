@@ -94,14 +94,14 @@ export const ChannelList = () => {
     if (!data) return null;
 
     return (
-        <div className="w-full overflow-x-auto p-2">
-            <div className="flex items-center border border-gray-300 px-3 text-start shadow-2xl h-[50px]">
-                <IoFilter className="mr-3 inline"/>
-                <span className="mr-3">Filter:</span>
-                <IndependentInput textSize="sm" onChange={e => setTypingName(e.target.value)} endIcon={<IoIosSearch/>}/>
+        <div className="w-full overflow-x-auto rounded-md border p-2 border-gray-300s space-y-1">
+            <div className="flex items-center border-gray-300 px-3 text-start h-[50px] space-x-3">
+                <IoFilter className="inline"/>
+                <span>Filter:</span>
+                <IndependentInput textSize="md" onChange={e => setTypingName(e.target.value)} endIcon={<IoIosSearch/>}/>
             </div>
             <CustomTable table={table}/>
-            <hr className="h-6"/>
+            <hr className="h-1"/>
             <Paginate table={table}/>
         </div>
     );

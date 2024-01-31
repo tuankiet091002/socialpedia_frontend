@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {Page} from "@src/types.ts";
+import {MessageStatusType, Page} from "@src/types.ts";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import {MessageResponse} from "@features/message/types/MessageResponse.ts";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
@@ -22,7 +22,7 @@ export const messageApi = createApi({
                 [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + "_" + id})),
                     {type: "Message", id: locationId + "_LIST"}],
             serializeQueryArgs: ({queryArgs, endpointName}) => {
-                return endpointName + "_" + queryArgs.locationId + "_" + queryArgs.content;
+                return endpointName + "_" + queryArgs.locationId;
             },
             merge: (currentCache, newItems) => {
                 // setting variable
@@ -42,7 +42,6 @@ export const messageApi = createApi({
                 }
             },
             forceRefetch({currentArg, previousArg}) {
-
                 return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
             }
         }),
@@ -52,11 +51,11 @@ export const messageApi = createApi({
                 method: "GET",
                 params: content
             }),
-            providesTags: (result, _, {locationId}) => !result ? [{type: "Message", id: locationId + "LIST"}] :
+            providesTags: (result, _, {locationId}) => !result ? [{type: "Message", id: locationId + "_LIST"}] :
                 [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + id})),
                     {type: "Message", id: locationId + "_LIST"}],
             serializeQueryArgs: ({queryArgs, endpointName}) => {
-                return endpointName + "_" + queryArgs.locationId + "_" + queryArgs.content;
+                return endpointName + "_" + queryArgs.locationId;
             },
             merge: (currentCache, newItems) => {
                 // setting variable
@@ -108,12 +107,35 @@ export const messageApi = createApi({
             }
         }),
         updateMessageContent: builder.mutation<void, MessageContentRequest>({
-            query: ({locationId, id, ...status}) => ({
-                url: `/message/${locationId}/${id}/content`,
+            query: ({locationId, ...body}) => ({
+                url: `/message/${locationId}/content`,
                 method: "PUT",
-                body: status
+                body: body
             }),
-            invalidatesTags: (_, __, {id, locationId}) => [{type: "Message", id: locationId + "_" + id}]
+            async onQueryStarted({id, locationId, content}, {dispatch, queryFulfilled}) {
+
+                try {
+                    await queryFulfilled
+
+                    // pessimistic update for channel if exist
+                    dispatch(messageApi.util.updateQueryData("getMessageFromChannel",
+                        {locationId} as MessageQueryRequest,
+                        data => ({
+                            ...data, content: data.content.map(m =>
+                                m.id != id ? m : {...m, content})
+                        })));
+
+                    // pessimistic update for inbox if exist
+                    dispatch(messageApi.util.updateQueryData("getMessageFromInbox",
+                        {locationId} as MessageQueryRequest,
+                        data => ({
+                            ...data, content: data.content.map(m =>
+                                m.id != id ? m : {...m, content})
+                        })));
+                } catch (e) {
+                    console.log(e)
+                }
+            }
         }),
         updateMessageStatus: builder.mutation<void, MessageStatusRequest>({
             query: ({locationId, id, ...status}) => ({
@@ -121,14 +143,62 @@ export const messageApi = createApi({
                 method: "PUT",
                 body: status
             }),
-            invalidatesTags: (_, __, {id, locationId}) => [{type: "Message", id: locationId + "_" + id}]
+            async onQueryStarted({id, locationId, status}, {dispatch, queryFulfilled}) {
+
+                try {
+                    await queryFulfilled
+
+                    // // pessimistic update for channel if exist
+                    dispatch(messageApi.util.updateQueryData("getMessageFromChannel",
+                        {locationId} as MessageQueryRequest,
+                        data => ({
+                            ...data, content: data.content.map(m =>
+                                m.id != id ? m : {...m, status})
+                        })));
+
+                    // pessimistic update for inbox if exist
+                    dispatch(messageApi.util.updateQueryData("getMessageFromInbox",
+                        {locationId} as MessageQueryRequest,
+                        data => ({
+                            ...data, content: data.content.map(m =>
+                                m.id != id ? m : {...m, status})
+                        })));
+
+                } catch (e) {
+                    console.log(e)
+                }
+            }
         }),
         deleteMessage: builder.mutation<void, { locationId: number, id: number }>({
             query: ({locationId, id}) => ({
                 url: `/message/${locationId}/${id}`,
                 method: "DELETE"
             }),
-            invalidatesTags: (_, __, {id, locationId}) => [{type: "Message", id: locationId + "_" + id}]
+            async onQueryStarted({id, locationId}, {dispatch, queryFulfilled}) {
+
+                try {
+                    await queryFulfilled
+
+                    // pessimistic for channel if exist
+                    dispatch(messageApi.util.updateQueryData("getMessageFromChannel",
+                        {locationId} as MessageQueryRequest,
+                        data => ({
+                            ...data, content: data.content.map(m =>
+                                m.id != id ? m : {...m, status: MessageStatusType.INACTIVE})
+                        })));
+
+                    // pessimistic for inbox if exist
+                    dispatch(messageApi.util.updateQueryData("getMessageFromInbox",
+                        {locationId} as MessageQueryRequest,
+                        data => ({
+                            ...data, content: data.content.map(m =>
+                                m.id != id ? m : {...m, status: MessageStatusType.INACTIVE})
+                        })));
+
+                } catch (e) {
+                    console.log(e)
+                }
+            }
         })
 
     })

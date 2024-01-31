@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {Page, SocketType} from "@src/types.ts";
+import {MessageStatusType, Page, SocketType} from "@src/types.ts";
 import {difference} from "@utils/arrayUtil.ts";
 import {connect, subscribeTo} from "@utils/socketMessage.ts";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
@@ -78,7 +78,7 @@ export const channelApi = createApi({
                                                         id: channel.id * 1000 + message.owner.id * 10 + 2,
                                                         content: `${message.owner.name} just join the channel`,
                                                         resources: [],
-                                                        createdBy: "System",
+                                                        status: MessageStatusType.SYSTEM,
                                                         modifiedDate: moment(Date.now()).toISOString()
                                                     });
                                                     return data;
@@ -93,7 +93,7 @@ export const channelApi = createApi({
                                                         id: channel.id * 1000 + message.owner.id * 10 + 2,
                                                         content: `${message.owner.name} just leave the channel`,
                                                         resources: [],
-                                                        createdBy: "System",
+                                                        status: MessageStatusType.SYSTEM,
                                                         modifiedDate: moment(Date.now()).toISOString()
                                                     });
                                                     return data;
@@ -108,7 +108,7 @@ export const channelApi = createApi({
                                                         id: channel.id * 1000 + message.owner.id * 10 + 3,
                                                         content: `${message.owner.name} is typing`,
                                                         resources: [],
-                                                        createdBy: "System",
+                                                        status: MessageStatusType.SYSTEM,
                                                         modifiedDate: moment(Date.now()).toISOString()
                                                     });
                                                     return data;

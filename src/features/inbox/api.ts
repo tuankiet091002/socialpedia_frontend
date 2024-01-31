@@ -1,6 +1,6 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 
-import {Page, SocketType} from "@src/types.ts";
+import {MessageStatusType, Page, SocketType} from "@src/types.ts";
 import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import {InboxProfileRequest} from "@features/inbox/types/InboxProfileRequest.ts";
 import {InboxResponse} from "@features/inbox/types/InboxResponse.ts";
@@ -62,7 +62,7 @@ export const inboxApi = createApi({
                                                         id: inbox.id * 1000 + message.owner.id * 10 + 3,
                                                         content: `${message.owner.name} is typing`,
                                                         resources: [],
-                                                        createdBy: "System",
+                                                        status: MessageStatusType.SYSTEM,
                                                         modifiedDate: moment(Date.now()).toISOString()
                                                     });
                                                     return data;

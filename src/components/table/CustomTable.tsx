@@ -20,17 +20,17 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
     }, [table.getState().columnSizingInfo]);
 
     return (
-        <table className="min-w-full table-fixed divide-x divide-gray-200"
+        <table className="min-w-full table-fixed rounded-md border border-gray-300"
                style={{
                    ...columnSizeVars, //Define column sizes on the <table> element
                    width: table.getTotalSize()
                }}>
-            <thead className="bg-gray-50">
+            <thead>
             {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header, idx) => (
                         <th key={header.id}
-                            className="relative px-6 py-3 font-sans font-semibold tracking-wider "
+                            className="relative border-b-4 border-gray-500 bg-white px-6 py-3 text-lg tracking-wider font-semsibold"
                             style={{width: `calc(var(--header-${header?.id}-size) * 1px)`}}>
                             {header.isPlaceholder
                                 ? null
@@ -43,8 +43,8 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
                                     onDoubleClick: () => header.column.resetSize(),
                                     onMouseDown: header.getResizeHandler(),
                                     onTouchStart: header.getResizeHandler(),
-                                    className: clsx("absolute inset-y-0 right-0 w-[2px] bg-gray-300 cursor-col-resize",
-                                        header.column.getIsResizing() && "bg-gray-500")
+                                    className: clsx("absolute inset-y-0 right-0 w-[1px] bg-gray-300 cursor-col-resize",
+                                        header.column.getIsResizing() && "bg-gray-500 w-[3px] rounded-lg inset-y-1")
                                 }}
                             >
                             </div>}
@@ -55,10 +55,10 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
             </thead>
             <tbody>
             {table.getRowModel().rows.map(row => (
-                <tr key={row.id} className="odd:bg-white even:bg-gray-100">
+                <tr key={row.id} className="odd:bg-gray-100 even:bg-gray-200">
                     {row.getVisibleCells().map(cell => (
                         <td key={cell.id}
-                            className="border border-gray-300 px-6 py-4 text-sm font-medium text-gray-900">
+                            className="border-b border-gray-300 px-6 py-4 text-sm font-medium text-gray-900">
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                     ))}
