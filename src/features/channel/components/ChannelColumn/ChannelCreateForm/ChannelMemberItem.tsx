@@ -17,6 +17,7 @@ export const ChannelMemberItem = ({data, defaultValue, setForm}: ChannelMemberIt
     const [checked, setChecked] = useState<boolean>(!!defaultValue);
     const defaultPermission: ChannelMemberRequest = defaultValue || {
         memberId: data.id,
+        channelPermission: "VIEW",
         memberPermission: "VIEW",
         messagePermission: "CREATE"
     };
@@ -57,6 +58,14 @@ export const ChannelMemberItem = ({data, defaultValue, setForm}: ChannelMemberIt
                      alt=""/>
                 <p className="text-start font-semibold">{data.name}</p>
             </div>
+            <select name="channelPermission"
+                    className="w-3/4 justify-self-center rounded-sm border-gray-600 p-2 text-sm"
+                    disabled={!checked}
+                    onChange={handleChange}
+                    defaultValue={defaultPermission.channelPermission}>
+                {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
+                    .map(item => <option value={item}>{item}</option>)}
+            </select>
             <select name="messagePermission"
                     className="w-3/4 justify-self-center rounded-sm border-gray-600 p-2 text-sm"
                     disabled={!checked}

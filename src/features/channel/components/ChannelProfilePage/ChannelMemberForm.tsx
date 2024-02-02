@@ -49,11 +49,11 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
             footer: info => info.column.id
         }),
         ...edit ? [
-            columnHelper.accessor(row => ({memberId: row.member.id, memberPermission: row.memberPermission}), {
+            columnHelper.accessor(row => ({memberId: row.member.id, channelPermission: row.channelPermission}), {
                 id: "memberPermission",
                 header: () => "Member Permission",
                 cell: info => <select
-                    defaultValue={info.getValue().memberId == member?.memberId ? member?.memberPermission : info.getValue().memberPermission}
+                    defaultValue={info.getValue().memberId == member?.memberId ? member?.channelPermission : info.getValue().channelPermission}
                     disabled={info.getValue().memberId != member?.memberId}
                     onChange={
                         e => member && setMember({...member, memberPermission: e.target.value})}
@@ -77,6 +77,21 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
                 </select>,
                 footer: info => info.column.id
             }),
+            columnHelper.accessor(row => ({memberId: row.member.id, memberPermission: row.memberPermission}), {
+                id: "memberPermission",
+                header: () => "Member Permission",
+                cell: info => <select
+                    defaultValue={info.getValue().memberId == member?.memberId ? member?.memberPermission : info.getValue().memberPermission}
+                    disabled={info.getValue().memberId != member?.memberId}
+                    onChange={
+                        e => member && setMember({...member, memberPermission: e.target.value})}
+                    //                   onChange={() => setMember(undefined)}
+                >
+                    {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
+                        .map(item => <option key={item} value={item}>{item}</option>)}
+                </select>,
+                footer: info => info.column.id
+            }),
             // if state = edit, show permission detail and edit button
             columnHelper.accessor(row => row, {
                 id: "action",
@@ -87,6 +102,7 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
                             <IoMdSettings className="inline cursor-pointer hover:text-blue-500"
                                           onClick={() => setMember({
                                               memberId: info.getValue().member.id,
+                                              channelPermission: info.getValue().channelPermission.toString(),
                                               memberPermission: info.getValue().memberPermission.toString(),
                                               messagePermission: info.getValue().messagePermission.toString()
                                           })}/> :

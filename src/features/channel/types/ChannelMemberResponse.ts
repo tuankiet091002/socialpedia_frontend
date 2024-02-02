@@ -5,6 +5,7 @@ export type ChannelMemberResponse = {
     member: UserResponse;
     status: RequestType;
     joinedDate: string;
+    channelPermission: PermissionAccessType;
     messagePermission: PermissionAccessType;
     memberPermission: PermissionAccessType;
 }
