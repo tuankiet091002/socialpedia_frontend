@@ -20,33 +20,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Test in Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: "{{defaultContext}}:frontend"
-          push: false
-          load: true # Export to Docker Engine rather than pushing to a registry
-          target: test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
           # for simple tests (npm test, etc.) just run a local image in docker
       - name: Docker Build and Push Frontend to Docker Hub
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:frontend"
           push: true
           target: production
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/socialpedia_frontend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Docker Build and Push Backend to Docker Hub
-        uses: docker/build-push-action@v5
-        with:
-          context: "{{defaultContext}}:backend"
-          push: true
-          target: production
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/socialpedia_backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
