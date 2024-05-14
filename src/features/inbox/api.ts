@@ -63,7 +63,8 @@ export const inboxApi = createApi({
                                                         content: `${message.owner.name} is typing`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
-                                                        modifiedDate: moment(Date.now()).toISOString()
+                                                        modifiedDate: moment(Date.now()).toISOString(),
+                                                        replies: []
                                                     });
                                                     return data;
                                                 }));

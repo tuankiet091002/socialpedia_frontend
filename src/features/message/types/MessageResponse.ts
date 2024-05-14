@@ -7,5 +7,6 @@ export type MessageResponse = {
     content: string,
     resources: ResourceEntity[],
     createdBy?: UserResponse,
-    modifiedDate?: string
+    modifiedDate?: string,
+    replies: MessageResponse[]
 };

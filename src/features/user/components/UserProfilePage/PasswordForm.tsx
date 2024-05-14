@@ -7,8 +7,8 @@ import {Button} from "@components/elements/Button.tsx";
 import {UserPasswordRequest} from "@features/auth/types/UserPasswordRequest.ts";
 
 const schema = z.object({
-    oldPassword: z.string().min(1, 'Password must at least 6 character.'),
-    newPassword: z.string().min(1, 'Password must at least 6 character.')
+    oldPassword: z.string().min(1, "Password must at least 6 character."),
+    newPassword: z.string().min(1, "Password must at least 6 character.")
 })
 
 type PasswordFormProps = {
@@ -30,18 +30,16 @@ export const PasswordForm = ({onSuccess}: PasswordFormProps) => {
             {({register, formState}) => (
                 <>
                     <InputField
-                        id="oldPassword"
                         type="password"
                         label="Old password"
-                        error={formState.errors['oldPassword']}
-                        registration={register('oldPassword')}
+                        error={formState.errors["oldPassword"]}
+                        registration={register("oldPassword")}
                     />
                     <InputField
-                        id="newPassword"
                         type="password"
                         label="New Password"
-                        error={formState.errors['newPassword']}
-                        registration={register('newPassword')}
+                        error={formState.errors["newPassword"]}
+                        registration={register("newPassword")}
                     />
                     {result.isError && (result.error as { data: ErrorResponse }).data.message}
                     <div className="p-3 d-flex align-items-center justify-content-center">

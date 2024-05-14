@@ -10,7 +10,7 @@ import {RxCross1} from "react-icons/rx";
 import {sendTo} from "@utils/socketMessage.ts";
 import {SocketType} from "@src/types.ts";
 import {useGetOwnerQuery} from "@features/auth/api.ts";
-import {Avatar} from "@components/elements/Avatar.tsx";
+import {FilePreview} from "@components/elements/FilePreview.tsx";
 
 type MessageInputProps = {
     queryFunc: UseMutation<MutationDefinition<
@@ -74,11 +74,15 @@ export const MessageInput = ({queryFunc}: MessageInputProps) => {
             />
             {files.length > 0 &&
                 <div
-                    className="absolute inset-x-0 flex flex-row items-center gap-x-4 overflow-x-auto border
-                    border-gray-300 bg-green-600 px-2 top-[-100px] h-[100px] rounded-lg">
+                    className="absolute inset-x-0 flex flex-row items-center gap-x-4 overflow-x-auto rounded-lg border border-gray-300 bg-gray-100 px-2 top-[-120px] h-[120px]">
                     {files.map(
-                        (file, index) => <div className="relative flex-shrink-0 rounded-md bg-gray-200" key={index}>
-                            <Avatar src={URL.createObjectURL(file)} size="md" className="rounded-none !w-auto"/>
+                        (file, index) => <div className="relative flex-shrink-0 rounded-md bg-gray-200 p-1 h-[100px]"
+                                              key={index}>
+
+                            {/* display file base on type */}
+                            <FilePreview src={file}/>
+                            
+                            {/* delete button */}
                             <div
                                 className="absolute top-0 right-0 cursor-pointer rounded-lg bg-gray-300 h-[15px]
                                 w-[15px] flex items-center justify-center hover:bg-gray-400"
@@ -89,15 +93,15 @@ export const MessageInput = ({queryFunc}: MessageInputProps) => {
                     )}
                 </div>}
             <form className="flex w-full items-center gap-x-4" onSubmit={handleSubmit}>
-                <input type="text" name="content" className="flex-auto appearance-none text-lg px-2 py-1
-                   shadow-sm rounded-md border border-gray-300 focus:outline-none placeholder-gray-400"
+                <input type="text" name="content"
+                       className="flex-auto appearance-none rounded-md border border-gray-300 bg-gray-200 px-2 py-1 text-lg shadow-sm placeholder-gray-400 focus:outline-none"
                        placeholder="Enter message"
                        onKeyDown={() => setIsTyping(true)}
                        onKeyUp={() => {
                            keyTimer && clearTimeout(keyTimer);
                            keyTimer = setTimeout(() => setIsTyping(false), 2000);
                        }}/>
-                <Button type="submit" size="sm">Send {" "} <FaPaperPlane className="inline"/> </Button>
+                <Button type="submit">Send {" "} <FaPaperPlane className="inline"/> </Button>
             </form>
 
         </div>

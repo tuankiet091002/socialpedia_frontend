@@ -13,6 +13,7 @@ export type ResourceEntity = {
     id: number;
     filename: string;
     fileType: string;
+    fileSize: number;
     url: string;
 }
 

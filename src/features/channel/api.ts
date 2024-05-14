@@ -79,7 +79,8 @@ export const channelApi = createApi({
                                                         content: `${message.owner.name} just join the channel`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
-                                                        modifiedDate: moment(Date.now()).toISOString()
+                                                        modifiedDate: moment(Date.now()).toISOString(),
+                                                        replies: []
                                                     });
                                                     return data;
                                                 }));
@@ -94,7 +95,8 @@ export const channelApi = createApi({
                                                         content: `${message.owner.name} just leave the channel`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
-                                                        modifiedDate: moment(Date.now()).toISOString()
+                                                        modifiedDate: moment(Date.now()).toISOString(),
+                                                        replies: []
                                                     });
                                                     return data;
                                                 }));
@@ -109,7 +111,8 @@ export const channelApi = createApi({
                                                         content: `${message.owner.name} is typing`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
-                                                        modifiedDate: moment(Date.now()).toISOString()
+                                                        modifiedDate: moment(Date.now()).toISOString(),
+                                                        replies: []
                                                     });
                                                     return data;
                                                 }));

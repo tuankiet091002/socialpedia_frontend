@@ -13,5 +13,7 @@ export type ChannelResponse = {
     latestMessage?: MessageResponse;
     createdBy: UserResponse;
     createdDate: string;
+    modifiedBy?: UserResponse;
+    modifiedDate: string;
     channelMembers: ChannelMemberResponse[];
 }
