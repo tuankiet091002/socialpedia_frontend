@@ -16,8 +16,5 @@ export default {
             backgroundColor: ["odd", "even"],
             scale: ["hover", "active", "group-hover"],
         },
-    },
-    safelist: [
-        {pattern: /group-./},
-    ]
+    }
 }

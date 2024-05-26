@@ -29,13 +29,13 @@ export const ChannelList = () => {
     // state for field ordering
     const [order, setOrder] =
         useState<{
-            orderBy?: "id" | "name" | "createdBy" | "createdDate";
+            orderBy?: "id" | "name" | "createdBy" | "createdDate" | "modifiedDate";
             orderDirection?: "ASC" | "DESC";
         }>({orderBy: "id" as const, orderDirection: "ASC" as const});
 
     // main data
     const {data} = useGetChannelListQuery({name, pageNo: pageIndex, pageSize, ...order});
-
+    
     // filter input delay
     // only fetch using query after 500ms delay
     useEffect(() => {
@@ -65,9 +65,15 @@ export const ChannelList = () => {
             footer: info => info.column.id
         }),
         columnHelper.accessor("createdDate", {
-            header: () => <HeaderWithSort name="Created Date" sortField="createdDate" order={order}
+            header: () => <HeaderWithSort name="Created date" sortField="createdDate" order={order}
                                           setOrder={setOrder}/>,
             cell: info => <span>{moment(info.getValue()).format("DD/MM/YYYY")}</span>,
+            footer: info => info.column.id
+        }),
+        columnHelper.accessor("modifiedDate", {
+            header: () => <HeaderWithSort name="Last change" sortField="modifiedDate" order={order}
+                                          setOrder={setOrder}/>,
+            cell: info => <span>{info.getValue() ? moment(info.getValue()).fromNow() : "none"}</span>,
             footer: info => info.column.id
         }),
         columnHelper.accessor("memberNum", {

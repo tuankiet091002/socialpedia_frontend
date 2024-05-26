@@ -9,7 +9,7 @@ const {ChangePasswordPage} = namedImport(() => import("./ChangePasswordPage.tsx"
 export const UserRoutes = () => {
     return useRoutes([
         {path: "list", element: <UserListPage/>},
-        {path: "changePassword", element: <ChangePasswordPage/>},
+        {path: "password", element: <ChangePasswordPage/>},
         {path: "profile", element: <MyProfilePage/>},
         {path: ":userId", element: <UserProfilePage/>}]
     );

@@ -23,7 +23,11 @@ export const PasswordForm = ({onSuccess}: PasswordFormProps) => {
     return (
         <Form<UserPasswordRequest, typeof schema>
             onSubmit={async (values: UserPasswordRequest) => {
-                updatePassword(values)
+                updatePassword(values).unwrap()
+                    .then(() => {
+                        window.alert("Password changed successfully!")
+                        onSuccess();
+                    });
             }}
             schema={schema}
         >
@@ -41,7 +45,9 @@ export const PasswordForm = ({onSuccess}: PasswordFormProps) => {
                         error={formState.errors["newPassword"]}
                         registration={register("newPassword")}
                     />
-                    {result.isError && (result.error as { data: ErrorResponse }).data.message}
+                    {result.isError && <span className="text-sm text-red-500">
+                            {(result.error as { data: ErrorResponse }).data.message}
+                        </span>}
                     <div className="p-3 d-flex align-items-center justify-content-center">
                         <Button type="submit" className="w-full" isLoading={result.isLoading}>
                             Change Password

@@ -13,6 +13,7 @@ import {IoIosSearch, IoMdSettings} from "react-icons/io";
 import {Button} from "@components/elements/Button.tsx";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 import {IndependentInput} from "@components/elements/IndependentInput.tsx";
+import {useGetOwnerQuery} from "@features/auth/api.ts";
 
 const columnHelper = createColumnHelper<UserResponse>();
 
@@ -36,7 +37,7 @@ export const UserList = () => {
     // state for field ordering
     const [order, setOrder] =
         useState<{
-            orderBy?: "id" | "name" | "email" | "phone" | "dob" | "gender" | "role";
+            orderBy?: "id" | "name" | "dob" | "gender" | "role";
             orderDirection?: "ASC" | "DESC";
         }>({orderBy: "id" as const, orderDirection: "ASC" as const});
     // state for action dropdown
@@ -44,6 +45,7 @@ export const UserList = () => {
 
     // main data
     const {data} = useGetUserListQuery({name, pageNo: pageIndex, pageSize, ...order});
+    const {data: owner} = useGetOwnerQuery(null);
 
     // filter input delay
     // only fetch using query after 500ms delay
@@ -63,19 +65,20 @@ export const UserList = () => {
         columnHelper.accessor(row => ({name: row.name, id: row.id, avatar: row.avatar}), {
             id: "name",
             header: () => <HeaderWithSort name="User" sortField="name" order={order} setOrder={setOrder}/>,
-            cell: info => <Link to={`/user/${info.getValue().id}`}
+            cell: info => <Link to={info.getValue().id != owner!.id ? `/user/${info.getValue().id}` : `/user/profile`}
                                 className="cursor-pointer hover:text-blue-500">
                 <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
                 {info.getValue().name}
             </Link>
         }),
         columnHelper.accessor("phone", {
-            header: () => <HeaderWithSort name="Phone Number" sortField="phone" order={order} setOrder={setOrder}/>,
+            header: () => <section className="flex flex-row items-center justify-center gap-x-2">
+                Phone Number</section>,
             cell: info => info.renderValue(),
             footer: info => info.column.id
         }),
         columnHelper.accessor("dob", {
-            header: () => <HeaderWithSort name="Birthday" sortField="dob" order={order} setOrder={setOrder}/>,
+            header: () => <HeaderWithSort name="Birthdate" sortField="dob" order={order} setOrder={setOrder}/>,
             cell: info => <span>{moment(info.getValue()).format("DD/MM/YYYY")}</span>,
             footer: info => info.column.id
         }),
@@ -86,13 +89,14 @@ export const UserList = () => {
         }),
         columnHelper.accessor("role", {
             header: () => <HeaderWithSort name="Role" sortField="role" order={order} setOrder={setOrder}/>,
-            cell: info => <span>{info.getValue()?.name}</span>,
+            // uppercase first letter
+            cell: info => <span>{info.getValue()!.name[0].toUpperCase() + info.getValue()!.name.slice(1)}</span>,
             footer: info => info.column.id
         }),
         columnHelper.accessor(row => ({id: row.id, role: row.role}), {
             id: "action",
             header: () => "Action",
-            cell: info => <span className="relative !text-xl text-center !font-bold">
+            cell: info => info.getValue().id != owner!.id && <span className="relative !text-xl text-center !font-bold">
                 <IoMdSettings className="inline cursor-pointer hover:text-blue-500"
                               onClick={() => setUserId(info.getValue().id)}/>
                 {userId == info.getValue().id &&

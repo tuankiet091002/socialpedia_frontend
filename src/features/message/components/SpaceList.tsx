@@ -54,7 +54,7 @@ export const SpaceList = ({type}: SpaceListProps) => {
     if (!data) return null;
 
     return (<div className="grid grid-rows-[50px_527.6px]">
-            <div className="mb-2 flex w-full items-center justify-center p-2 h-[50px] border-gray-300 border-b">
+            <div className="mb-2 flex w-full items-center justify-center border-b border-gray-300 p-2 h-[50px]">
                 <IndependentInput
                     textSize="md"
                     className="!w-full"
@@ -64,7 +64,7 @@ export const SpaceList = ({type}: SpaceListProps) => {
                 />
             </div>
             <ul className="overflow-y-scroll divide-y divide-gray-300" ref={listScrollRef}>
-                {data?.content.map(item => <SpaceItem key={item.id} type="channel" data={item}/>)}
+                {data?.content.map(item => <SpaceItem key={item.id} type={type} data={item}/>)}
                 {isFetching && <div><Spinner size="lg" className="mx-auto"/></div>}
             </ul>
         </div>

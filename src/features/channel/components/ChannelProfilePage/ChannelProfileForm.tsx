@@ -30,10 +30,8 @@ export const ChannelProfileForm = ({data, edit, setEdit}: ChannelProfileFormProp
             id="channel-profile-form"
             onSubmit={async (value: ChannelProfileRequest) => {
                 updateChannelProfile({...value, channelId: data.id}).unwrap()
-                    .then(() => {
-                        setEdit(false);
-                        window.alert("Profile update successfully.")
-                    })
+                    .then(() => window.alert("Profile update successfully."))
+                    .finally(() => setEdit(false))
             }}
             options={{
                 defaultValues: {

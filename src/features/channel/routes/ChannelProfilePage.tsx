@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {useGetChannelProfileQuery} from "@features/channel/api.ts";
 import {Head} from "@components/elements/Head.tsx";
 import {IoListOutline} from "react-icons/io5";
@@ -10,10 +10,12 @@ import {RequestType} from "@src/types.ts";
 import {
     useCreateChannelRequestMutation,
     useGetChannelRelationQuery,
+    useGetOwnerQuery,
     useLeaveChannelMutation
 } from "@features/auth/api.ts";
 import {useState} from "react";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
+import moment from "moment";
 
 export const ChannelProfilePage = () => {
     //// SETTING VARIABLES
@@ -23,6 +25,7 @@ export const ChannelProfilePage = () => {
 
     // main data
     const {data} = useGetChannelProfileQuery(locationId);
+    const {data: owner} = useGetOwnerQuery(null);
     const {data: member} = useGetChannelRelationQuery(locationId);
     const [edit, setEdit] = useState<boolean>(false);
     const [createRequest, createResult] = useCreateChannelRequestMutation();
@@ -44,6 +47,11 @@ export const ChannelProfilePage = () => {
                     <ChannelAvatarForm data={data} edit={edit}/>
                 </div>
                 <div className="flex items-center justify-end gap-4 bg-white px-5 shadow-2xl h-[50px]">
+                    {data.modifiedBy && <div className="me-auto">Last modified by <Link
+                        to={data.modifiedBy!.id != owner!.id ? `/user/${data.modifiedBy!.id}` : `/user/profile`}
+                        className="cursor-pointer text-blue-700 hover:text-blue-500">{data.modifiedBy!.name}
+                    </Link> {moment(data.modifiedDate!).fromNow()}
+                    </div>}
                     {
                         // waiting for response
                         member?.status == RequestType.PENDING ?

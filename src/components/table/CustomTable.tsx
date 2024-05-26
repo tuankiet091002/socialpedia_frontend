@@ -43,8 +43,8 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
                                     onDoubleClick: () => header.column.resetSize(),
                                     onMouseDown: header.getResizeHandler(),
                                     onTouchStart: header.getResizeHandler(),
-                                    className: clsx("absolute inset-y-0 right-0 w-[1px] bg-gray-300 cursor-col-resize",
-                                        header.column.getIsResizing() && "bg-gray-500 w-[3px] rounded-lg inset-y-1")
+                                    className: clsx("absolute inset-y-0 right-0 bg-gray-300 cursor-col-resize",
+                                        header.column.getIsResizing() ? "bg-gray-500 w-[5px] rounded-lg inset-y-1 right-[2px]" : "border-solid border-x-4 border-white  w-[9px] ")
                                 }}
                             >
                             </div>}

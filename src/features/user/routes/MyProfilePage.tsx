@@ -4,9 +4,10 @@ import {IoPeopleCircleOutline} from "react-icons/io5";
 import {Button} from "@components/elements/Button.tsx";
 import {useState} from "react";
 import {useAuth} from "@src/hooks/useAuth.ts";
+import {useNavigate} from "react-router-dom";
 
 export const MyProfilePage = () => {
-
+    const navigate = useNavigate();
     const [edit, setEdit] = useState<boolean>(false);
 
     // main data
@@ -30,7 +31,7 @@ export const MyProfilePage = () => {
             <div className="flex items-center justify-end gap-4 bg-white px-5 shadow-2xl h-[50px]">
                 <Button type="button" className="w-[170px]"
                         onClick={() => setEdit(true)} disabled={edit}>Edit Profile</Button>
-                <Button type="button" className="">Change Password</Button>
+                <Button type="button" className="" onClick={() => navigate("/user/password")}>Change Password</Button>
             </div>
             <div className="p-10">
                 <UserProfileForm data={user} edit={edit} setEdit={setEdit}/>

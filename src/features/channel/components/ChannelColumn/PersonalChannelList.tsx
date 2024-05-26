@@ -12,6 +12,7 @@ export const PersonalChannelList = () => {
     // get query from slice
     const dispatch = useDispatch();
     const query = useSelector((state: RootState) => state.query.channelQuery)
+    // variable use for search
     const [name, setName] = useState<string>("");
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);

@@ -13,6 +13,7 @@ import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 import {useUpdateMemberPermissionMutation} from "@features/channel/api.ts";
 import {ChannelMemberRequest} from "@features/channel/types/ChannelMemberRequest.ts";
 import {PermissionAccessType} from "@src/types.ts";
+import {useGetOwnerQuery} from "@features/auth/api.ts";
 
 type ChannelMemberFormProps = {
     data: ChannelResponse;
@@ -26,17 +27,19 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
 
     // state for selected editing member
     const [member, setMember] = useState<ChannelMemberRequest | undefined>();
+    const {data: owner} = useGetOwnerQuery(null);
 
     // api hook
     const [updatePermission, updatePermissionResult] = useUpdateMemberPermissionMutation();
 
     // column data
     const columns = useMemo(() => [
-        columnHelper.accessor(row => ({email: row.member.email, avatar: row.member.avatar, name: row.member.name}), {
+        columnHelper.accessor(row => ({id: row.member.id, avatar: row.member.avatar, name: row.member.name}), {
             id: "member",
             header: () => "Thành viên",
-            cell: info => <Link to={`/user/${encodeURIComponent(info.getValue().email).replace(/\./g, "%2E")}`}
-                                className="cursor-pointer hover:text-blue-500">
+            cell: info => <Link
+                to={owner!.id != info.getValue().id ? `/channel/${info.getValue().id}/profile` : "/user/profile"}
+                className="cursor-pointer hover:text-blue-500">
                 <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
                 {info.getValue().name}
             </Link>,
@@ -44,51 +47,53 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
         }),
         columnHelper.accessor(row => row.joinedDate, {
             id: "joinedDate",
-            header: () => "Join date",
+            header: () => "Joined date",
             cell: info => <span>{moment(info.getValue()).format("DD/MM/YYYY")}</span>,
             footer: info => info.column.id
         }),
         ...edit ? [
             columnHelper.accessor(row => ({memberId: row.member.id, channelPermission: row.channelPermission}), {
-                id: "memberPermission",
-                header: () => "Member Permission",
+                id: "channelPermission",
+                header: () => "Channel permission",
                 cell: info => <select
+                    className="text-lg"
                     defaultValue={info.getValue().memberId == member?.memberId ? member?.channelPermission : info.getValue().channelPermission}
                     disabled={info.getValue().memberId != member?.memberId}
                     onChange={
-                        e => member && setMember({...member, memberPermission: e.target.value})}
-                    //                   onChange={() => setMember(undefined)}
+                        e => member && setMember({...member, channelPermission: e.target.value})}
                 >
                     {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
                         .map(item => <option key={item} value={item}>{item}</option>)}
-                </select>,
-                footer: info => info.column.id
-            }),
-            columnHelper.accessor(row => ({memberId: row.member.id, messagePermission: row.messagePermission}), {
-                id: "messagePermission",
-                header: () => "Message Permission",
-                cell: info => <select
-                    defaultValue={info.getValue().memberId == member?.memberId ? member?.messagePermission : info.getValue().messagePermission}
-                    disabled={info.getValue().memberId != member?.memberId}
-                    onChange={
-                        e => member && setMember({...member, messagePermission: e.target.value})}>
-                    {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
-                        .map(item => <option key={item} value={item.toString()}>{item}</option>)}
                 </select>,
                 footer: info => info.column.id
             }),
             columnHelper.accessor(row => ({memberId: row.member.id, memberPermission: row.memberPermission}), {
                 id: "memberPermission",
-                header: () => "Member Permission",
+                header: () => "Member permission",
                 cell: info => <select
+                    className="text-lg"
                     defaultValue={info.getValue().memberId == member?.memberId ? member?.memberPermission : info.getValue().memberPermission}
                     disabled={info.getValue().memberId != member?.memberId}
                     onChange={
-                        e => member && setMember({...member, memberPermission: e.target.value})}
-                    //                   onChange={() => setMember(undefined)}
-                >
+                        e => member && setMember({...member, memberPermission: e.target.value})}>
                     {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
-                        .map(item => <option key={item} value={item}>{item}</option>)}
+                        .map(item => <option key={item} value={item.toString()}>{item}</option>)}
+                </select>,
+                footer: info => info.column.id
+            }),
+            columnHelper.accessor(row => ({memberId: row.member.id, messagePermission: row.messagePermission}), {
+                id: "messagePermission",
+                header: () => "Message permission",
+                cell: info => <select
+                    className="text-lg"
+                    defaultValue={info.getValue().memberId == member?.memberId ? member?.messagePermission : info.getValue().messagePermission}
+                    disabled={info.getValue().memberId != member?.memberId}
+                    onChange={
+                        e => member && setMember({...member, messagePermission: e.target.value})}
+                >
+
+                    {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
+                        .map(item => <option key={item} value={item} className="text">{item}</option>)}
                 </select>,
                 footer: info => info.column.id
             }),
@@ -96,7 +101,8 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
             columnHelper.accessor(row => row, {
                 id: "action",
                 header: () => "Action",
-                cell: (info) => <span className="!text-xl text-center !font-bold">
+                cell: (info) => owner!.id != info.getValue().member.id &&
+                    <span className="!text-xl text-center !font-bold">
                     {
                         info.getValue().member.id != member?.memberId ?
                             <IoMdSettings className="inline cursor-pointer hover:text-blue-500"
@@ -120,8 +126,7 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
                                                         ...member
                                                     }).unwrap().then(() => {
                                                         window.alert("Permission updated successfully!")
-                                                        setMember(undefined)
-                                                    })
+                                                    }).finally(() => setMember(undefined))
                                                 }}>Save</Button>}
                                 />
                                 <Button variant="danger" size="sm"
