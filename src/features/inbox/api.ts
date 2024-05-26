@@ -122,10 +122,10 @@ export const inboxApi = createApi({
             updateInboxProfile: builder.mutation<void, InboxProfileRequest>({
                 query: ({userId, ...content}) => ({
                     url: `/inbox/${userId}/profile`,
-                    method: "GET",
+                    method: "PUT",
                     body: content
                 }),
-                invalidatesTags: (_, __, {userId}) => [{type: "Inbox", id: userId}]
+                invalidatesTags: (_, __, {userId}) => [{type: "Inbox", id: userId}, {type: "Inbox", id: "LIST"}]
             })
         })
     }

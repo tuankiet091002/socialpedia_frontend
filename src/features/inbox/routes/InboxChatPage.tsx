@@ -11,6 +11,7 @@ import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@src/main.tsx";
 import {messageQueryChange} from "@utils/querySlice.ts";
+import {InboxNameForm} from "@features/inbox/components/InboxNameForm.tsx";
 
 export const InboxChatPage = () => {
     //// SETTING VARIABLES
@@ -45,7 +46,7 @@ export const InboxChatPage = () => {
                 className="flex items-center justify-between border border-gray-300 bg-white px-3 shadow-2xl h-[60px]">
                 <div className="flex flex-row gap-x-4">
                     <img className="h-10 w-10 rounded-full" src={data.avatar?.url || emptyAvatar} alt=""/>
-                    <span className="self-end text-start text-3xl">{data.name}</span>
+                    <InboxNameForm data={data}/>
                 </div>
 
                 <div className="flex items-center text-start shadow-2xl">

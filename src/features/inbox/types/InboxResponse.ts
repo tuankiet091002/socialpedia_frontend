@@ -6,6 +6,7 @@ export type InboxResponse = {
     id: number;
     name: string;
     avatar: ResourceEntity;
+    contactWith: UserResponse;
     modifiedBy: UserResponse;
     modifiedDate: string;
     latestMessage: MessageResponse;
