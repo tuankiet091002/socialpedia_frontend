@@ -25,7 +25,7 @@ export const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, Fetch
             // try to get a new token
             const refreshResult = await baseQuery(
                 {
-                    url: "/user/refresh-token",
+                    url: "/auth/refreshToken",
                     method: "POST",
                     body: {refreshToken: storage.getRefreshToken()},
                     credentials: "include"

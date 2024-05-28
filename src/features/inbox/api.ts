@@ -79,6 +79,10 @@ export const inboxApi = createApi({
                                                 })));
                                             break;
 
+                                        case SocketType.SEEN:
+                                            dispatch(inboxApi.util?.invalidateTags([{type: "Inbox", id: inbox.id}]));
+                                            break;
+
                                         default:
                                             break;
                                     }

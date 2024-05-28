@@ -8,12 +8,12 @@ import {Head} from "@components/elements/Head.tsx";
 import {
     useAcceptFriendRequestMutation,
     useCreateFriendRequestMutation,
+    useGetOwnerQuery,
     useGetUserFriendshipQuery,
     useRejectFriendRequestMutation,
     useUnFriendMutation
 } from "@features/auth/api.ts";
 import {RequestType} from "@src/types.ts";
-import {useAuth} from "@src/hooks/useAuth.ts";
 import {useCreateInboxMutation} from "@features/inbox/api.ts";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 
@@ -26,7 +26,7 @@ export const UserProfilePage = () => {
 
     // main data
     const {data} = useGetUserProfileQuery(Number(userId));
-    const {user} = useAuth();
+    const {data: user} = useGetOwnerQuery(null);
     const {data: friendship} = useGetUserFriendshipQuery(userId);
     const [createInbox] = useCreateInboxMutation();
     const [createRequest, createResult] = useCreateFriendRequestMutation();

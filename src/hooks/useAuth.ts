@@ -1,7 +1,16 @@
 import {useGetOwnerQuery} from "@features/auth/api.ts";
+import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 
 export const useAuth = () => {
-    const {data: user} = useGetOwnerQuery(null);
+    const navigate = useNavigate()
+    const {data} = useGetOwnerQuery(null);
 
-    return {user};
+    useEffect(() => {
+        if (!data) {
+            navigate("/auth/login");
+        }
+    }, [navigate, data])
+
+    return {data};
 };

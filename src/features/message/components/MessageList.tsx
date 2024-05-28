@@ -1,28 +1,58 @@
-import {MessageItem} from "@features/message/components/MessageItem.tsx";
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
 import {setScrollspy} from "@utils/setScrollspy.ts";
 import {useDispatch} from "react-redux";
 import {messageQueryChange} from "@utils/querySlice.ts";
-import {Spinner} from "@components/elements/Spinner.tsx";
 import {useGetMessageFromChannelQuery, useGetMessageFromInboxQuery} from "@features/message/api.ts";
+import {UserResponse} from "@features/user/types";
+import {sendTo} from "@utils/socketMessage.ts";
+import {useParams} from "react-router-dom";
+import {SocketType} from "@src/types.ts";
+import {Spinner} from "@components/elements/Spinner.tsx";
+import {MessageItem} from "@features/message/components/MessageItem.tsx";
+import {Avatar} from "@components/elements/Avatar.tsx";
+import {useAuth} from "@src/hooks/useAuth.ts";
 
 export type MessageListProps = {
     type: "channel" | "inbox"
     query: MessageQueryRequest
+    seenId?: number
+    seenUser?: UserResponse
 }
 
-export const MessageList = ({type, query}: MessageListProps) => {
+export const MessageList = ({type, query, seenId, seenUser}: MessageListProps) => {
     //// SETTING VARIABLE
     const dispatch = useDispatch();
+    const {locationId} = useParams();
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
 
     const queryFunc = type == "channel" ? useGetMessageFromChannelQuery : useGetMessageFromInboxQuery;
     const {data, isFetching} = queryFunc(query);
+    const {data: owner} = useAuth();
+
+    useEffect(() => {
+        // scroll to bottom when change site
+        if (listScrollRef.current) {
+            listScrollRef.current.scrollTo(0, listScrollRef.current.scrollHeight);
+        }
+    }, [locationId]);
 
     // set up scrollspy
     useEffect(() => {
+        // send seen signal to
+        if (type == "inbox" && (!query.content || !query.content.length)) {
+            sendTo(`space/${locationId}`, SocketType.SEEN, {
+                id: owner!.id,
+                name: owner!.name
+            }).then()
+        }
+
+        // scroll down a little
+        if (listScrollRef.current) {
+            listScrollRef.current.scrollTo(0, 200);
+        }
+
         return setScrollspy<HTMLUListElement>(listScrollRef, false,
             () => data && !data.last &&
                 dispatch(messageQueryChange({...query, pageNo: query.pageNo + 1})))
@@ -34,7 +64,14 @@ export const MessageList = ({type, query}: MessageListProps) => {
     return (
         <ul className="overflow-y-auto p-2 h-[567.6px] space-y-1" ref={listScrollRef}>
             {isFetching && <Spinner className="mx-auto" size="lg"/>}
-            {data?.content.slice().reverse().map(item => <MessageItem key={item.id} data={item}/>)}
+            {data?.content.slice().reverse().map(item => <React.Fragment key={item.id}>
+                <MessageItem data={item}/>
+                {seenId && item.id == seenId &&
+                    <p className="text-end">
+                        <Avatar src={seenUser!.avatar?.url} className="inline-block w-[20px] h-[20px] me-2"/>
+                        {seenUser!.name} seen this message
+                    </p>}
+            </React.Fragment>)}
         </ul>
     );
 };

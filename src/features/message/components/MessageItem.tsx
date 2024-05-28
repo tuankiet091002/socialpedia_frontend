@@ -4,7 +4,11 @@ import {Avatar} from "@components/elements/Avatar.tsx";
 import {IoMdSettings} from "react-icons/io";
 import {useDisclosure} from "@src/hooks/useDisclosure.ts";
 import {Button} from "@components/elements/Button.tsx";
-import {useDeleteMessageMutation, useUpdateMessageContentMutation} from "@features/message/api.ts";
+import {
+    useDeleteMessageMutation,
+    useUpdateMessageContentMutation,
+    useUpdateMessageStatusMutation
+} from "@features/message/api.ts";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 import {useParams} from "react-router-dom";
 import {IndependentInput} from "@components/elements/IndependentInput.tsx";
@@ -29,6 +33,7 @@ export const MessageItem = ({data}: MessageProps) => {
 
     // hook api
     const [updateContent, updateResult] = useUpdateMessageContentMutation();
+    const [updateStatus, updateStatusResult] = useUpdateMessageStatusMutation();
     const [deleteMessage, deleteResult] = useDeleteMessageMutation();
 
     if (!locationId) return null;
@@ -70,12 +75,10 @@ export const MessageItem = ({data}: MessageProps) => {
                         </div>
                     </div>
 
-
                     {/* replies block */}
                     {data.replies.length > 0 && <section className="w-full">
                         {data.replies.map(rep => <MessageItem key={rep.id} data={rep}/>)}
                     </section>}
-
 
                 </section>
 
@@ -94,20 +97,24 @@ export const MessageItem = ({data}: MessageProps) => {
                                     })}>Save</Button>
                     }
                     <Button size="sm" variant="inverse" className="w-full"
-                            isLoading={updateResult.isLoading}
-                            onClick={() => updateContent({id: data.id, locationId, content}).unwrap()
+                            isLoading={updateStatusResult.isLoading}
+                            onClick={() => updateStatus({
+                                id: data.id,
+                                locationId,
+                                status: data.status == MessageStatusType.ACTIVE ? MessageStatusType.PINNED : MessageStatusType.ACTIVE
+                            }).unwrap()
                                 .then(() => {
-                                    window.alert("Content updated successfully!")
+                                    window.alert("Message status updated successfully!")
                                     setEdit(false);
                                     close()
-                                })}>Edit Status</Button>
+                                })}> {data.status == MessageStatusType.ACTIVE ? "Mark" : "Unmark"}</Button>
 
                     {/* message delete button*/}
                     <ConfirmationDialog type="danger" title="Delete Message"
                                         body="Are you sure you want to delete this message?"
                                         isDone={deleteResult.isSuccess}
                                         triggerButton={<Button variant="inverse_danger" size="sm">
-                                            Delete Message
+                                            Delete message
                                         </Button>}
                                         confirmButton={<Button variant="danger"
                                                                isLoading={deleteResult.isLoading}

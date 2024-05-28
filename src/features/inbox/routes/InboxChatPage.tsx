@@ -43,7 +43,7 @@ export const InboxChatPage = () => {
         <Head title={`${data.name}`}/>
         <div className="flex h-full flex-col">
             <section
-                className="flex items-center justify-between border border-gray-300 bg-white px-3 shadow-2xl h-[60px]">
+                className="flex items-center justify-between border border-gray-300 bg-gray-200 px-3 shadow-2xl h-[60px]">
                 <div className="flex flex-row gap-x-4">
                     <img className="h-10 w-10 rounded-full" src={data.avatar?.url || emptyAvatar} alt=""/>
                     <InboxNameForm data={data}/>
@@ -61,8 +61,8 @@ export const InboxChatPage = () => {
                     </div>
                 </div>
             </section>
-            <section className="flex-auto bg-red-500">
-                <MessageList type="inbox" query={query!}/>
+            <section className="flex-auto bg-gray-50">
+                <MessageList type="inbox" query={query!} seenId={data.lastSeenMessageId} seenUser={data.contactWith}/>
             </section>
             <section className="h-[50px]">
                 <MessageInput queryFunc={useSendMessageToInboxMutation}/>

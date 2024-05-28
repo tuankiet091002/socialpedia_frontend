@@ -22,7 +22,7 @@ export const messageApi = createApi({
                 [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + "_" + id})),
                     {type: "Message", id: locationId + "_LIST"}],
             serializeQueryArgs: ({queryArgs, endpointName}) => {
-                return endpointName + "_" + queryArgs.locationId;
+                return endpointName + "_" + queryArgs.locationId + "_" + queryArgs.content;
             },
             merge: (currentCache, newItems) => {
                 // setting variable
@@ -55,7 +55,7 @@ export const messageApi = createApi({
                 [...result.content.map(({id}) => ({type: "Message" as const, id: locationId + id})),
                     {type: "Message", id: locationId + "_LIST"}],
             serializeQueryArgs: ({queryArgs, endpointName}) => {
-                return endpointName + "_" + queryArgs.locationId;
+                return endpointName + "_" + queryArgs.locationId + "_" + queryArgs.content;
             },
             merge: (currentCache, newItems) => {
                 // setting variable
@@ -117,7 +117,7 @@ export const messageApi = createApi({
                 try {
                     await queryFulfilled
 
-                    // pessimistic update for channel if exist
+                    // optimistic update for channel if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromChannel",
                         {locationId} as MessageQueryRequest,
                         data => ({
@@ -125,7 +125,7 @@ export const messageApi = createApi({
                                 m.id != id ? m : {...m, content})
                         })));
 
-                    // pessimistic update for inbox if exist
+                    // optimistic update for inbox if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromInbox",
                         {locationId} as MessageQueryRequest,
                         data => ({
@@ -148,7 +148,7 @@ export const messageApi = createApi({
                 try {
                     await queryFulfilled
 
-                    // // pessimistic update for channel if exist
+                    // optimistic update for channel if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromChannel",
                         {locationId} as MessageQueryRequest,
                         data => ({
@@ -156,7 +156,7 @@ export const messageApi = createApi({
                                 m.id != id ? m : {...m, status})
                         })));
 
-                    // pessimistic update for inbox if exist
+                    // optimistic update for inbox if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromInbox",
                         {locationId} as MessageQueryRequest,
                         data => ({

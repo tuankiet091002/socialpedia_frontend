@@ -5,11 +5,6 @@ export function setScrollspy<T extends HTMLElement>(listScrollRef: RefObject<T>,
     const listScrollElement: T | null = listScrollRef.current;
 
     if (listScrollElement) {
-        // scroll to bottom of the page on render
-        if (!isDesc) {
-            listScrollElement.scrollTo(0, listScrollElement.scrollHeight);
-        }
-
         const onScroll = () => {
             const {scrollTop, scrollHeight, clientHeight} = listScrollElement;
             const isNearBorder = isDesc ? scrollTop + clientHeight >= scrollHeight

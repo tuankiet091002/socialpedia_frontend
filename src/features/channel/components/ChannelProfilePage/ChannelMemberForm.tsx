@@ -13,7 +13,7 @@ import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 import {useUpdateMemberPermissionMutation} from "@features/channel/api.ts";
 import {ChannelMemberRequest} from "@features/channel/types/ChannelMemberRequest.ts";
 import {PermissionAccessType} from "@src/types.ts";
-import {useGetOwnerQuery} from "@features/auth/api.ts";
+import {useAuth} from "@src/hooks/useAuth.ts";
 
 type ChannelMemberFormProps = {
     data: ChannelResponse;
@@ -27,7 +27,7 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
 
     // state for selected editing member
     const [member, setMember] = useState<ChannelMemberRequest | undefined>();
-    const {data: owner} = useGetOwnerQuery(null);
+    const {data: owner} = useAuth();
 
     // api hook
     const [updatePermission, updatePermissionResult] = useUpdateMemberPermissionMutation();

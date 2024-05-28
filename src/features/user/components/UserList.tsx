@@ -13,7 +13,7 @@ import {IoIosSearch, IoMdSettings} from "react-icons/io";
 import {Button} from "@components/elements/Button.tsx";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 import {IndependentInput} from "@components/elements/IndependentInput.tsx";
-import {useGetOwnerQuery} from "@features/auth/api.ts";
+import {useAuth} from "@src/hooks/useAuth.ts";
 
 const columnHelper = createColumnHelper<UserResponse>();
 
@@ -45,7 +45,7 @@ export const UserList = () => {
 
     // main data
     const {data} = useGetUserListQuery({name, pageNo: pageIndex, pageSize, ...order});
-    const {data: owner} = useGetOwnerQuery(null);
+    const {data: owner} = useAuth();
 
     // filter input delay
     // only fetch using query after 500ms delay

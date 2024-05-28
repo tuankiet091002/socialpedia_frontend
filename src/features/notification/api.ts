@@ -38,8 +38,12 @@ export const notificationApi = createApi({
                 await cacheEntryRemoved;
                 unsubscribeTo(`/user/${userId}`);
             }
+        }),
+        seenAllNotification: builder.mutation<void, null>({
+            query: () => ({url: "/notification/seen", method: "PUT"}),
+            invalidatesTags: [{type: "Notification", id: "LIST"}]
         })
     })
 });
 
-export const {useGetNotificationListQuery} = notificationApi;
+export const {useGetNotificationListQuery, useSeenAllNotificationMutation} = notificationApi;

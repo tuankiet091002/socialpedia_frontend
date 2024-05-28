@@ -3,15 +3,17 @@ import avatar from "@assets/Logomark.svg";
 import storage from "@utils/storage.ts";
 import {IoIosArrowDown, IoIosNotificationsOutline} from "react-icons/io";
 import {NotificationList} from "@features/notification/components/NotificationList.tsx";
-import {useAuth} from "@src/hooks/useAuth.ts";
 import {Button} from "@components/elements/Button.tsx";
 import {Avatar} from "@components/elements/Avatar.tsx";
 import {useDisclosure} from "@src/hooks/useDisclosure.ts";
+import {useGetOwnerQuery} from "@features/auth/api.ts";
+import {useState} from "react";
 
 export const Header = () => {
-    const {user} = useAuth();
+    const {data: user} = useGetOwnerQuery(null);
     const {isOpen: profileMenu, toggle: toggleProfileMenu} = useDisclosure();
     const {isOpen: notification, toggle: toggleNotification} = useDisclosure();
+    const [newNoti, setNoti] = useState<boolean>(false);
 
     return (
         <nav
@@ -33,8 +35,11 @@ export const Header = () => {
                             className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 p-1 hover:bg-blue-300"
                             onClick={toggleNotification}>
                             <IoIosNotificationsOutline className="cursor-pointer text-4xl font-bold text-white"/>
+                            {/* red dot for new notifications */}
+                            {newNoti && <div
+                                className="absolute bottom-0 rounded-full bg-red-500 w-[12px] h-[12px] right-[235px]"/>}
                         </div>
-                        {notification && <NotificationList/>}
+                        {notification && <NotificationList newsTrigger={setNoti}/>}
                         <div
                             className="cursor-pointer whitespace-nowrap rounded-r-lg bg-blue-400 p-1 rounded-l-[25px] space-x-2 hover:bg-blue-300"
                             onClick={toggleProfileMenu}>

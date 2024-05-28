@@ -10,12 +10,12 @@ import {RequestType} from "@src/types.ts";
 import {
     useCreateChannelRequestMutation,
     useGetChannelRelationQuery,
-    useGetOwnerQuery,
     useLeaveChannelMutation
 } from "@features/auth/api.ts";
 import {useState} from "react";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
 import moment from "moment";
+import {useAuth} from "@src/hooks/useAuth.ts";
 
 export const ChannelProfilePage = () => {
     //// SETTING VARIABLES
@@ -25,7 +25,7 @@ export const ChannelProfilePage = () => {
 
     // main data
     const {data} = useGetChannelProfileQuery(locationId);
-    const {data: owner} = useGetOwnerQuery(null);
+    const {data: owner} = useAuth();
     const {data: member} = useGetChannelRelationQuery(locationId);
     const [edit, setEdit] = useState<boolean>(false);
     const [createRequest, createResult] = useCreateChannelRequestMutation();

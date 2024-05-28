@@ -3,15 +3,15 @@ import {UserProfileForm} from "@features/user/components/UserProfilePage/UserPro
 import {IoPeopleCircleOutline} from "react-icons/io5";
 import {Button} from "@components/elements/Button.tsx";
 import {useState} from "react";
-import {useAuth} from "@src/hooks/useAuth.ts";
 import {useNavigate} from "react-router-dom";
+import {useGetOwnerQuery} from "@features/auth/api.ts";
 
 export const MyProfilePage = () => {
     const navigate = useNavigate();
     const [edit, setEdit] = useState<boolean>(false);
 
     // main data
-    const {user} = useAuth();
+    const {data: user} = useGetOwnerQuery(null);
     if (!user) return null;
 
     return (

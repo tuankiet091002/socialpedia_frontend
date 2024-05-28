@@ -9,8 +9,8 @@ import {FaPaperPlane} from "react-icons/fa";
 import {RxCross1} from "react-icons/rx";
 import {sendTo} from "@utils/socketMessage.ts";
 import {SocketType} from "@src/types.ts";
-import {useGetOwnerQuery} from "@features/auth/api.ts";
 import {FilePreview} from "@components/elements/FilePreview.tsx";
+import {useAuth} from "@src/hooks/useAuth.ts";
 
 type MessageInputProps = {
     queryFunc: UseMutation<MutationDefinition<
@@ -26,7 +26,7 @@ export const MessageInput = ({queryFunc}: MessageInputProps) => {
     const [createMessage] = queryFunc();
     const [files, setFiles] = useState<File[]>([]);
     const [isTyping, setIsTyping] = useState<boolean>(false);
-    const {data: owner} = useGetOwnerQuery(null);
+    const {data: owner} = useAuth();
     // timeout func for typing socket message
     let keyTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -81,7 +81,7 @@ export const MessageInput = ({queryFunc}: MessageInputProps) => {
 
                             {/* display file base on type */}
                             <FilePreview src={file}/>
-                            
+
                             {/* delete button */}
                             <div
                                 className="absolute top-0 right-0 cursor-pointer rounded-lg bg-gray-300 h-[15px]

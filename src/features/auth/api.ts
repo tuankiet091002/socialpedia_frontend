@@ -11,6 +11,8 @@ import {UserResponse} from "src/features/user/types";
 import {UserFriendshipResponse} from "@features/user/types/UserFriendshipResponse.ts";
 import {ChannelMemberResponse} from "@features/channel/types/ChannelMemberResponse.ts";
 import {notificationApi} from "@features/notification/api.ts";
+import {channelApi} from "@features/channel/api.ts";
+import {inboxApi} from "@features/inbox/api.ts";
 
 export const authApi = createApi({
         reducerPath: "auth",
@@ -29,12 +31,14 @@ export const authApi = createApi({
 
                         storage.setLoginResponse(result.data);
 
-                        dispatch(authApi.endpoints?.getOwner.initiate(null, {forceRefetch: true}));
+                        dispatch(notificationApi.util?.invalidateTags(["Notification"]));
+                        dispatch(channelApi.util?.invalidateTags(["Channel"]));
+                        dispatch(inboxApi.util?.invalidateTags(["Inbox"]));
                     } catch (err) {
                         console.log(err);
                     }
                 },
-                invalidatesTags: ["Friendship", "Member"]
+                invalidatesTags: ["Auth", "Friendship", "Member"]
             }),
             register: builder.mutation<void, RegisterRequest & { file?: File }>({
                 query: ({file, ...content}) => {
@@ -102,8 +106,8 @@ export const authApi = createApi({
                 }),
                 async onQueryStarted(_, {queryFulfilled}) {
                     try {
-                        const result = await queryFulfilled;
-                        storage.setUser(result.data);
+                        await queryFulfilled;
+                        // storage.setUser(result.data);
                     } catch (err) {
                         console.log(err);
                     }

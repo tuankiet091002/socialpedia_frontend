@@ -40,7 +40,6 @@ export const InboxNameForm = ({data}: InboxNameFormProps) => {
                                 onClick={() => {
                                     updateInbox({
                                         userId: data.contactWith.id,
-                                        isActive: true,
                                         name: name
                                     }).unwrap().then(() => {
                                         window.alert("Inbox name updated successfully.")
