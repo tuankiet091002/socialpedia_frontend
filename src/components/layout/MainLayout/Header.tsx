@@ -6,14 +6,28 @@ import {NotificationList} from "@features/notification/components/NotificationLi
 import {Button} from "@components/elements/Button.tsx";
 import {Avatar} from "@components/elements/Avatar.tsx";
 import {useDisclosure} from "@src/hooks/useDisclosure.ts";
-import {useGetOwnerQuery} from "@features/auth/api.ts";
 import {useState} from "react";
+import {useGetOwnerQuery} from "@features/auth/api.ts";
+import {NotificationQueryRequest} from "@features/notification/types/NotificationQueryRequest.ts";
+import {useGetNotificationListQuery} from "@features/notification/api.ts";
+import {NotificationType} from "@src/types.ts";
+
+const INITIAL_PAGE = 6;
 
 export const Header = () => {
+    // somehow break if use useAuth
     const {data: user} = useGetOwnerQuery(null);
+    const initialState = {pageNo: 0, pageSize: INITIAL_PAGE};
+    const [query, setQuery] = useState<NotificationQueryRequest>(initialState);
+
     const {isOpen: profileMenu, toggle: toggleProfileMenu} = useDisclosure();
     const {isOpen: notification, toggle: toggleNotification} = useDisclosure();
-    const [newNoti, setNoti] = useState<boolean>(false);
+
+    // notification data
+    const {data} = useGetNotificationListQuery(query);
+
+    // wait for next render when there is data
+    if (!!user && !data) return null;
 
     return (
         <nav
@@ -27,7 +41,6 @@ export const Header = () => {
 
             {/* user button*/}
             <section className="flex items-center gap-2">
-
                 {user ?
                     // user button group
                     <div className="relative flex flex-row gap-x-4">
@@ -35,11 +48,11 @@ export const Header = () => {
                             className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 p-1 hover:bg-blue-300"
                             onClick={toggleNotification}>
                             <IoIosNotificationsOutline className="cursor-pointer text-4xl font-bold text-white"/>
-                            {/* red dot for new notifications */}
-                            {newNoti && <div
-                                className="absolute bottom-0 rounded-full bg-red-500 w-[12px] h-[12px] right-[235px]"/>}
+                            {/* red dot when there's unseen notification*/}
+                            {data && data.content.some(m => m.type != NotificationType.DONE) && <div
+                                className="absolute bottom-0 rounded-full bg-red-500 w-[12px] h-[12px] left-[35px]"/>}
                         </div>
-                        {notification && <NotificationList newsTrigger={setNoti}/>}
+                        {notification && data && <NotificationList data={data} setQuery={setQuery}/>}
                         <div
                             className="cursor-pointer whitespace-nowrap rounded-r-lg bg-blue-400 p-1 rounded-l-[25px] space-x-2 hover:bg-blue-300"
                             onClick={toggleProfileMenu}>

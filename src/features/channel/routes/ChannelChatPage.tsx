@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@src/main.tsx";
 import {messageQueryChange} from "@utils/querySlice.ts";
 import {Avatar} from "@components/elements/Avatar.tsx";
+import {MessageResponse} from "@features/message/types/MessageResponse.ts";
 
 export const ChannelChatPage = () => {
     //// SETTING VARIABLES
@@ -22,6 +23,12 @@ export const ChannelChatPage = () => {
     const query = useSelector((state: RootState) => state.query.messageQuery.find(m => m.locationId == locationId));
     if (!query) dispatch(messageQueryChange({locationId, content: "", pageNo: 0, pageSize: 7}))
     const [content, setContent] = useState<string>("");
+    // state for reply target
+    const [reply, setReply] = useState<MessageResponse | null>(null);
+
+    const switchReply = (m: MessageResponse) => {
+        setReply(reply ? null : m)
+    }
 
     // main data
     const {data} = useGetChannelProfileQuery(locationId);
@@ -62,10 +69,10 @@ export const ChannelChatPage = () => {
                 </div>
             </section>
             <section className="flex-auto">
-                <MessageList type="channel" query={query!}/>
+                <MessageList type="channel" query={query!} setReply={switchReply}/>
             </section>
             <section className="h-[50px]">
-                <MessageInput queryFunc={useSendMessageToChannelMutation}/>
+                <MessageInput queryFunc={useSendMessageToChannelMutation} reply={reply} setReply={switchReply}/>
             </section>
         </div>
     </>);

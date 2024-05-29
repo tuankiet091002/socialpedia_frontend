@@ -1,33 +1,28 @@
-import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useRef} from "react";
 import {NotificationQueryRequest} from "@features/notification/types/NotificationQueryRequest.ts";
-import {useGetNotificationListQuery, useSeenAllNotificationMutation} from "@features/notification/api.ts";
+import {useSeenAllNotificationMutation} from "@features/notification/api.ts";
 import {NotificationItem} from "@features/notification/components/NotificationItem.tsx";
 import {setScrollspy} from "@utils/setScrollspy.ts";
-import {NotificationType} from "@src/types.ts";
+import {Page} from "@src/types.ts";
+import {NotificationResponse} from "@features/notification/types/NotficationResponse.ts";
 
 const INITIAL_PAGE = 6;
 
 type NotificationListProps = {
-    newsTrigger: Dispatch<SetStateAction<boolean>>
+    data: Page<NotificationResponse>
+    setQuery: Dispatch<SetStateAction<NotificationQueryRequest>>
 }
 
-export const NotificationList = ({newsTrigger}: NotificationListProps) => {
+export const NotificationList = ({data, setQuery}: NotificationListProps) => {
     //// SETTING VARIABLE
-    // default query state without name field
-    const initialState = {pageNo: 0, pageSize: INITIAL_PAGE};
-    const [query, setQuery] = useState<NotificationQueryRequest>(initialState);
 
     // ref for scrollable div
     const listScrollRef = useRef<HTMLUListElement>(null);
     // main data
-    const {data} = useGetNotificationListQuery(query);
     const [seenAll] = useSeenAllNotificationMutation();
 
     // set up scrollspy
     useEffect(() => {
-        // set red dot next to notification icon
-        newsTrigger(data ? data.content.some(n => n.type != NotificationType.DONE) : false);
-
         return setScrollspy<HTMLUListElement>(listScrollRef, true,
             () => data && !data.last && setQuery(query => ({
                 ...query,
@@ -35,7 +30,7 @@ export const NotificationList = ({newsTrigger}: NotificationListProps) => {
             })));
     }, [data]);
 
-    // // wait for next render when there is data
+    // wait for next render when there is data
     if (!data) return null;
 
     return (

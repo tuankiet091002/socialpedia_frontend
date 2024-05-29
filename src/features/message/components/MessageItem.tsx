@@ -16,12 +16,15 @@ import {useState} from "react";
 import {MessageStatusType} from "@src/types.ts";
 import {FilePreview} from "@components/elements/FilePreview.tsx";
 import clsx from "clsx";
+import {ImReply} from "react-icons/im";
 
 type MessageProps = {
-    data: MessageResponse,
+    data: MessageResponse
+    type: "inbox" | "channel"
+    setReply?: (m: MessageResponse) => void
 };
 
-export const MessageItem = ({data}: MessageProps) => {
+export const MessageItem = ({data, type, setReply}: MessageProps) => {
 
     const {locationId: locationNum} = useParams();
     const locationId = Number(locationNum);
@@ -31,6 +34,7 @@ export const MessageItem = ({data}: MessageProps) => {
     const [edit, setEdit] = useState(false);
     const [content, setContent] = useState<string>(data.content);
 
+
     // hook api
     const [updateContent, updateResult] = useUpdateMessageContentMutation();
     const [updateStatus, updateStatusResult] = useUpdateMessageStatusMutation();
@@ -39,17 +43,17 @@ export const MessageItem = ({data}: MessageProps) => {
     if (!locationId) return null;
 
     return (<>
-        {data.status == MessageStatusType.ACTIVE ?
+        {data.status == MessageStatusType.ACTIVE || data.status == MessageStatusType.PINNED ?
             <li className={`flex w-full flex-row gap-x-2 rounded-md pl-2 pt-2`}>
                 <section className="flex flex-none flex-row items-start gap-4">
                     <Avatar src={data.createdBy!.avatar?.url} size="sm"/>
                 </section>
                 <section
-                    className="relative flex flex-auto flex-col items-start rounded-md border border-gray-300 bg-gray-100 p-2 shadow-md divide-y-2 divide-gray-300">
-
+                    className={clsx("relative flex flex-auto flex-col items-start rounded-md border border-gray-300 p-2 shadow-md divide-y-2 divide-gray-300",
+                        data.status == MessageStatusType.ACTIVE ? "bg-gray-100" : "bg-yellow-300")}>
                     {/* wrapper for hover setting's effect */}
                     <div className="w-full group divide-y divide-gray-300">
-                        <div className="flex w-full items-center justify-between px-2">
+                        <div className="flex w-full items-center justify-between ps-2 pe-[50px]">
                             <p className="font-semibold">{data.createdBy!.name}</p>
                             <time>{moment(data.modifiedDate).fromNow()}</time>
                         </div>
@@ -64,7 +68,7 @@ export const MessageItem = ({data}: MessageProps) => {
 
                         {/* setting block */}
                         <div
-                            className={clsx("absolute right-2 hidden bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-gray-100 top-[-12px] border rounded-md border-gray-300 group-hover:block",
+                            className={clsx("absolute right-4 hidden bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-gray-100 top-[10px] border rounded-md border-gray-300 group-hover:block",
                                 isOpen && "!block")}>
                             <IoMdSettings className="cursor-pointer text-2xl"
                                           onClick={() => {
@@ -73,11 +77,18 @@ export const MessageItem = ({data}: MessageProps) => {
                                               setEdit(false);
                                           }}/>
                         </div>
+                        {type == "channel" && <div
+                            className={clsx("absolute right-4 hidden bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-gray-100 top-[40px] border rounded-md border-gray-300 group-hover:block",
+                                isOpen && "!block")}>
+                            <ImReply className="cursor-pointer text-2xl"
+                                     onClick={() => setReply && setReply(data)}/>
+                        </div>}
                     </div>
 
                     {/* replies block */}
-                    {data.replies.length > 0 && <section className="w-full">
-                        {data.replies.map(rep => <MessageItem key={rep.id} data={rep}/>)}
+                    {type == "channel" && data.replies.length > 0 && <section className="w-full">
+                        {data.replies.map(rep => <MessageItem key={rep.id} data={rep} type={type}
+                                                              setReply={setReply}/>)}
                     </section>}
 
                 </section>
@@ -86,7 +97,7 @@ export const MessageItem = ({data}: MessageProps) => {
 
                     {/* content edit button*/}
                     {!edit ? <Button size="sm" variant="inverse" className="w-full"
-                                     onClick={() => setEdit(true)}>Edit Message</Button> :
+                                     onClick={() => setEdit(true)}>Edit message</Button> :
                         <Button size="sm" variant="inverse" className="w-full"
                                 isLoading={updateResult.isLoading}
                                 onClick={() => updateContent({id: data.id, locationId, content}).unwrap()
@@ -107,7 +118,7 @@ export const MessageItem = ({data}: MessageProps) => {
                                     window.alert("Message status updated successfully!")
                                     setEdit(false);
                                     close()
-                                })}> {data.status == MessageStatusType.ACTIVE ? "Mark" : "Unmark"}</Button>
+                                })}> {data.status == MessageStatusType.ACTIVE ? "Mark message" : "Unmark message"}</Button>
 
                     {/* message delete button*/}
                     <ConfirmationDialog type="danger" title="Delete Message"

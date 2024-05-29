@@ -48,7 +48,6 @@ export enum PermissionAccessType {
 
 export enum MessageStatusType {
     ACTIVE = "ACTIVE",
-    MODIFIED = "MODIFIED",
     INACTIVE = "INACTIVE",
     PINNED = "PINNED",
     SYSTEM = "SYSTEM,"

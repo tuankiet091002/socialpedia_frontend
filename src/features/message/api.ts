@@ -6,6 +6,7 @@ import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.t
 import {MessageCreateRequest} from "@features/message/types/MessageCreateRequest.ts";
 import {MessageContentRequest} from "@features/message/types/MessageContentRequest.ts";
 import {MessageStatusRequest} from "@features/message/types/MessageStatusRequest.ts";
+import {RootState} from "@src/main.tsx";
 
 export const messageApi = createApi({
     reducerPath: "message",
@@ -112,14 +113,16 @@ export const messageApi = createApi({
                 method: "PUT",
                 body: body
             }),
-            async onQueryStarted({id, locationId, content}, {dispatch, queryFulfilled}) {
+            async onQueryStarted({id, locationId, content}, {dispatch, queryFulfilled, getState}) {
 
                 try {
                     await queryFulfilled
 
+                    const query = (getState() as RootState).query.messageQuery.find((m: MessageQueryRequest) => m.locationId == locationId)
+
                     // optimistic update for channel if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromChannel",
-                        {locationId} as MessageQueryRequest,
+                        query!,
                         data => ({
                             ...data, content: data.content.map(m =>
                                 m.id != id ? m : {...m, content})
@@ -127,7 +130,7 @@ export const messageApi = createApi({
 
                     // optimistic update for inbox if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromInbox",
-                        {locationId} as MessageQueryRequest,
+                        query!,
                         data => ({
                             ...data, content: data.content.map(m =>
                                 m.id != id ? m : {...m, content})
@@ -138,19 +141,21 @@ export const messageApi = createApi({
             }
         }),
         updateMessageStatus: builder.mutation<void, MessageStatusRequest>({
-            query: ({locationId, id, ...status}) => ({
-                url: `/message/${locationId}/${id}/status`,
+            query: ({locationId, ...body}) => ({
+                url: `/message/${locationId}/status`,
                 method: "PUT",
-                body: status
+                body: body
             }),
-            async onQueryStarted({id, locationId, status}, {dispatch, queryFulfilled}) {
+            async onQueryStarted({id, locationId, status}, {dispatch, queryFulfilled, getState}) {
 
                 try {
                     await queryFulfilled
 
+                    const query = (getState() as RootState).query.messageQuery.find((m: MessageQueryRequest) => m.locationId == locationId)
+
                     // optimistic update for channel if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromChannel",
-                        {locationId} as MessageQueryRequest,
+                        query!,
                         data => ({
                             ...data, content: data.content.map(m =>
                                 m.id != id ? m : {...m, status})
@@ -158,7 +163,7 @@ export const messageApi = createApi({
 
                     // optimistic update for inbox if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromInbox",
-                        {locationId} as MessageQueryRequest,
+                        query!,
                         data => ({
                             ...data, content: data.content.map(m =>
                                 m.id != id ? m : {...m, status})
@@ -174,14 +179,16 @@ export const messageApi = createApi({
                 url: `/message/${locationId}/${id}`,
                 method: "DELETE"
             }),
-            async onQueryStarted({id, locationId}, {dispatch, queryFulfilled}) {
+            async onQueryStarted({id, locationId}, {dispatch, queryFulfilled, getState}) {
 
                 try {
                     await queryFulfilled
 
+                    const query = (getState() as RootState).query.messageQuery.find((m: MessageQueryRequest) => m.locationId == locationId)
+
                     // pessimistic for channel if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromChannel",
-                        {locationId} as MessageQueryRequest,
+                        query!,
                         data => ({
                             ...data, content: data.content.map(m =>
                                 m.id != id ? m : {...m, status: MessageStatusType.INACTIVE})
@@ -189,7 +196,7 @@ export const messageApi = createApi({
 
                     // pessimistic for inbox if exist
                     dispatch(messageApi.util.updateQueryData("getMessageFromInbox",
-                        {locationId} as MessageQueryRequest,
+                        query!,
                         data => ({
                             ...data, content: data.content.map(m =>
                                 m.id != id ? m : {...m, status: MessageStatusType.INACTIVE})

@@ -12,15 +12,17 @@ import {Spinner} from "@components/elements/Spinner.tsx";
 import {MessageItem} from "@features/message/components/MessageItem.tsx";
 import {Avatar} from "@components/elements/Avatar.tsx";
 import {useAuth} from "@src/hooks/useAuth.ts";
+import {MessageResponse} from "@features/message/types/MessageResponse.ts";
 
 export type MessageListProps = {
     type: "channel" | "inbox"
     query: MessageQueryRequest
     seenId?: number
     seenUser?: UserResponse
+    setReply?: (m: MessageResponse) => void
 }
 
-export const MessageList = ({type, query, seenId, seenUser}: MessageListProps) => {
+export const MessageList = ({type, query, seenId, seenUser, setReply}: MessageListProps) => {
     //// SETTING VARIABLE
     const dispatch = useDispatch();
     const {locationId} = useParams();
@@ -65,7 +67,7 @@ export const MessageList = ({type, query, seenId, seenUser}: MessageListProps) =
         <ul className="overflow-y-auto p-2 h-[567.6px] space-y-1" ref={listScrollRef}>
             {isFetching && <Spinner className="mx-auto" size="lg"/>}
             {data?.content.slice().reverse().map(item => <React.Fragment key={item.id}>
-                <MessageItem data={item}/>
+                <MessageItem data={item} type={type} setReply={setReply}/>
                 {seenId && item.id == seenId &&
                     <p className="text-end">
                         <Avatar src={seenUser!.avatar?.url} className="inline-block w-[20px] h-[20px] me-2"/>

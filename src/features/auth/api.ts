@@ -107,7 +107,6 @@ export const authApi = createApi({
                 async onQueryStarted(_, {queryFulfilled}) {
                     try {
                         await queryFulfilled;
-                        // storage.setUser(result.data);
                     } catch (err) {
                         console.log(err);
                     }

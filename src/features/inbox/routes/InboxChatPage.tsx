@@ -24,6 +24,7 @@ export const InboxChatPage = () => {
     if (!query) dispatch(messageQueryChange({locationId, content: "", pageNo: 0, pageSize: 7}))
     const [content, setContent] = useState<string>("");
 
+
     // main data
     const {data} = useGetInboxProfileQuery(locationId);
 
@@ -62,7 +63,8 @@ export const InboxChatPage = () => {
                 </div>
             </section>
             <section className="flex-auto bg-gray-50">
-                <MessageList type="inbox" query={query!} seenId={data.lastSeenMessageId} seenUser={data.contactWith}/>
+                <MessageList type="inbox" query={query!} seenId={data.lastSeenMessageId}
+                             seenUser={data.contactWith}/>
             </section>
             <section className="h-[50px]">
                 <MessageInput queryFunc={useSendMessageToInboxMutation}/>

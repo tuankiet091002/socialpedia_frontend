@@ -4,14 +4,14 @@ import {IoPeopleCircleOutline} from "react-icons/io5";
 import {Button} from "@components/elements/Button.tsx";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {useGetOwnerQuery} from "@features/auth/api.ts";
+import {useAuth} from "@src/hooks/useAuth.ts";
 
 export const MyProfilePage = () => {
     const navigate = useNavigate();
     const [edit, setEdit] = useState<boolean>(false);
 
     // main data
-    const {data: user} = useGetOwnerQuery(null);
+    const {data: user} = useAuth();
     if (!user) return null;
 
     return (
