@@ -45,10 +45,9 @@ export const SpaceList = ({type}: SpaceListProps) => {
 
     // set up scrollspy
     useEffect(() => {
-            return setScrollspy<HTMLUListElement>(listScrollRef, true,
-                () => data && !data.last && dispatch(queryChange({...query, pageNo: query.pageNo + 1})))
-        }
-        , [data]);
+        return setScrollspy<HTMLUListElement>(listScrollRef, true,
+            () => data && !data.last && dispatch(queryChange({...query, pageNo: query.pageNo + 1})))
+    }, [data]);
 
     // wait for next render when there is data
     if (!data) return null;

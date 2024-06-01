@@ -13,6 +13,7 @@ import {messageApi} from "@features/message/api.ts";
 import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.ts";
 import moment from "moment";
 import {notificationApi} from "@features/notification/api.ts";
+import {RootState} from "@src/main.tsx";
 
 const channelSet = new Set<ChannelResponse>();
 
@@ -44,7 +45,7 @@ export const channelApi = createApi({
                         type: "Channel",
                         id: "LIST"
                     }],
-                async onQueryStarted(_, {queryFulfilled, getCacheEntry, dispatch}) {
+                async onQueryStarted(_, {queryFulfilled, getCacheEntry, dispatch, getState}) {
                     try {
                         await queryFulfilled;
 
@@ -55,8 +56,10 @@ export const channelApi = createApi({
 
                         // add new channel to channelSet and subscribe to new channel
                         await Promise.all(addedChannel.map(async (channel) => {
-
                             channelSet.add(channel);
+
+                            // query related to that channel
+                            const query = (getState() as RootState).query.messageQuery.find((m: MessageQueryRequest) => m.locationId == channel.id)
 
                             // fetch one when there are new message
                             await subscribeTo(`space/${channel.id}`, (message) => {
@@ -72,11 +75,11 @@ export const channelApi = createApi({
 
                                         case SocketType.JOIN:
                                             dispatch(messageApi.util?.updateQueryData("getMessageFromChannel",
-                                                {locationId: channel.id} as MessageQueryRequest,
+                                                query || {locationId: channel.id, content: ""} as MessageQueryRequest,
                                                 data => {
                                                     data.content.push({
                                                         id: channel.id * 1000 + message.owner.id * 10 + 2,
-                                                        content: `${message.owner.name} just join the channel`,
+                                                        content: `${message.owner.name} has just joined the channel`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
                                                         modifiedDate: moment(Date.now()).toISOString(),
@@ -88,11 +91,11 @@ export const channelApi = createApi({
 
                                         case SocketType.LEAVE:
                                             dispatch(messageApi.util?.updateQueryData("getMessageFromChannel",
-                                                {locationId: channel.id} as MessageQueryRequest,
+                                                query || {locationId: channel.id, content: ""} as MessageQueryRequest,
                                                 data => {
                                                     data.content.unshift({
                                                         id: channel.id * 1000 + message.owner.id * 10 + 2,
-                                                        content: `${message.owner.name} just leave the channel`,
+                                                        content: `${message.owner.name} has just left the channel`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
                                                         modifiedDate: moment(Date.now()).toISOString(),
@@ -104,7 +107,7 @@ export const channelApi = createApi({
 
                                         case SocketType.TYPE:
                                             dispatch(messageApi.util?.updateQueryData("getMessageFromChannel",
-                                                {locationId: channel.id} as MessageQueryRequest,
+                                                query || {locationId: channel.id, content: ""} as MessageQueryRequest,
                                                 data => {
                                                     data.content.unshift({
                                                         id: channel.id * 1000 + message.owner.id * 10 + 3,
@@ -120,7 +123,7 @@ export const channelApi = createApi({
 
                                         case SocketType.STOP_TYPE:
                                             dispatch(messageApi.util?.updateQueryData("getMessageFromChannel",
-                                                {locationId: channel.id} as MessageQueryRequest,
+                                                query || {locationId: channel.id, content: ""} as MessageQueryRequest,
                                                 data => ({
                                                     ...data, content: data.content.filter(m =>
                                                         m.id != channel.id * 1000 + message.owner.id * 10 + 3)
@@ -168,7 +171,10 @@ export const channelApi = createApi({
                     url: `/channel/${id}`,
                     method: "GET"
                 }),
-                providesTags: (result) => [{type: "Channel", id: result ? result.id : "LIST"}]
+                providesTags: (result) => [{type: "Channel", id: result ? result.id : "LIST"}, {
+                    type: "Channel",
+                    id: result ? `${result.id}_PROFILE` : "LIST"
+                }]
             }),
             createChannel: builder.mutation<void, ChannelCreateRequest>({
                 query: ({avatarFile, ...content}) => {
@@ -227,7 +233,7 @@ export const channelApi = createApi({
                         console.log(err);
                     }
                 },
-                invalidatesTags: (_, __, {channelId}) => [{type: "Channel", id: channelId}]
+                invalidatesTags: (_, __, {channelId}) => [{type: "Channel", id: `${channelId}_PROFILE`}]
             }),
             rejectChannelRequest: builder.mutation<void, { channelId: number, memberId: number }>({
                 query: ({channelId, memberId}) => ({
@@ -250,7 +256,14 @@ export const channelApi = createApi({
                     method: "PUT",
                     body: content
                 }),
-                invalidatesTags: (_, __, {channelId}) => [{type: "Channel", id: channelId}]
+                invalidatesTags: (_, __, {channelId}) => [{type: "Channel", id: `${channelId}_PROFILE`}]
+            }),
+            kickMember: builder.mutation<void, { memberId: number, channelId: number }>({
+                query: ({channelId, memberId}) => ({
+                    url: `/channel/${channelId}/member/${memberId}`,
+                    method: "DELETE"
+                }),
+                invalidatesTags: (_, __, {channelId}) => [{type: "Channel", id: `${channelId}_PROFILE`}]
             })
         })
     }
@@ -268,6 +281,7 @@ export const {
     useDisableChannelMutation,
     useAcceptChannelRequestMutation,
     useRejectChannelRequestMutation,
-    useUpdateMemberPermissionMutation
+    useUpdateMemberPermissionMutation,
+    useKickMemberMutation
 } = channelApi;
 

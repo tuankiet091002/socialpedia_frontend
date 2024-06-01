@@ -65,11 +65,12 @@ export const UserList = () => {
         columnHelper.accessor(row => ({name: row.name, id: row.id, avatar: row.avatar}), {
             id: "name",
             header: () => <HeaderWithSort name="User" sortField="name" order={order} setOrder={setOrder}/>,
-            cell: info => <Link to={info.getValue().id != owner!.id ? `/user/${info.getValue().id}` : `/user/profile`}
-                                className="cursor-pointer hover:text-blue-500">
-                <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
-                {info.getValue().name}
-            </Link>
+            cell: info =>
+                <Link to={`/user/${info.getValue().id != owner!.id ? info.getValue().id : "profile"}`}
+                      className="cursor-pointer hover:text-blue-500">
+                    <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
+                    {info.getValue().name}
+                </Link>
         }),
         columnHelper.accessor("phone", {
             header: () => <section className="flex flex-row items-center justify-center gap-x-2">
@@ -84,7 +85,7 @@ export const UserList = () => {
         }),
         columnHelper.accessor("gender", {
             header: () => <HeaderWithSort name="Gender" sortField="gender" order={order} setOrder={setOrder}/>,
-            cell: info => <span>{info.getValue() ? "Nam" : "Nữ"}</span>,
+            cell: info => <span>{info.getValue() ? "Male" : "Female"}</span>,
             footer: info => info.column.id
         }),
         columnHelper.accessor("role", {

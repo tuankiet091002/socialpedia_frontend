@@ -30,7 +30,7 @@ export const CustomTable = <Entry extends object>({table}: TableProps<Entry>) =>
                 <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header, idx) => (
                         <th key={header.id}
-                            className="relative border-b-4 border-gray-500 bg-white px-6 py-3 text-lg tracking-wider font-semsibold"
+                            className="relative border-b-2 border-gray-300 bg-white px-6 py-3 text-lg tracking-wider font-semsibold"
                             style={{width: `calc(var(--header-${header?.id}-size) * 1px)`}}>
                             {header.isPlaceholder
                                 ? null

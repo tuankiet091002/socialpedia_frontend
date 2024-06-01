@@ -1,6 +1,6 @@
 import {useUpdateInboxProfileMutation} from "@features/inbox/api.ts";
 import {InboxResponse} from "@features/inbox/types/InboxResponse.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {IndependentInput} from "@components/elements/IndependentInput.tsx";
 import {IoMdSettings} from "react-icons/io";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
@@ -15,6 +15,10 @@ export const InboxNameForm = ({data}: InboxNameFormProps) => {
     const [updateInbox, result] = useUpdateInboxProfileMutation();
     const [name, setName] = useState<string>(data.name);
     const [edit, setEdit] = useState<boolean>(false);
+
+    useEffect(() => {
+        setName(data.name)
+    }, [data]);
 
     return (<section className="flex items-center justify-items-start gap-1">
         <div>

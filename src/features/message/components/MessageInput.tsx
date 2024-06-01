@@ -91,9 +91,6 @@ export const MessageInput = ({queryFunc, reply, setReply}: MessageInputProps) =>
                             {/* reply content */}
                             <span className="text-sm text-gray-500">Answer for: </span>
                             {reply.content}
-                            sdfghjkl;dajwdocfuosnuioniaeniwuovuinporuinovewauinovrewuinopvaewrnuoipwnuoi
-                            sdfghjkl;dajwdocfuosnuioniaeniwuovuinporuinovewauinovrewuinopvaewrnuoipwnuoi
-                            sdfghjkl;dajwdocfuosnuioniaeniwuovuinporuinovewauinovrewuinopvaewrnuoipwnuoi
                         </p>
                         {/* "X" block to remove reply message */}
                         <div

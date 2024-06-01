@@ -1,5 +1,5 @@
 import {Head} from "@components/elements/Head.tsx";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {useGetChannelProfileQuery} from "@features/channel/api.ts";
 import {MessageList} from "@features/message/components/MessageList.tsx";
 import {useSendMessageToChannelMutation} from "@features/message/api.ts";
@@ -53,7 +53,10 @@ export const ChannelChatPage = () => {
                 className="flex items-center justify-between border border-gray-300 px-3 h-[60px]">
                 <div className="flex flex-row items-center gap-x-4">
                     <Avatar src={data.avatar?.url} size="sm"/>
-                    <span className="text-start text-3xl">{data.name}</span>
+                    <Link to={`/channel/${data.id}/profile`}
+                          className="cursor-pointer text-start text-3xl hover:text-blue-500">
+                        {data.name}
+                    </Link>
                 </div>
 
                 <div className="flex items-center text-start shadow-2xl">

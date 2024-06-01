@@ -10,13 +10,14 @@ import {
     useUpdateMessageStatusMutation
 } from "@features/message/api.ts";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {IndependentInput} from "@components/elements/IndependentInput.tsx";
 import {useState} from "react";
 import {MessageStatusType} from "@src/types.ts";
 import {FilePreview} from "@components/elements/FilePreview.tsx";
 import clsx from "clsx";
 import {ImReply} from "react-icons/im";
+import {useAuth} from "@src/hooks/useAuth.ts";
 
 type MessageProps = {
     data: MessageResponse
@@ -28,6 +29,7 @@ export const MessageItem = ({data, type, setReply}: MessageProps) => {
 
     const {locationId: locationNum} = useParams();
     const locationId = Number(locationNum);
+    const {data: owner} = useAuth();
 
     // trigger for edit message
     const {isOpen, close, toggle} = useDisclosure();
@@ -54,7 +56,11 @@ export const MessageItem = ({data, type, setReply}: MessageProps) => {
                     {/* wrapper for hover setting's effect */}
                     <div className="w-full group divide-y divide-gray-300">
                         <div className="flex w-full items-center justify-between ps-2 pe-[50px]">
-                            <p className="font-semibold">{data.createdBy!.name}</p>
+                            <Link
+                                to={`/user/${data.createdBy!.id != owner!.id ? data.createdBy!.id : "profile"}`}
+                                className="cursor-pointer font-semibold hover:text-blue-500">
+                                {data.createdBy!.name}
+                            </Link>
                             <time>{moment(data.modifiedDate).fromNow()}</time>
                         </div>
 

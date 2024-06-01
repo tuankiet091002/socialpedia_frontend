@@ -3,6 +3,7 @@ import {baseQueryWithReAuth} from "@utils/reauthQuery.ts";
 import {Page} from "@src/types.ts";
 import {UserQueryRequest, UserResponse} from "@features/user/types";
 import {UserRoleRequest} from "@features/user/types/UserRoleRequest.ts";
+import {UserFriendshipResponse} from "@features/user/types/UserFriendshipResponse.ts";
 
 
 export const userApi = createApi({
@@ -19,14 +20,26 @@ export const userApi = createApi({
                 providesTags: (result) => !result ? [{type: "User", id: "LIST"}] :
                     [...result.content.map(({id}) => ({type: "User" as const, id})), {type: "User", id: "LIST"}]
             }),
-            getFriendList: builder.query<Page<UserResponse>, UserQueryRequest>({
+            getOtherUserList: builder.query<Page<UserResponse>, UserQueryRequest>({
+                query: (query) => ({
+                    url: "/user/other",
+                    method: "GET",
+                    params: query
+                }),
+                providesTags: (result) => !result ? [{type: "User", id: "LIST"}] :
+                    [...result.content.map(({id}) => ({type: "User" as const, id})), {type: "User", id: "LIST"}]
+            }),
+            getFriendList: builder.query<Page<UserFriendshipResponse>, UserQueryRequest>({
                 query: (query) => ({
                     url: "/user/friend",
                     method: "GET",
                     params: query
                 }),
                 providesTags: (result) => !result ? [{type: "User", id: "LIST"}] :
-                    [...result.content.map(({id}) => ({type: "User" as const, id})), {type: "User", id: "LIST"}]
+                    [...result.content.map(({other}) => ({type: "User" as const, other: other.id})), {
+                        type: "User",
+                        id: "LIST"
+                    }]
             }),
             getUserProfile: builder.query<UserResponse, number>({
                 query: (id) => ({
@@ -58,6 +71,7 @@ export const userApi = createApi({
 // auto-generated based on the defined endpoints
 export const {
     useGetUserListQuery,
+    useGetOtherUserListQuery,
     useGetFriendListQuery,
     useGetUserProfileQuery,
     useUpdateUserRoleMutation,

@@ -182,7 +182,7 @@ export const authApi = createApi({
             }),
             leaveChannel: builder.mutation<void, number>({
                 query: (channelId) => ({
-                    url: `/channel/${channelId}/member/leave`,
+                    url: `/channel/${channelId}/member`,
                     method: "DELETE"
                 }),
                 invalidatesTags: (_, __, channelId) => [{type: "Member", id: channelId}]

@@ -10,7 +10,7 @@ import {IoMdSettings} from "react-icons/io";
 import moment from "moment";
 import {Button} from "@components/elements/Button.tsx";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
-import {useUpdateMemberPermissionMutation} from "@features/channel/api.ts";
+import {useKickMemberMutation, useUpdateMemberPermissionMutation} from "@features/channel/api.ts";
 import {ChannelMemberRequest} from "@features/channel/types/ChannelMemberRequest.ts";
 import {PermissionAccessType} from "@src/types.ts";
 import {useAuth} from "@src/hooks/useAuth.ts";
@@ -31,6 +31,7 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
 
     // api hook
     const [updatePermission, updatePermissionResult] = useUpdateMemberPermissionMutation();
+    const [kickMember, kickMemberResult] = useKickMemberMutation();
 
     // column data
     const columns = useMemo(() => [
@@ -101,7 +102,9 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
             columnHelper.accessor(row => row, {
                 id: "action",
                 header: () => "Action",
+                // can't change self permission, can't change creator's permission
                 cell: (info) => owner!.id != info.getValue().member.id &&
+                    data.createdBy.id != info.getValue().member.id &&
                     <span className="!text-xl text-center !font-bold">
                     {
                         info.getValue().member.id != member?.memberId ?
@@ -117,7 +120,7 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
                                     title="Change member role"
                                     body="Are you sure you want to change this member's role in the scope of this channel"
                                     isDone={updatePermissionResult.isSuccess}
-                                    triggerButton={<Button size="sm">Save</Button>}
+                                    triggerButton={<Button size="sm">Save Permission</Button>}
                                     confirmButton={
                                         <Button type="button" size="sm" isLoading={updatePermissionResult.isLoading}
                                                 onClick={() => {
@@ -127,9 +130,27 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
                                                     }).unwrap().then(() => {
                                                         window.alert("Permission updated successfully!")
                                                     }).finally(() => setMember(undefined))
-                                                }}>Save</Button>}
+                                                }}>Save Permission</Button>}
                                 />
-                                <Button variant="danger" size="sm"
+                                <ConfirmationDialog
+                                    title="Kick member"
+                                    type="danger"
+                                    body="Are you sure you want to kick this member out of this channel, they can still ask to join again"
+                                    isDone={kickMemberResult.isSuccess}
+                                    triggerButton={<Button variant="danger" size="sm">Kick</Button>}
+                                    confirmButton={
+                                        <Button type="button" variant="danger" size="sm"
+                                                isLoading={kickMemberResult.isLoading}
+                                                onClick={() => {
+                                                    kickMember && kickMember({
+                                                        channelId: data.id,
+                                                        memberId: member?.memberId
+                                                    }).unwrap().then(() => {
+                                                        window.alert("Member kicked successfully!")
+                                                    }).finally(() => setMember(undefined))
+                                                }}>Confirm</Button>}
+                                />
+                                <Button size="sm"
                                         onClick={() => setMember(undefined)}>Cancel</Button>
                             </div>
 

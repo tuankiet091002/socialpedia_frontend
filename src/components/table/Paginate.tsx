@@ -57,14 +57,14 @@ export const Paginate = <Entry, >({table}: PaginateProps<Entry>) => {
                 <div className="flex flex-row items-center text-2xl"><MdLastPage className="inline"/></div>
             </button>
             <span className="flex items-center gap-1">
-                <div>Trang</div>
+                <div>Page</div>
                     <strong>
-                    {table.getState().pagination.pageIndex + 1} trên{" "}
-                        {table.getPageCount()}
+                    {table.getState().pagination.pageIndex + 1} of&nbsp;
+                        {table.getPageCount() > 0 ? table.getPageCount() : 0}
                     </strong>
             </span>
             <span className="flex items-center gap-1">
-                | Đi tới trang:
+                | Go to page:
                 <input
                     type="number"
                     min="1"

@@ -65,12 +65,12 @@ export const NotificationItem = ({data}: NotificationItemProps) => {
                             <Button type="button" size="sm" className="!px-2 text-xs"
                                     onClick={acceptFunc as MouseEventHandler<HTMLButtonElement>}
                                     isLoading={(acceptResult as { isLoading: boolean }).isLoading}>
-                                Chấp nhận
+                                Accept
                             </Button>
                             <Button type="button" variant="danger" size="sm" className="!px-2 text-xs"
                                     onClick={rejectFunc as MouseEventHandler<HTMLButtonElement>}
                                     isLoading={(rejectResult as { isLoading: boolean }).isLoading}>
-                                Từ chối
+                                Reject
                             </Button>
                         </div>
                     }
