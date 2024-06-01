@@ -20,9 +20,10 @@ export type MessageListProps = {
     seenId?: number
     seenUser?: UserResponse
     setReply?: (m: MessageResponse) => void
+    editPermission: boolean
 }
 
-export const MessageList = ({type, query, seenId, seenUser, setReply}: MessageListProps) => {
+export const MessageList = ({type, query, seenId, seenUser, setReply, editPermission}: MessageListProps) => {
     //// SETTING VARIABLE
     const dispatch = useDispatch();
     const {locationId} = useParams();
@@ -40,6 +41,14 @@ export const MessageList = ({type, query, seenId, seenUser, setReply}: MessageLi
         }
     }, [locationId]);
 
+
+    // scroll down a little
+    useEffect(() => {
+        if (listScrollRef.current) {
+            listScrollRef.current.scrollTo(0, 200);
+        }
+    }, [query]);
+
     // set up scrollspy
     useEffect(() => {
         // send seen signal to
@@ -48,11 +57,6 @@ export const MessageList = ({type, query, seenId, seenUser, setReply}: MessageLi
                 id: owner!.id,
                 name: owner!.name
             }).then()
-        }
-
-        // scroll down a little
-        if (listScrollRef.current) {
-            listScrollRef.current.scrollTo(0, 200);
         }
 
         return setScrollspy<HTMLUListElement>(listScrollRef, false,
@@ -67,11 +71,12 @@ export const MessageList = ({type, query, seenId, seenUser, setReply}: MessageLi
         <ul className="overflow-y-auto p-2 h-[567.6px] space-y-1" ref={listScrollRef}>
             {isFetching && <Spinner className="mx-auto" size="lg"/>}
             {data?.content.slice().reverse().map(item => <React.Fragment key={item.id}>
-                <MessageItem data={item} type={type} setReply={setReply}/>
+                <MessageItem data={item} type={type} setReply={setReply}
+                             permission={editPermission}/>
                 {seenId && item.id == seenId &&
                     <p className="text-end">
                         <Avatar src={seenUser!.avatar?.url} className="inline-block w-[20px] h-[20px] me-2"/>
-                        {seenUser!.name} seen this message
+                        {seenUser!.name} has seen this message
                     </p>}
             </React.Fragment>)}
         </ul>

@@ -8,7 +8,7 @@ import {MessageQueryRequest} from "@features/message/types/MessageQueryRequest.t
 type QueryState = {
     channelQuery: ChannelQueryRequest,
     inboxQuery: InboxQueryRequest,
-    messageQuery: MessageQueryRequest[]
+    messageQuery: MessageQueryRequest[],
 }
 
 const initialState: QueryState = {

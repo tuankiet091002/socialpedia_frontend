@@ -17,13 +17,14 @@ import {useAuth} from "@src/hooks/useAuth.ts";
 
 type ChannelMemberFormProps = {
     data: ChannelResponse;
+    relation: ChannelMemberResponse | undefined;
     edit: boolean;
     setEdit: Dispatch<SetStateAction<boolean>>;
 }
 
 const columnHelper = createColumnHelper<ChannelMemberResponse>();
 
-export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
+export const ChannelMemberForm = ({data, edit, relation}: ChannelMemberFormProps) => {
 
     // state for selected editing member
     const [member, setMember] = useState<ChannelMemberRequest | undefined>();
@@ -52,6 +53,7 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
             cell: info => <span>{moment(info.getValue()).format("DD/MM/YYYY")}</span>,
             footer: info => info.column.id
         }),
+        // if state = edit, show permission detail and edit button
         ...edit ? [
             columnHelper.accessor(row => ({memberId: row.member.id, channelPermission: row.channelPermission}), {
                 id: "channelPermission",
@@ -98,14 +100,15 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
                 </select>,
                 footer: info => info.column.id
             }),
-            // if state = edit, show permission detail and edit button
-            columnHelper.accessor(row => row, {
-                id: "action",
-                header: () => "Action",
-                // can't change self permission, can't change creator's permission
-                cell: (info) => owner!.id != info.getValue().member.id &&
-                    data.createdBy.id != info.getValue().member.id &&
-                    <span className="!text-xl text-center !font-bold">
+            // display edit switch if permission is sufficient
+            ...relation && Number(PermissionAccessType[relation.memberPermission]) >= PermissionAccessType.MODIFY ?
+                [columnHelper.accessor(row => row, {
+                    id: "action",
+                    header: () => "Action",
+                    // can't change self permission, can't change creator's permission
+                    cell: (info) => owner!.id != info.getValue().member.id &&
+                        data.createdBy.id != info.getValue().member.id &&
+                        <span className="!text-xl text-center !font-bold">
                     {
                         info.getValue().member.id != member?.memberId ?
                             <IoMdSettings className="inline cursor-pointer hover:text-blue-500"
@@ -156,8 +159,8 @@ export const ChannelMemberForm = ({data, edit}: ChannelMemberFormProps) => {
 
                     }
             </span>,
-                footer: info => info.column.id
-            })] : []
+                    footer: info => info.column.id
+                })] : []] : []
     ], [data, edit, member]);
 
     // table definition

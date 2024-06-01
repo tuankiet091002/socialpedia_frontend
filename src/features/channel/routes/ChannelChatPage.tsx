@@ -12,6 +12,8 @@ import {RootState} from "@src/main.tsx";
 import {messageQueryChange} from "@utils/querySlice.ts";
 import {Avatar} from "@components/elements/Avatar.tsx";
 import {MessageResponse} from "@features/message/types/MessageResponse.ts";
+import {useGetChannelRelationQuery} from "@features/auth/api.ts";
+import {PermissionAccessType} from "@src/types.ts";
 
 export const ChannelChatPage = () => {
     //// SETTING VARIABLES
@@ -32,6 +34,7 @@ export const ChannelChatPage = () => {
 
     // main data
     const {data} = useGetChannelProfileQuery(locationId);
+    const {data: member} = useGetChannelRelationQuery(locationId);
 
     // only fetch using query after 500ms delay
     useEffect(() => {
@@ -54,7 +57,7 @@ export const ChannelChatPage = () => {
                 <div className="flex flex-row items-center gap-x-4">
                     <Avatar src={data.avatar?.url} size="sm"/>
                     <Link to={`/channel/${data.id}/profile`}
-                          className="cursor-pointer text-start text-3xl hover:text-blue-500">
+                          className="cursor-pointer truncate text-start text-3xl hover:text-blue-500">
                         {data.name}
                     </Link>
                 </div>
@@ -72,7 +75,8 @@ export const ChannelChatPage = () => {
                 </div>
             </section>
             <section className="flex-auto">
-                <MessageList type="channel" query={query!} setReply={switchReply}/>
+                <MessageList type="channel" query={query!} setReply={switchReply}
+                             editPermission={member ? Number(PermissionAccessType[member.messagePermission]) >= PermissionAccessType.MODIFY : false}/>
             </section>
             <section className="h-[50px]">
                 <MessageInput queryFunc={useSendMessageToChannelMutation} reply={reply} setReply={switchReply}/>

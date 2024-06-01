@@ -107,6 +107,7 @@ export const authApi = createApi({
                 async onQueryStarted(_, {queryFulfilled}) {
                     try {
                         await queryFulfilled;
+
                     } catch (err) {
                         console.log(err);
                     }

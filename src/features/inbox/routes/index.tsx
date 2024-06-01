@@ -5,7 +5,6 @@ import {TwoSectionLayout} from "@components/layout/TwoSectionLayout.tsx";
 const {InboxColumn} = namedImport(() => import("../components/InboxColumn.tsx"), "InboxColumn");
 const {InboxDefaultNavigate} = namedImport(() => import("../components/InboxDefaultNavigate.tsx"), "InboxDefaultNavigate");
 const {InboxChatPage} = namedImport(() => import("./InboxChatPage.tsx"), "InboxChatPage");
-const {InboxProfilePage} = namedImport(() => import("./InboxProfilePage.tsx"), "InboxProfilePage");
 
 export const InboxRoutes = () => {
 

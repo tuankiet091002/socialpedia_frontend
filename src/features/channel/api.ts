@@ -63,7 +63,7 @@ export const channelApi = createApi({
 
                             // fetch one when there are new message
                             await subscribeTo(`space/${channel.id}`, (message) => {
-
+                                    console.log("message received + " + message.type)
                                     switch (message.type) {
                                         case (SocketType.CHAT):
                                             dispatch(channelApi.util?.invalidateTags([{type: "Channel", id: channel.id}]));

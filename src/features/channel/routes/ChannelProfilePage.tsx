@@ -6,7 +6,7 @@ import {Button} from "@components/elements/Button.tsx";
 import {ChannelAvatarForm} from "@features/channel/components/ChannelProfilePage/ChannelAvatarForm.tsx";
 import {ChannelMemberForm} from "@features/channel/components/ChannelProfilePage/ChannelMemberForm.tsx";
 import {ChannelProfileForm} from "@features/channel/components/ChannelProfilePage/ChannelProfileForm.tsx";
-import {RequestType} from "@src/types.ts";
+import {PermissionAccessType, RequestType} from "@src/types.ts";
 import {
     useCreateChannelRequestMutation,
     useGetChannelRelationQuery,
@@ -62,7 +62,10 @@ export const ChannelProfilePage = () => {
                             // already member
                             : member?.status == RequestType.ACCEPTED ?
                                 <>
-                                    <Button type="button" onClick={() => setEdit(e => !e)}>Edit</Button>
+                                    {Number(PermissionAccessType[member!.channelPermission]) >= PermissionAccessType.MODIFY &&
+                                        <Button type="button" onClick={() => setEdit(e => !e)}>
+                                            Edit
+                                        </Button>}
                                     <ConfirmationDialog
                                         title="Leave channel"
                                         type="danger"
@@ -89,7 +92,7 @@ export const ChannelProfilePage = () => {
                 </div>
                 <div className="grid p-10 grid-cols-[2fr_3fr] space-x-4">
                     <ChannelProfileForm data={data} edit={edit} setEdit={setEdit}/>
-                    <ChannelMemberForm data={data} edit={edit} setEdit={setEdit}/>
+                    <ChannelMemberForm data={data} relation={member} edit={edit} setEdit={setEdit}/>
                 </div>
             </div>
         </>

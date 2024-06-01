@@ -64,7 +64,7 @@ export const InboxChatPage = () => {
             </section>
             <section className="flex-auto bg-gray-50">
                 <MessageList type="inbox" query={query!} seenId={data.lastSeenMessageId}
-                             seenUser={data.contactWith}/>
+                             seenUser={data.contactWith} editPermission={false}/>
             </section>
             <section className="h-[50px]">
                 <MessageInput queryFunc={useSendMessageToInboxMutation}/>

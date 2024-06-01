@@ -22,10 +22,11 @@ import {useAuth} from "@src/hooks/useAuth.ts";
 type MessageProps = {
     data: MessageResponse
     type: "inbox" | "channel"
+    permission: boolean
     setReply?: (m: MessageResponse) => void
 };
 
-export const MessageItem = ({data, type, setReply}: MessageProps) => {
+export const MessageItem = ({data, type, setReply, permission}: MessageProps) => {
 
     const {locationId: locationNum} = useParams();
     const locationId = Number(locationNum);
@@ -73,7 +74,7 @@ export const MessageItem = ({data, type, setReply}: MessageProps) => {
                                           onChange={e => setContent(e.target.value)}/>
 
                         {/* setting block */}
-                        <div
+                        {(permission || data.createdBy.id == owner.id) && <div
                             className={clsx("absolute right-4 hidden bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-gray-100 top-[10px] border rounded-md border-gray-300 group-hover:block",
                                 isOpen && "!block")}>
                             <IoMdSettings className="cursor-pointer text-2xl"
@@ -82,7 +83,7 @@ export const MessageItem = ({data, type, setReply}: MessageProps) => {
                                               setContent(data.content);
                                               setEdit(false);
                                           }}/>
-                        </div>
+                        </div>}
                         {type == "channel" && <div
                             className={clsx("absolute right-4 hidden bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-gray-100 top-[40px] border rounded-md border-gray-300 group-hover:block",
                                 isOpen && "!block")}>
@@ -94,57 +95,60 @@ export const MessageItem = ({data, type, setReply}: MessageProps) => {
                     {/* replies block */}
                     {type == "channel" && data.replies.length > 0 && <section className="w-full">
                         {data.replies.map(rep => <MessageItem key={rep.id} data={rep} type={type}
-                                                              setReply={setReply}/>)}
+                                                              setReply={setReply} permission={permission}/>)}
                     </section>}
 
                 </section>
 
                 {isOpen && <div className="z-20 rounded-md bg-white border-1">
 
-                    {/* content edit button*/}
-                    {!edit ? <Button size="sm" variant="inverse" className="w-full"
-                                     onClick={() => setEdit(true)}>Edit message</Button> :
+                    {/* content edit button, only edit your own message*/}
+                    {data.createdBy.id == owner.id &&
+                        (!edit ? <Button size="sm" variant="inverse" className="w-full"
+                                         onClick={() => setEdit(true)}>Edit message</Button> :
+                                <Button size="sm" variant="inverse" className="w-full"
+                                        isLoading={updateResult.isLoading}
+                                        onClick={() => updateContent({id: data.id, locationId, content}).unwrap()
+                                            .then(() => {
+                                                window.alert("Content updated successfully!")
+                                                setEdit(false);
+                                                close()
+                                            })}>Save</Button>
+                        )}
+                    {permission && <>
                         <Button size="sm" variant="inverse" className="w-full"
-                                isLoading={updateResult.isLoading}
-                                onClick={() => updateContent({id: data.id, locationId, content}).unwrap()
+                                isLoading={updateStatusResult.isLoading}
+                                onClick={() => updateStatus({
+                                    id: data.id,
+                                    locationId,
+                                    status: data.status == MessageStatusType.ACTIVE ? MessageStatusType.PINNED : MessageStatusType.ACTIVE
+                                }).unwrap()
                                     .then(() => {
-                                        window.alert("Content updated successfully!")
+                                        window.alert("Message status updated successfully!")
                                         setEdit(false);
                                         close()
-                                    })}>Save</Button>
-                    }
-                    <Button size="sm" variant="inverse" className="w-full"
-                            isLoading={updateStatusResult.isLoading}
-                            onClick={() => updateStatus({
-                                id: data.id,
-                                locationId,
-                                status: data.status == MessageStatusType.ACTIVE ? MessageStatusType.PINNED : MessageStatusType.ACTIVE
-                            }).unwrap()
-                                .then(() => {
-                                    window.alert("Message status updated successfully!")
-                                    setEdit(false);
-                                    close()
-                                })}> {data.status == MessageStatusType.ACTIVE ? "Mark message" : "Unmark message"}</Button>
+                                    })}> {data.status == MessageStatusType.ACTIVE ? "Mark message" : "Unmark message"}</Button>
 
-                    {/* message delete button*/}
-                    <ConfirmationDialog type="danger" title="Delete Message"
-                                        body="Are you sure you want to delete this message?"
-                                        isDone={deleteResult.isSuccess}
-                                        triggerButton={<Button variant="inverse_danger" size="sm">
-                                            Delete message
-                                        </Button>}
-                                        confirmButton={<Button variant="danger"
-                                                               isLoading={deleteResult.isLoading}
-                                                               onClick={() => deleteMessage({
-                                                                   locationId: locationId,
-                                                                   id: data.id
-                                                               }).unwrap()
-                                                                   .then(() => {
-                                                                       window.alert("Message deleted successfully!")
-                                                                       close();
-                                                                   })}>
-                                            Delete
-                                        </Button>}/>
+                        {/* message delete button*/}
+                        <ConfirmationDialog type="danger" title="Delete Message"
+                                            body="Are you sure you want to delete this message?"
+                                            isDone={deleteResult.isSuccess}
+                                            triggerButton={<Button variant="inverse_danger" size="sm">
+                                                Delete message
+                                            </Button>}
+                                            confirmButton={<Button variant="danger"
+                                                                   isLoading={deleteResult.isLoading}
+                                                                   onClick={() => deleteMessage({
+                                                                       locationId: locationId,
+                                                                       id: data.id
+                                                                   }).unwrap()
+                                                                       .then(() => {
+                                                                           window.alert("Message deleted successfully!")
+                                                                           close();
+                                                                       })}>
+                                                Delete
+                                            </Button>}/>
+                    </>}
                 </div>}
             </li> : data.status == MessageStatusType.INACTIVE ?
                 <li className="rounded-md border border-gray-300 bg-gray-500 p-2 text-start text-gray-100">
