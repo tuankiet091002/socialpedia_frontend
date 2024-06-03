@@ -57,7 +57,7 @@ export const ChannelMemberForm = ({data, edit, relation}: ChannelMemberFormProps
             id: "member",
             header: () => "User",
             cell: info => <Link
-                to={owner!.id != info.getValue().id ? `/channel/${info.getValue().id}/profile` : "/user/profile"}
+                to={`/user/${owner!.id != info.getValue().id ? info.getValue().id : "profile"}`}
                 className="cursor-pointer hover:text-blue-500">
                 <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
                 {info.getValue().name}

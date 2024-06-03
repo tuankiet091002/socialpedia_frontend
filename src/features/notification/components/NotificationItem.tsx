@@ -49,9 +49,14 @@ export const NotificationItem = ({data}: NotificationItemProps) => {
             break;
     }
 
+    // destination url
+    let destination = data.destination.split("/").slice(1, 3).join("/");
+    if (destination.startsWith("channel")) destination += "/profile";
+
+
     return (
         <li>
-            <Link to={data.destination}
+            <Link to={destination}
                   className={clsx("flex cursor-pointer flex-row items-center justify-between gap-x-2 rounded-sm p-2 hover:bg-gray-200", data.type != NotificationType.DONE && "border-2 border-blue-600")}>
                 <img src={data.avatar?.url || emptyAvatar}
                      className="h-12 w-12 flex-none rounded-full bg-gray-50"
