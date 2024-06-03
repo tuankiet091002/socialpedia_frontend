@@ -31,13 +31,19 @@ export const messageApi = createApi({
                 const size = currentCache.size;
 
                 if (numberDifference <= size) {
+                    const returnCache = {...currentCache};
+
+                    // remove custom system message
+                    returnCache.content = currentCache.content.filter(m => m.id < 100000)
                     // splice logic
-                    currentCache.content.splice(Math.max(newItems.number * size - numberDifference, 0),
+                    returnCache.content.splice(Math.max(newItems.number * size - numberDifference, 0),
                         newItems.number == 0 ? size - numberDifference : size, ...newItems.content);
                     // other fields
-                    currentCache.totalElements = newItems.totalElements
-                    currentCache.last = newItems.last
-                    currentCache.totalPages = newItems.totalPages
+                    returnCache.totalElements = newItems.totalElements
+                    returnCache.last = newItems.last
+                    returnCache.totalPages = newItems.totalPages
+
+                    return {...returnCache};
                 } else {
                     console.log("overflowing number of element")
                 }
@@ -62,19 +68,27 @@ export const messageApi = createApi({
                 // setting variable
                 const numberDifference = newItems.totalElements - currentCache.totalElements;
                 const size = currentCache.size;
+                console.log(newItems.totalElements)
+                console.log(currentCache.totalElements)
+                console.log(size)
 
                 if (numberDifference <= size) {
+                    const returnCache = {...currentCache};
+
+                    // remove custom system message
+                    returnCache.content = currentCache.content.filter(m => m.id < 100000)
                     // splice logic
-                    currentCache.content.splice(Math.max(newItems.number * size - numberDifference, 0),
+                    returnCache.content.splice(Math.max(newItems.number * size - numberDifference, 0),
                         newItems.number == 0 ? size - numberDifference : size, ...newItems.content);
                     // other fields
-                    currentCache.totalElements = newItems.totalElements
-                    currentCache.last = newItems.last
-                    currentCache.totalPages = newItems.totalPages
+                    returnCache.totalElements = newItems.totalElements
+                    returnCache.last = newItems.last
+                    returnCache.totalPages = newItems.totalPages
+
+                    return {...returnCache};
                 } else {
                     console.log("overflowing number of element")
                 }
-
             },
             forceRefetch({currentArg, previousArg}) {
                 return JSON.stringify(currentArg) !== JSON.stringify(previousArg);

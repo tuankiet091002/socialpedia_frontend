@@ -32,7 +32,7 @@ export const InboxChatPage = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             // merge name into query
-            dispatch(messageQueryChange({...query!, content}))
+            dispatch(messageQueryChange({...query!, pageNo: 0, content}))
         }, 500);
 
         return () => clearTimeout(timer);
@@ -67,7 +67,7 @@ export const InboxChatPage = () => {
                              seenUser={data.contactWith} editPermission={false}/>
             </section>
             <section className="h-[50px]">
-                <MessageInput queryFunc={useSendMessageToInboxMutation}/>
+                <MessageInput queryFunc={useSendMessageToInboxMutation} writePermission={true}/>
             </section>
         </div>
     </>);

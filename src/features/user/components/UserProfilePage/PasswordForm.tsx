@@ -35,7 +35,7 @@ export const PasswordForm = ({onSuccess}: PasswordFormProps) => {
                 <>
                     <InputField
                         type="password"
-                        label="Old password"
+                        label="Old Password"
                         error={formState.errors["oldPassword"]}
                         registration={register("oldPassword")}
                     />

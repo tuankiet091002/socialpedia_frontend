@@ -13,6 +13,7 @@ import {ChannelMemberResponse} from "@features/channel/types/ChannelMemberRespon
 import {notificationApi} from "@features/notification/api.ts";
 import {channelApi} from "@features/channel/api.ts";
 import {inboxApi} from "@features/inbox/api.ts";
+import {userApi} from "@features/user/api.ts";
 
 export const authApi = createApi({
         reducerPath: "auth",
@@ -34,6 +35,7 @@ export const authApi = createApi({
                         dispatch(notificationApi.util?.invalidateTags(["Notification"]));
                         dispatch(channelApi.util?.invalidateTags(["Channel"]));
                         dispatch(inboxApi.util?.invalidateTags(["Inbox"]));
+                        dispatch(userApi.util?.invalidateTags([{type: "User", id: "FRIEND_LIST"}]))
                     } catch (err) {
                         console.log(err);
                     }
@@ -138,6 +140,7 @@ export const authApi = createApi({
                         await queryFulfilled;
 
                         dispatch(notificationApi.util?.invalidateTags(["Notification"]));
+                        dispatch(userApi.util?.invalidateTags([{type: "User", id: "FRIEND_LIST"}]))
                     } catch (err) {
                         console.log(err);
                     }

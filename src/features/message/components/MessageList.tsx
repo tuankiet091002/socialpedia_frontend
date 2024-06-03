@@ -42,15 +42,19 @@ export const MessageList = ({type, query, seenId, seenUser, setReply, editPermis
     }, [locationId]);
 
 
-    // scroll down a little
+    // scroll down a little when infinite scrolling
     useEffect(() => {
         if (listScrollRef.current) {
-            listScrollRef.current.scrollTo(0, 200);
+            listScrollRef.current.scrollTo(0, 80);
         }
     }, [query]);
 
     // set up scrollspy
     useEffect(() => {
+        // scroll to bottom of the page when there's new message
+        if (listScrollRef.current && data && data.first) {
+            listScrollRef.current.scrollTo(0, listScrollRef.current.scrollHeight);
+        }
         // send seen signal to
         if (type == "inbox" && (!query.content || !query.content.length)) {
             sendTo(`space/${locationId}`, SocketType.SEEN, {

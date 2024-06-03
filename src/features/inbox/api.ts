@@ -63,7 +63,7 @@ export const inboxApi = createApi({
                                                     query || {locationId: inbox.id, content: ""} as MessageQueryRequest,
                                                     data => {
                                                         data.content.unshift({
-                                                            id: inbox.id * 1000 + message.owner.id * 10 + 3,
+                                                            id: 100000 + inbox.id * 1000 + message.owner.id * 10 + 3,
                                                             content: `${message.owner.name} is typing`,
                                                             resources: [],
                                                             status: MessageStatusType.SYSTEM,
@@ -79,7 +79,7 @@ export const inboxApi = createApi({
                                                     query || {locationId: inbox.id, content: ""} as MessageQueryRequest,
                                                     data => ({
                                                         ...data, content: data.content.filter(m =>
-                                                            m.id != inbox.id * 1000 + message.owner.id * 10 + 3)
+                                                            m.id != 100000 + inbox.id * 1000 + message.owner.id * 10 + 3)
                                                     })));
                                                 break;
 

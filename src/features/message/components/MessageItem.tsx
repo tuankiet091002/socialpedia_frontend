@@ -74,7 +74,7 @@ export const MessageItem = ({data, type, setReply, permission}: MessageProps) =>
                                           onChange={e => setContent(e.target.value)}/>
 
                         {/* setting block */}
-                        {(permission || data.createdBy.id == owner.id) && <div
+                        {(permission || data.createdBy!.id == owner!.id) && <div
                             className={clsx("absolute right-4 hidden bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-gray-100 top-[10px] border rounded-md border-gray-300 group-hover:block",
                                 isOpen && "!block")}>
                             <IoMdSettings className="cursor-pointer text-2xl"
@@ -103,7 +103,7 @@ export const MessageItem = ({data, type, setReply, permission}: MessageProps) =>
                 {isOpen && <div className="z-20 rounded-md bg-white border-1">
 
                     {/* content edit button, only edit your own message*/}
-                    {data.createdBy.id == owner.id &&
+                    {data.createdBy!.id == owner!.id &&
                         (!edit ? <Button size="sm" variant="inverse" className="w-full"
                                          onClick={() => setEdit(true)}>Edit message</Button> :
                                 <Button size="sm" variant="inverse" className="w-full"

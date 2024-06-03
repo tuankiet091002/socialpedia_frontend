@@ -63,11 +63,11 @@ export const UserProfilePage = () => {
             <div className="flex items-center justify-end gap-4 bg-white px-5 shadow-2xl h-[50px]">
                 {
                     // waiting for response
-                    friendship?.status == RequestType.PENDING && friendship?.other.id != user.id ?
+                    friendship?.status == RequestType.PENDING && friendship?.isSender ?
                         <>
                             <Button type="button" variant="inverse" disabled={true}
                                     className="w-[250px]">Wait for response</Button>
-                        </> : friendship?.status == RequestType.PENDING && friendship?.other.id == user.id ?
+                        </> : friendship?.status == RequestType.PENDING && !friendship?.isSender ?
                             <>
                                 <Button type="button" className="w-[170px]"
                                         onClick={() => acceptRequest(userId).unwrap()

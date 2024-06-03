@@ -12,8 +12,8 @@ type QueryState = {
 }
 
 const initialState: QueryState = {
-    channelQuery: {name: "", pageNo: 0, pageSize: 9, orderBy: "id" as const, orderDirection: "ASC" as const},
-    inboxQuery: {name: "", pageNo: 0, pageSize: 9},
+    channelQuery: {name: "", pageNo: 0, pageSize: 9, orderBy: "modifiedDate" as const, orderDirection: "DESC" as const},
+    inboxQuery: {name: "", pageNo: 0, pageSize: 9, orderBy: "modifiedDate" as const, orderDirection: "DESC" as const},
     messageQuery: []
 }
 

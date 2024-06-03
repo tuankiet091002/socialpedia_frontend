@@ -41,10 +41,8 @@ export const channelApi = createApi({
                     params: query
                 }),
                 providesTags: (result) => !result ? [{type: "Channel", id: "LIST"}] :
-                    [...result.content.map(({id}) => ({type: "Channel" as const, id})), {
-                        type: "Channel",
-                        id: "LIST"
-                    }],
+                    [...result.content.map(({id}) => ({type: "Channel" as const, id})),
+                        {type: "Channel", id: "LIST"}],
                 async onQueryStarted(_, {queryFulfilled, getCacheEntry, dispatch, getState}) {
                     try {
                         await queryFulfilled;
@@ -78,7 +76,7 @@ export const channelApi = createApi({
                                                 query || {locationId: channel.id, content: ""} as MessageQueryRequest,
                                                 data => {
                                                     data.content.push({
-                                                        id: channel.id * 1000 + message.owner.id * 10 + 2,
+                                                        id: 100000 + channel.id * 1000 + message.owner.id * 10 + 2,
                                                         content: `${message.owner.name} has just joined the channel`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
@@ -94,7 +92,7 @@ export const channelApi = createApi({
                                                 query || {locationId: channel.id, content: ""} as MessageQueryRequest,
                                                 data => {
                                                     data.content.unshift({
-                                                        id: channel.id * 1000 + message.owner.id * 10 + 2,
+                                                        id: 100000 + channel.id * 1000 + message.owner.id * 10 + 2,
                                                         content: `${message.owner.name} has just left the channel`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
@@ -110,7 +108,7 @@ export const channelApi = createApi({
                                                 query || {locationId: channel.id, content: ""} as MessageQueryRequest,
                                                 data => {
                                                     data.content.unshift({
-                                                        id: channel.id * 1000 + message.owner.id * 10 + 3,
+                                                        id: 100000 + channel.id * 1000 + message.owner.id * 10 + 3,
                                                         content: `${message.owner.name} is typing`,
                                                         resources: [],
                                                         status: MessageStatusType.SYSTEM,
@@ -126,7 +124,7 @@ export const channelApi = createApi({
                                                 query || {locationId: channel.id, content: ""} as MessageQueryRequest,
                                                 data => ({
                                                     ...data, content: data.content.filter(m =>
-                                                        m.id != channel.id * 1000 + message.owner.id * 10 + 3)
+                                                        m.id != 100000 + channel.id * 1000 + message.owner.id * 10 + 3)
                                                 })));
                                             break;
 

@@ -40,7 +40,7 @@ export const ChannelChatPage = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             // merge name into query
-            dispatch(messageQueryChange({...query!, content}))
+            dispatch(messageQueryChange({...query!, pageNo: 0, content}))
         }, 500);
 
         return () => clearTimeout(timer);
@@ -79,7 +79,9 @@ export const ChannelChatPage = () => {
                              editPermission={member ? Number(PermissionAccessType[member.messagePermission]) >= PermissionAccessType.MODIFY : false}/>
             </section>
             <section className="h-[50px]">
-                <MessageInput queryFunc={useSendMessageToChannelMutation} reply={reply} setReply={switchReply}/>
+                <MessageInput queryFunc={useSendMessageToChannelMutation} reply={reply}
+                              setReply={switchReply}
+                              writePermission={member ? Number(PermissionAccessType[member.messagePermission]) >= PermissionAccessType.CREATE : false}/>
             </section>
         </div>
     </>);

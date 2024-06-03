@@ -36,10 +36,8 @@ export const userApi = createApi({
                     params: query
                 }),
                 providesTags: (result) => !result ? [{type: "User", id: "LIST"}] :
-                    [...result.content.map(({other}) => ({type: "User" as const, other: other.id})), {
-                        type: "User",
-                        id: "LIST"
-                    }]
+                    [...result.content.map(({other}) => ({type: "User" as const, other: other.id})),
+                        {type: "User", id: "LIST"}, {type: "User", id: "FRIEND_LIST"}]
             }),
             getUserProfile: builder.query<UserResponse, number>({
                 query: (id) => ({

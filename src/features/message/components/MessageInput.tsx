@@ -23,9 +23,10 @@ type MessageInputProps = {
         "message">>;
     reply?: MessageResponse | null
     setReply?: (m: MessageResponse) => void
+    writePermission: boolean
 }
 
-export const MessageInput = ({queryFunc, reply, setReply}: MessageInputProps) => {
+export const MessageInput = ({queryFunc, reply, setReply, writePermission}: MessageInputProps) => {
     const {locationId} = useParams();
     const [createMessage] = queryFunc();
     const [files, setFiles] = useState<File[]>([]);
@@ -78,6 +79,7 @@ export const MessageInput = ({queryFunc, reply, setReply}: MessageInputProps) =>
                 type="file"
                 className="hidden"
                 multiple={true}
+                disabled={!writePermission}
                 onChange={(e) => {
                     setFiles(files => [...files, ...e.target.files!]);
                 }}
@@ -125,13 +127,15 @@ export const MessageInput = ({queryFunc, reply, setReply}: MessageInputProps) =>
             <form className="flex w-full items-center gap-x-4" onSubmit={handleSubmit}>
                 <input type="text" name="content"
                        className="flex-auto appearance-none rounded-md border border-gray-300 bg-gray-200 px-2 py-1 text-lg shadow-sm placeholder-gray-400 focus:outline-none"
+                       disabled={!writePermission}
                        placeholder="Enter message"
                        onKeyDown={() => setIsTyping(true)}
                        onKeyUp={() => {
                            keyTimer && clearTimeout(keyTimer);
                            keyTimer = setTimeout(() => setIsTyping(false), 2000);
                        }}/>
-                <Button type="submit">Send {" "} <FaPaperPlane className="inline"/> </Button>
+                <Button type="submit" disabled={!writePermission}>Send {" "} <FaPaperPlane className="inline"/>
+                </Button>
             </form>
         </div>
     );

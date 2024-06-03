@@ -24,7 +24,7 @@ export const ChannelCreateFormMember = ({form, setForm}: ChannelCreateFormMember
             return setScrollspy<HTMLUListElement>(listScrollRef, true,
                 () => data && !data.last && setQuery(query => ({
                     ...query,
-                    pageSize: query.pageSize + 3
+                    pageSize: query.pageSize + 1
                 })));
         }
         , [data]);
@@ -44,9 +44,9 @@ export const ChannelCreateFormMember = ({form, setForm}: ChannelCreateFormMember
             </div>
             <ul className="overflow-y-scroll h-[204.4px] divide-y divide-gray-300" ref={listScrollRef}>
                 {data?.content.map(item =>
-                    <ChannelMemberItem key={item.id} data={item}
+                    <ChannelMemberItem key={item.other.id} data={item.other}
                                        setForm={setForm}
-                                       defaultValue={form.channelMembersId.find(m => m.memberId == item.id)}/>)}
+                                       defaultValue={form.channelMembersId.find(m => m.memberId == item.other.id)}/>)}
 
             </ul>
         </div>

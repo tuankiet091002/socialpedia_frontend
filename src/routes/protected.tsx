@@ -1,5 +1,6 @@
 import {namedImport} from "@utils/namedImport.ts";
 import {MainLayout} from "src/components/layout/MainLayout";
+import {Navigate} from "react-router-dom";
 
 const {UserRoutes} = namedImport(() => import("src/features/user/routes"), "UserRoutes");
 const {InboxRoutes} = namedImport(() => import("src/features/inbox/routes"), "InboxRoutes");
@@ -8,12 +9,13 @@ const {ChannelRoutes} = namedImport(() => import("src/features/channel/routes"),
 
 export const protectedRoutes = [
     {
-        path: '*',
+        path: "*",
         element: <MainLayout/>,
         children: [
-            {path: 'user/*', element: <UserRoutes/>},
-            {path: 'inbox/*', element: <InboxRoutes/>},
-            {path: 'channel/*', element: <ChannelRoutes/>}
-        ],
-    },
+            {path: "user/*", element: <UserRoutes/>},
+            {path: "inbox/*", element: <InboxRoutes/>},
+            {path: "channel/*", element: <ChannelRoutes/>},
+            {path: "*", element: <Navigate to={"/channel"}/>}
+        ]
+    }
 ];

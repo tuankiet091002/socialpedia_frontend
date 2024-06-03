@@ -1,5 +1,11 @@
 import {ChannelResponse} from "@features/channel/types/ChannelResponse.ts";
-import {createColumnHelper, getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/react-table";
+import {
+    createColumnHelper,
+    getCoreRowModel,
+    getPaginationRowModel,
+    PaginationState,
+    useReactTable
+} from "@tanstack/react-table";
 import {Dispatch, SetStateAction, useMemo, useState} from "react";
 import {ChannelMemberResponse} from "@features/channel/types/ChannelMemberResponse.ts";
 import {Link} from "react-router-dom";
@@ -10,9 +16,14 @@ import {IoMdSettings} from "react-icons/io";
 import moment from "moment";
 import {Button} from "@components/elements/Button.tsx";
 import {ConfirmationDialog} from "@components/dialog/ConfirmationDialog.tsx";
-import {useKickMemberMutation, useUpdateMemberPermissionMutation} from "@features/channel/api.ts";
+import {
+    useAcceptChannelRequestMutation,
+    useKickMemberMutation,
+    useRejectChannelRequestMutation,
+    useUpdateMemberPermissionMutation
+} from "@features/channel/api.ts";
 import {ChannelMemberRequest} from "@features/channel/types/ChannelMemberRequest.ts";
-import {PermissionAccessType} from "@src/types.ts";
+import {PermissionAccessType, RequestType} from "@src/types.ts";
 import {useAuth} from "@src/hooks/useAuth.ts";
 
 type ChannelMemberFormProps = {
@@ -28,29 +39,29 @@ export const ChannelMemberForm = ({data, edit, relation}: ChannelMemberFormProps
 
     // state for selected editing member
     const [member, setMember] = useState<ChannelMemberRequest | undefined>();
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 2
+    })
     const {data: owner} = useAuth();
 
     // api hook
     const [updatePermission, updatePermissionResult] = useUpdateMemberPermissionMutation();
+    const [acceptMemberRequest, acceptMemberResult] = useAcceptChannelRequestMutation();
+    const [rejectMemberRequest, rejectMemberResult] = useRejectChannelRequestMutation();
     const [kickMember, kickMemberResult] = useKickMemberMutation();
 
     // column data
     const columns = useMemo(() => [
         columnHelper.accessor(row => ({id: row.member.id, avatar: row.member.avatar, name: row.member.name}), {
             id: "member",
-            header: () => "Thành viên",
+            header: () => "User",
             cell: info => <Link
                 to={owner!.id != info.getValue().id ? `/channel/${info.getValue().id}/profile` : "/user/profile"}
                 className="cursor-pointer hover:text-blue-500">
                 <Avatar src={info.getValue().avatar?.url} className="mr-1 inline" size="sm"/>
                 {info.getValue().name}
             </Link>,
-            footer: info => info.column.id
-        }),
-        columnHelper.accessor(row => row.joinedDate, {
-            id: "joinedDate",
-            header: () => "Joined date",
-            cell: info => <span>{moment(info.getValue()).format("DD/MM/YYYY")}</span>,
             footer: info => info.column.id
         }),
         // if state = edit, show permission detail and edit button
@@ -65,7 +76,7 @@ export const ChannelMemberForm = ({data, edit, relation}: ChannelMemberFormProps
                     onChange={
                         e => member && setMember({...member, channelPermission: e.target.value})}
                 >
-                    {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
+                    {Object.keys(PermissionAccessType).filter(key => isNaN(Number(key)))
                         .map(item => <option key={item} value={item}>{item}</option>)}
                 </select>,
                 footer: info => info.column.id
@@ -79,7 +90,7 @@ export const ChannelMemberForm = ({data, edit, relation}: ChannelMemberFormProps
                     disabled={info.getValue().memberId != member?.memberId}
                     onChange={
                         e => member && setMember({...member, memberPermission: e.target.value})}>
-                    {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
+                    {Object.keys(PermissionAccessType).filter(key => isNaN(Number(key)))
                         .map(item => <option key={item} value={item.toString()}>{item}</option>)}
                 </select>,
                 footer: info => info.column.id
@@ -95,7 +106,7 @@ export const ChannelMemberForm = ({data, edit, relation}: ChannelMemberFormProps
                         e => member && setMember({...member, messagePermission: e.target.value})}
                 >
 
-                    {Object.keys(PermissionAccessType).filter(key => key != "NO_ACCESS" && isNaN(Number(key)))
+                    {Object.keys(PermissionAccessType).filter(key => isNaN(Number(key)))
                         .map(item => <option key={item} value={item} className="text">{item}</option>)}
                 </select>,
                 footer: info => info.column.id
@@ -118,49 +129,82 @@ export const ChannelMemberForm = ({data, edit, relation}: ChannelMemberFormProps
                                               memberPermission: info.getValue().memberPermission.toString(),
                                               messagePermission: info.getValue().messagePermission.toString()
                                           })}/> :
-                            <div className="flex flex-col items-center justify-center gap-1">
-                                <ConfirmationDialog
-                                    title="Change member role"
-                                    body="Are you sure you want to change this member's role in the scope of this channel"
-                                    isDone={updatePermissionResult.isSuccess}
-                                    triggerButton={<Button size="sm">Save Permission</Button>}
-                                    confirmButton={
-                                        <Button type="button" size="sm" isLoading={updatePermissionResult.isLoading}
-                                                onClick={() => {
-                                                    member && updatePermission({
-                                                        channelId: data.id,
-                                                        ...member
-                                                    }).unwrap().then(() => {
-                                                        window.alert("Permission updated successfully!")
-                                                    }).finally(() => setMember(undefined))
-                                                }}>Save Permission</Button>}
-                                />
-                                <ConfirmationDialog
-                                    title="Kick member"
-                                    type="danger"
-                                    body="Are you sure you want to kick this member out of this channel, they can still ask to join again"
-                                    isDone={kickMemberResult.isSuccess}
-                                    triggerButton={<Button variant="danger" size="sm">Kick</Button>}
-                                    confirmButton={
-                                        <Button type="button" variant="danger" size="sm"
-                                                isLoading={kickMemberResult.isLoading}
-                                                onClick={() => {
-                                                    kickMember && kickMember({
-                                                        channelId: data.id,
-                                                        memberId: member?.memberId
-                                                    }).unwrap().then(() => {
-                                                        window.alert("Member kicked successfully!")
-                                                    }).finally(() => setMember(undefined))
-                                                }}>Confirm</Button>}
-                                />
-                                <Button size="sm"
-                                        onClick={() => setMember(undefined)}>Cancel</Button>
-                            </div>
-
+                            info.getValue().status == RequestType.ACCEPTED ?
+                                <div className="flex flex-col items-center justify-center gap-1">
+                                    <ConfirmationDialog
+                                        title="Change member role"
+                                        body="Are you sure you want to change this member's role in the scope of this channel"
+                                        isDone={updatePermissionResult.isSuccess}
+                                        triggerButton={<Button size="sm" className="!px-2 text-xs">Save
+                                            Permission</Button>}
+                                        confirmButton={
+                                            <Button type="button" size="sm" isLoading={updatePermissionResult.isLoading}
+                                                    onClick={() => {
+                                                        member && updatePermission({
+                                                            channelId: data.id,
+                                                            ...member
+                                                        }).unwrap().then(() => {
+                                                            window.alert("Permission updated successfully!")
+                                                        }).finally(() => setMember(undefined))
+                                                    }}>Save permission</Button>}
+                                    />
+                                    <ConfirmationDialog
+                                        title="Kick member"
+                                        type="danger"
+                                        body="Are you sure you want to kick this member out of this channel, they can still ask to join again"
+                                        isDone={kickMemberResult.isSuccess}
+                                        triggerButton={<Button variant="danger" size="sm"
+                                                               className="!px-2 text-xs">Kick</Button>}
+                                        confirmButton={
+                                            <Button type="button" variant="danger" size="sm"
+                                                    isLoading={kickMemberResult.isLoading}
+                                                    onClick={() => {
+                                                        kickMember && kickMember({
+                                                            channelId: data.id,
+                                                            memberId: member?.memberId
+                                                        }).unwrap().then(() => {
+                                                            window.alert("Member kicked successfully!")
+                                                        }).finally(() => setMember(undefined))
+                                                    }}>Confirm</Button>}
+                                    />
+                                    <Button size="sm" variant="danger" className="!px-2 text-xs"
+                                            onClick={() => setMember(undefined)}>Cancel</Button>
+                                </div> :
+                                <div className="flex flex-col items-center justify-center gap-1">
+                                    <Button type="button" size="sm" className="!px-2 text-xs"
+                                            onClick={() => acceptMemberRequest({
+                                                channelId: data.id,
+                                                memberId: member?.memberId
+                                            }).unwrap().then(() => {
+                                                window.alert("Join request accepted successfully!")
+                                            }).finally(() => setMember(undefined))}
+                                            isLoading={acceptMemberResult.isLoading}>
+                                        Accept request
+                                    </Button>
+                                    <Button type="button" variant="danger" size="sm" className="!px-2 text-xs"
+                                            onClick={() => rejectMemberRequest({
+                                                channelId: data.id,
+                                                memberId: member?.memberId
+                                            }).unwrap().finally(() => setMember(undefined))}
+                                            isLoading={rejectMemberResult.isLoading}>
+                                        Reject request
+                                    </Button>
+                                </div>
                     }
             </span>,
                     footer: info => info.column.id
-                })] : []] : []
+                })] : []] : [columnHelper.accessor(row => row.status, {
+            id: "status",
+            header: () => "Status",
+            cell: info => <span>{info.getValue() == RequestType.ACCEPTED ? "Member" : "Request"}</span>,
+            footer: info => info.column.id
+        }),
+            columnHelper.accessor(row => row.joinedDate, {
+                id: "joinedDate",
+                header: () => "Joined date",
+                cell: info => <span>{info.getValue() ? moment(info.getValue()).format("DD/MM/YYYY") : "none"}</span>,
+                footer: info => info.column.id
+            })]
     ], [data, edit, member]);
 
     // table definition
@@ -168,6 +212,8 @@ export const ChannelMemberForm = ({data, edit, relation}: ChannelMemberFormProps
         data: data.channelMembers,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        onPaginationChange: setPagination,
+        state: {pagination},
         getPaginationRowModel: getPaginationRowModel(),
         debugTable: true,
         columnResizeMode: "onChange"

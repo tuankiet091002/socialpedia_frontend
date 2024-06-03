@@ -18,7 +18,7 @@ export const FilePreview = ({src}: FilePreviewProps) => {
     const srcSize = src instanceof File ? src.size : src.fileSize;
 
 
-    return <>{
+    return <a href={srcUrl} target="_blank">{
         srcType.startsWith("png") ?
             <Avatar src={srcUrl} size="md" className="rounded-none !w-auto"/> :
             // any other types
@@ -35,5 +35,5 @@ export const FilePreview = ({src}: FilePreviewProps) => {
                     <p className="font-light">{(srcSize / 1024 / 1024 || 0).toFixed(2)} MB</p>
                 </div>
             </div>
-    }</>
+    }</a>
 }
