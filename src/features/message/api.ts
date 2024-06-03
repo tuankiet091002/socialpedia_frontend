@@ -29,6 +29,8 @@ export const messageApi = createApi({
                 // setting variable
                 const numberDifference = newItems.totalElements - currentCache.totalElements;
                 const size = currentCache.size;
+                console.log(newItems.totalElements)
+                console.log(currentCache.totalElements)
 
                 if (numberDifference <= size) {
                     const returnCache = {...currentCache};
@@ -40,6 +42,7 @@ export const messageApi = createApi({
                         newItems.number == 0 ? size - numberDifference : size, ...newItems.content);
                     // other fields
                     returnCache.totalElements = newItems.totalElements
+                    returnCache.first = newItems.first
                     returnCache.last = newItems.last
                     returnCache.totalPages = newItems.totalPages
 
@@ -82,6 +85,7 @@ export const messageApi = createApi({
                         newItems.number == 0 ? size - numberDifference : size, ...newItems.content);
                     // other fields
                     returnCache.totalElements = newItems.totalElements
+                    returnCache.first = newItems.first
                     returnCache.last = newItems.last
                     returnCache.totalPages = newItems.totalPages
 
