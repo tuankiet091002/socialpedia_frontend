@@ -6,10 +6,6 @@ Frontend for Socialpiedia
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Features](#features)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ## Installation
 
@@ -32,4 +28,5 @@ Open http://localhost:3000 to view it in the browser.
 To build the project for production, run:
 ```sh
 npm run build
-```sh
+```
+
