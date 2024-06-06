@@ -1,4 +1,4 @@
-# Project Title
+# Socialpedia (Frontend)
 
 Frontend for Socialpiedia
 
